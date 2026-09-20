@@ -38,8 +38,8 @@ class LFMTExcitation:
             raise ValueError(f"End frequency f1 ({self.f1_hz} Hz) must be strictly greater than f0 ({self.f0_hz} Hz).")
         if self.duration_s <= 0:
             raise ValueError(f"Excitation duration must be > 0, got {self.duration_s} s.")
-        if self.q0_w_m2 <= 0:
-            raise ValueError(f"Heat flux amplitude q0 must be > 0, got {self.q0_w_m2} W/m^2.")
+        if self.q0_w_m2 < 0:
+            raise ValueError(f"Heat flux amplitude q0 must be >= 0, got {self.q0_w_m2} W/m^2.")
         if self.sampling_rate_hz <= 0:
             raise ValueError(f"Sampling rate must be > 0, got {self.sampling_rate_hz} Hz.")
         

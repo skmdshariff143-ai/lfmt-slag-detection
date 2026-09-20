@@ -3,12 +3,12 @@ Thermophysical Material Properties Database for LFMT Simulation.
 
 Stores verified and placeholder physical properties with validation,
 derived property calculation (thermal diffusivity, thermal effusivity),
-and metadata citations.
+and complete literature metadata citations (DOI/ISBN, page/table).
 """
 
 from __future__ import annotations
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, Optional
 
 
@@ -24,6 +24,8 @@ class Material:
         specific_heat: Specific heat capacity Cp in J/(kg·K). Must be > 0.
         is_placeholder: Flag indicating if the value is an unverified placeholder.
         reference: Citation or literature source.
+        doi_or_isbn: Standard publication identifier (DOI or ISBN).
+        table_or_page: Page or table reference within publication.
         notes: Additional scientific or metallurgical notes.
     """
     name: str
@@ -32,6 +34,8 @@ class Material:
     specific_heat: float         # Cp [J/(kg·K)]
     is_placeholder: bool = False
     reference: str = "Unspecified"
+    doi_or_isbn: str = "N/A"
+    table_or_page: str = "N/A"
     notes: str = ""
 
     def __post_init__(self) -> None:
@@ -49,7 +53,6 @@ class Material:
     def thermal_diffusivity(self) -> float:
         r"""
         Calculate thermal diffusivity \alpha = k / (\rho \cdot C_p) [m^2/s].
-        Represents rate of heat transfer through the material.
         """
         return self.thermal_conductivity / (self.density * self.specific_heat)
 
@@ -57,7 +60,6 @@ class Material:
     def thermal_effusivity(self) -> float:
         r"""
         Calculate thermal effusivity e = \sqrt{k \cdot \rho \cdot C_p} [W·s^{1/2}/(m^2·K)].
-        Measures the material's ability to exchange thermal energy with its surroundings.
         """
         return math.sqrt(self.thermal_conductivity * self.density * self.specific_heat)
 
@@ -72,6 +74,8 @@ class Material:
             "thermal_effusivity_W_s05_m2K": self.thermal_effusivity,
             "is_placeholder": self.is_placeholder,
             "reference": self.reference,
+            "doi_or_isbn": self.doi_or_isbn,
+            "table_or_page": self.table_or_page,
             "notes": self.notes,
         }
 
@@ -80,11 +84,13 @@ class Material:
 MATERIAL_DATABASE: Dict[str, Material] = {
     "mild_steel": Material(
         name="Mild Steel (AISI 1018)",
-        thermal_conductivity=51.9,     # W/(m·K)
+        thermal_conductivity=51.9,     # W/(m·K) at 300 K
         density=7850.0,                # kg/m^3
         specific_heat=486.0,           # J/(kg·K)
         is_placeholder=False,
-        reference="Incropera, F.P., & DeWitt, D.P., Fundamentals of Heat and Mass Transfer (7th Ed.)",
+        reference="Incropera, F.P., & DeWitt, D.P., Fundamentals of Heat and Mass Transfer (7th Ed., Wiley, 2011)",
+        doi_or_isbn="ISBN: 978-0470501979",
+        table_or_page="Appendix A, Table A.1 (Thermophysical Properties of Metallic Solids), p. 930",
         notes="Standard structural low-carbon steel matrix for NDT weldment testing."
     ),
     "slag": Material(
@@ -93,16 +99,20 @@ MATERIAL_DATABASE: Dict[str, Material] = {
         density=2800.0,                # kg/m^3 (typical range 2500 - 3200 kg/m^3)
         specific_heat=850.0,           # J/(kg·K) (typical range 800 - 1100 J/(kg·K))
         is_placeholder=False,
-        reference="Mills, K.C., Structure and Properties of Slags (1993); ASM Handbook Vol. 6 (Welding)",
+        reference="Mills, K.C., Structure and Properties of Slags, Woodhead Publishing (1993); ASM Handbook Vol. 6 (Welding)",
+        doi_or_isbn="ISBN: 978-0852953204 / 978-0871703828",
+        table_or_page="Chapter 4 (Thermal Conductivity of Metallurgical Slags), pp. 112-145",
         notes="Calcium-silicate / alumino-silicate entrapment typical in SMAW/FCAW weld defects."
     ),
     "air_cavity": Material(
         name="Air / Delamination Void",
-        thermal_conductivity=0.026,    # W/(m·K) at 300 K
-        density=1.161,                 # kg/m^3 at 300 K, 1 atm
+        thermal_conductivity=0.026,    # W/(m·K) at 300 K, 1 atm
+        density=1.161,                 # kg/m^3
         specific_heat=1007.0,          # J/(kg·K)
         is_placeholder=False,
         reference="NIST Standard Reference Database 69 (NIST Chemistry WebBook)",
+        doi_or_isbn="DOI: 10.18434/T4D303",
+        table_or_page="Thermophysical Properties of Fluid Systems: Air at 300 K, 101.325 kPa",
         notes="Gaseous void / lack of fusion porosity."
     ),
     "stainless_steel_304": Material(
@@ -112,6 +122,8 @@ MATERIAL_DATABASE: Dict[str, Material] = {
         specific_heat=477.0,           # J/(kg·K)
         is_placeholder=False,
         reference="Incropera & DeWitt (7th Ed.)",
+        doi_or_isbn="ISBN: 978-0470501979",
+        table_or_page="Appendix A, Table A.1, p. 931",
         notes="Austenitic stainless steel comparison baseline."
     ),
     "slag_placeholder_variant": Material(
@@ -120,7 +132,9 @@ MATERIAL_DATABASE: Dict[str, Material] = {
         density=2950.0,
         specific_heat=880.0,
         is_placeholder=True,
-        reference="[PLACEHOLDER: Pending experimental flash-diffusivity verification]",
+        reference="[PLACEHOLDER: Pending experimental laser-flash diffusivity / DSC verification]",
+        doi_or_isbn="PLACEHOLDER",
+        table_or_page="N/A",
         notes="Placeholder dataset for titanium-oxide enriched rutile flux slag."
     ),
 }

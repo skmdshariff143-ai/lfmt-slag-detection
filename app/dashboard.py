@@ -128,16 +128,30 @@ selected_snr = noise_snr_map[noise_option]
 cam_res = st.sidebar.selectbox("Camera Sensor Resolution", ["64 x 64 px", "32 x 32 px (Fast)"], index=0)
 res_dim = 64 if "64" in cam_res else 32
 
-st.sidebar.markdown("---")
+st.sidebar.markdown("#### 4. Simulation Engine")
+backend_choice = st.sidebar.selectbox(
+    "Solver Backend",
+    ["Finite Difference Method (3D FDM)", "Finite Element Method (3D FEM - scikit-fem)"],
+    index=0
+)
+backend_key = "fem" if "FEM" in backend_choice else "finite_difference"
+
 fem_available, fem_engine_name = _check_fem_engine()
-if fem_available:
+if backend_key == "fem":
     st.sidebar.success(f"FEM Engine: {fem_engine_name}")
 else:
     st.sidebar.info("Simulation Engine: 3D Finite Difference Method (FDM)")
 
+# Material status check
+selected_mat = MATERIAL_DATABASE[inclusion_material_key]
+if selected_mat.is_placeholder:
+    st.sidebar.warning("⚠️ Inclusion Material: PLACEHOLDER (Unverified)")
+else:
+    st.sidebar.success("✅ Inclusion Material: VERIFIED")
 
 # Build active configuration
 base_cfg = load_config("configs/default.yaml")
+base_cfg.simulation.backend = backend_key
 base_cfg.geometry.inclusion.diameter_mm = float(inclusion_diam)
 base_cfg.geometry.inclusion.depth_mm = float(inclusion_depth)
 base_cfg.geometry.inclusion.material = inclusion_material_key
@@ -173,6 +187,17 @@ if mode.startswith("⚡"):
     kpi4.metric("Peak CNR", f"{best_cnr_row['cnr']:.1f}", best_cnr_row["method_name"])
     kpi5.metric("Min Loc. Error", f"{best_iou_row['localization_error_mm']:.2f} mm", f"{best_iou_row['localization_error_px']:.1f} px")
     kpi6.metric("Pipeline Time", f"{case_result.total_pipeline_time_s:.2f} s", f"Cache: {'Hit' if case_result.cache_hit else 'Fresh'}")
+
+    # Scientific Metadata Indicators Row
+    s1, s2, s3, s4, s5, s6 = st.columns(6)
+    grid_sz = case_result.simulation_result.metadata.get("grid_size", [24, 56, 80])
+    dt_val = case_result.simulation_result.metadata.get("dt_sub_s", case_result.simulation_result.metadata.get("dt_frame_s", 0.05))
+    s1.info(f"**Solver**: `{case_result.simulation_result.backend_name.upper()}`")
+    s2.info(f"**Material**: `{'Verified' if not selected_mat.is_placeholder else 'Placeholder'}`")
+    s3.info(f"**Grid**: `{grid_sz[2]}×{grid_sz[1]}×{grid_sz[0]}`")
+    s4.info(f"**Actual dt**: `{dt_val*1000:.1f} ms`")
+    s5.info(f"**Chirp**: `{chirp_f0:.2f}→{chirp_f1:.2f} Hz`")
+    s6.info(f"**Noise**: `{noise_option.split(' ')[0]}`")
 
     st.markdown("---")
 

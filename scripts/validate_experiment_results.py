@@ -122,8 +122,8 @@ def validate_conference_results(results_dir: Path) -> bool:
     # 3. Check Geometry Grid
     print("\n[Check 3/7] Verifying 25 Defect Geometries + Healthy Control...")
     df_defects = df_raw[~df_raw["is_healthy"]]
-    diams = sorted(df_defects["diameter_mm"].unique())
-    depths = sorted(df_defects["depth_mm"].unique())
+    diams = sorted([round(float(x), 4) for x in df_defects["diameter_mm"].unique()])
+    depths = sorted([round(float(x), 4) for x in df_defects["depth_mm"].unique()])
     expected_diams = [4.0, 6.0, 8.0, 10.0, 12.0]
     expected_depths = [0.2, 0.4, 0.6, 0.8, 1.0]
 

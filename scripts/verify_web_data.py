@@ -79,11 +79,11 @@ def verify_web_data() -> bool:
 
         col_errors = []
         for col in num_cols:
-            if col in df_web_csv.columns:
-                # Handle NaNs safely
-                src_vals = df_src[col].fillna(-999999.0).values
-                csv_vals = df_web_csv[col].fillna(-999999.0).values
-                json_vals = df_web_json[col].fillna(-999999.0).values
+            if col in df_web_csv.columns and col in df_web_json.columns:
+                # Handle NaNs and object dtypes safely across NumPy 1.x and 2.x
+                src_vals = pd.to_numeric(df_src[col], errors="coerce").fillna(-999999.0).to_numpy(dtype=float)
+                csv_vals = pd.to_numeric(df_web_csv[col], errors="coerce").fillna(-999999.0).to_numpy(dtype=float)
+                json_vals = pd.to_numeric(df_web_json[col], errors="coerce").fillna(-999999.0).to_numpy(dtype=float)
 
                 if not np.allclose(src_vals, csv_vals, rtol=1e-4, atol=1e-4):
                     col_errors.append(f"CSV col '{col}' diff")

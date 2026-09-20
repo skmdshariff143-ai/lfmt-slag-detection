@@ -1,4 +1,4 @@
-name: CI Test Suite
+name: CI Test & Verification Suite
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
+  python-test:
+    name: Python Scientific Suite (${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,13 +30,59 @@ jobs:
 
     - name: Run unit test suite
       run: |
-        pytest -v --cov=lfmt --cov-report=xml
+        pytest -v
 
     - name: Run minimal smoke simulation test
       run: |
         python scripts/run_single_case.py --config configs/quick.yaml
 
-    - name: Run quick validation tests
+    - name: Run quick mesh and timestep validation
       run: |
         python scripts/validate_mesh.py --quick
         python scripts/validate_timestep.py --quick
+
+    - name: Run scientific results audit
+      run: |
+        python scripts/audit_conference_results.py
+
+    - name: Run experiment results validation
+      run: |
+        python scripts/validate_experiment_results.py
+
+    - name: Verify web data consistency
+      run: |
+        python scripts/verify_web_data.py
+
+  web-build:
+    name: Next.js Web Portal CI
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        cache-dependency-path: web/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd web
+        npm ci
+
+    - name: TypeScript typecheck
+      run: |
+        cd web
+        npm run typecheck
+
+    - name: ESLint static analysis
+      run: |
+        cd web
+        npm run lint
+
+    - name: Next.js production build
+      run: |
+        cd web
+        npm run build

@@ -33,6 +33,18 @@ export default function ExplorerPage({ searchParams }: Props) {
         </p>
       </div>
 
+      {/* Provenance Notice */}
+      <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 text-xs text-slate-400 space-y-1">
+        <div className="font-semibold text-sky-400 font-mono flex items-center gap-1.5">
+          <span>&bull; Single-Case Representative Inspection Note:</span>
+        </div>
+        <p className="leading-relaxed">
+          The metrics and thermal maps below reflect individual representative runs (deterministic visual noise seed = 42).
+          For statistical benchmark performance across 10 deterministic noise realizations (seeds 1001&ndash;1010) and 4,030 total evaluations,
+          refer to the <a href="/results" className="text-sky-400 hover:underline">Results Overview</a> and <a href="/conference" className="text-sky-400 hover:underline">Conference Dashboard</a>.
+        </p>
+      </div>
+
       {/* Case Selector Grid / Pills */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
         <h2 className="text-sm font-semibold text-slate-300 uppercase tracking-wider font-mono">

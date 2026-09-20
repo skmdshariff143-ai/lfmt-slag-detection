@@ -94,11 +94,13 @@ export default function AboutPage() {
         </h2>
         <ul className="space-y-3 text-sm text-slate-300 list-disc list-inside leading-relaxed">
           <li>
-            <strong className="text-slate-100">PCT Superiority:</strong> Principal Component Thermography (EOF-2) demonstrated the highest overall detection rate (<strong>62.3%</strong>),
-            highest segmentation quality (mean IoU = <strong>0.301</strong>, Dice = <strong>0.395</strong>), and lowest localization error (<strong>1.13 mm</strong>).
+            <strong className="text-slate-100">Matched Filter Leads Detection:</strong> Matched filtering (pulse compression) achieved the highest overall blind detection rate (<strong>33.2%</strong> across 775 defect evaluations), leveraging temporal processing gain under noise.
           </li>
           <li>
-            <strong className="text-slate-100">Zero False Positives:</strong> PCT and SPCT maintained <strong>100% healthy control specificity (0% FPR)</strong> across all noise seeds down to 20 dB SNR.
+            <strong className="text-slate-100">PCT Best Localization:</strong> Principal Component Thermography achieved the highest defect contrast (mean CNR = <strong>2.30</strong>) and lowest centroid localization error among detected cases (<strong>1.13 mm</strong>), with 21.9% overall detection rate.
+          </li>
+          <li>
+            <strong className="text-slate-100">Healthy Specificity:</strong> PCT achieved 100% specificity (0% false alarm rate) only at SNR 30 dB. Most methods exhibit high false positive rates on healthy control plates under other noise conditions, indicating the need for refined thresholding in production use.
           </li>
           <li>
             <strong className="text-slate-100">Depth Limits:</strong> Slag inclusions at depths &le; 0.4 mm are reliably detectable across all noise conditions; defects at depths &ge; 0.8 mm require low-noise environments (SNR &ge; 30 dB).

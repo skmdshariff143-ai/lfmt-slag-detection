@@ -127,8 +127,8 @@ web/
 ## 🔒 Scientific Data Provenance
 
 All data consumed by this web application is statically compiled from the frozen Python research benchmark:
-- Benchmark records: `results/conference/final/conference_benchmark_all_evaluations.csv`
-- Total evaluations: **4,030**
-- Deterministic random seeds: `[42, 123, 456, 789, 101112, 131415, 161718, 192021, 222324, 252627]`
+- Benchmark records: `results/conference/final/raw_results_final.csv`
+- Total evaluations: **4,030** (3,875 defect evaluations across 25 geometries + 155 healthy control evaluations)
+- Deterministic random seeds: `[1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010]`
 - FEM Solver: 3-D transient Galerkin FEM (`scikit-fem`)
 - FDM Solver: 3-D explicit finite difference solver with CFL stability check

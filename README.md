@@ -102,6 +102,55 @@ streamlit run app/dashboard.py
 
 ---
 
+## 🌐 Next.js Conference Web Portal & Presentation Engine
+
+A Next.js 14 App Router presentation portal is located in [`web/`](web/):
+
+- **Conference Presentation Mode (`/conference`):** Fullscreen projector dashboard with dynamic noise toggles, specimen filters, and live metric tables.
+- **Single-Case Defect Explorer (`/explorer`):** Side-by-side post-processing maps across 25 geometries + healthy control under variable AWGN.
+- **Virtual IR Camera Animated Scrubber (`/thermograms`):** 10-second LFMT chirp excitation sequence playback with real-time temperature telemetry HUD.
+- **Zero Runtime Simulation:** Consumes cryptographically locked, pre-compiled JSON summaries (`web/public/data/dataset-lock.json`) exported from the audited 4,030-evaluation FEM benchmark.
+
+### 🚀 Running the Web Portal Locally
+
+```bash
+# Navigate to web application directory
+cd web
+
+# Install dependencies
+npm install
+
+# Launch local development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 📦 Production Build & Verification
+
+```bash
+# Strict TypeScript typecheck
+npm run typecheck
+
+# ESLint static analysis
+npm run lint
+
+# Production compilation (17 routes)
+npm run build
+
+# Start local production server
+npm start
+```
+
+### ☁️ Vercel Deployment
+
+- **Root Directory:** `web`
+- **Framework Preset:** `Next.js`
+- **Build Command:** `next build`
+- **Output Directory:** `.next`
+
+---
+
 ## 📈 Comprehensive Scientific Benchmark (4,030 Evaluations)
 
 Statistically aggregated results across 25 physical defect geometries ($D \in \{4,6,8,10,12\}\text{ mm}$, $z \in \{0.2,0.4,0.6,0.8,1.0\}\text{ mm}$) and 1 healthy control specimen under **Strict Anti-Leakage Blind Mode** with 10 random noise seeds:

@@ -94,8 +94,8 @@ export default function ThermogramsPage() {
         </div>
         <h1 className="text-3xl font-bold text-slate-100">Virtual IR Camera Sequence Scrubber</h1>
         <p className="text-slate-400 text-sm mt-1 max-w-3xl">
-          Observe surface thermal diffusion dynamics on mild steel plates during 10-second LFMT linear frequency sweep
-          (0.1 Hz → 1.0 Hz chirp excitation).
+          Observe transient surface thermal diffusion on mild steel plates across the 10-second LFMT linear frequency sweep
+          (0.05 Hz &rarr; 0.50 Hz chirp excitation over 10.0 s, part of 12.0 s total observation time).
         </p>
       </div>
 

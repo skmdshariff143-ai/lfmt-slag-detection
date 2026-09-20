@@ -1,0 +1,34 @@
+{
+  "dataset_version": "2.1.0-final-audited",
+  "protocol_version": "blind-v2-audited",
+  "git_commit_sha": "53197576af3e8a08e12b4e3dec645eb48819ae44",
+  "source_directory": "results/conference/final",
+  "generated_at_utc": "2026-09-20T04:54:57.536243+00:00",
+  "total_evaluations": 4030,
+  "source_files_sha256": {
+    "raw_results_final.csv": "c5246d83de595d26c3609574a911032fc7ef218dfaf0cf99c18ca253f672a3b2",
+    "summary_by_method_final.csv": "a9d2cdfb71d9b893cebd6c1deb154512060b7f2d7e6e53f514f719e074fa4218",
+    "summary_by_depth_final.csv": "9b18b4e18e64963c43b45d5423a1d5d3ea33ae02b48ec6153e0f756dcb413386",
+    "summary_by_diameter_final.csv": "05944d8e2512cbd713a16b299caa17b218c5f34088f27cb0cefb3533d2328e0c",
+    "summary_by_noise_final.csv": "36a383f5d31d5fda3cff90b821d75ebd08de46403ee5b7ebbe998d38d65c5944",
+    "healthy_specificity_final.csv": "008f470e23f6ede056bab6401c1203c60ed3158eeb92f86aef002b96946effd8",
+    "max_detectable_depth_final.csv": "d927fd2978ef630293366f712bf3baa8e447671b1865a25c514a8417559f8af6",
+    "sensitivity_final.csv": "b5df071c7245270f25f1cc843f4b5efd0ba975acadc74ce442056461a30d1ed4"
+  },
+  "exported_files_sha256": {
+    "summary_by_method.json": "ae4293a0b090174c1800bad701f9c578f24bbd5e831f9da83451edf299118ba8",
+    "summary_by_method.csv": "a4eb2e612f585f234a7c2036c0e8e69c78cea6fcf024447eab188efc8a4131ad",
+    "summary_by_depth.json": "e7ae4e1c819fa917f4f63545495907a00b22a33b5a8dd9dd35427c46724ae2aa",
+    "summary_by_depth.csv": "55f9f93bcc8d1e9af0a6abd2a7ed264909439f25770ab012d58c9b13c3cff63a",
+    "summary_by_diameter.json": "f77cf35e60bf1591c64f3897acc328c92d8cd0d60db25a4b3ccbd4b5b126d011",
+    "summary_by_diameter.csv": "fede83815ce1be412ec219230205bf99d7a342fd3c75dbea6867f110a99739c1",
+    "summary_by_noise.json": "dec13740e57a23a7fa008b361e270947830074bcaa43d5e5dfdac61cdcbb412a",
+    "summary_by_noise.csv": "36a383f5d31d5fda3cff90b821d75ebd08de46403ee5b7ebbe998d38d65c5944",
+    "healthy_specificity.json": "8e312441fc798047987733443ee59ae5048a760d131d4b4f15733dccd0c46806",
+    "healthy_specificity.csv": "008f470e23f6ede056bab6401c1203c60ed3158eeb92f86aef002b96946effd8",
+    "max_detectable_depth.json": "57186454d397abe8cbb726973c4e147cd8a0165c30d632243d76f72e3a56fdfc",
+    "max_detectable_depth.csv": "d927fd2978ef630293366f712bf3baa8e447671b1865a25c514a8417559f8af6",
+    "sensitivity_summary.json": "a1423e197948dc254e5f9fb10e883565504d6d12959c013aa1e186f9fa69e125",
+    "sensitivity_summary.csv": "b5df071c7245270f25f1cc843f4b5efd0ba975acadc74ce442056461a30d1ed4"
+  }
+}

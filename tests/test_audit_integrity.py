@@ -16,7 +16,7 @@ from lfmt.config import LFMTConfig, load_config
 from lfmt.detection import DetectionResult, DefectDetector
 from lfmt.simulation.base import GroundTruth
 from lfmt.metrics import compute_metrics, EvaluationMetrics
-from scripts.run_conference_study import compute_config_hash
+from lfmt.experiments import compute_config_hash
 
 
 def test_metric_localization_nan_on_no_detection():

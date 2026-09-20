@@ -325,3 +325,67 @@ def run_parameter_sweep(
     df_sweep = pd.DataFrame(records)
     df_sweep.to_csv(out_path / "sweep_results.csv", index=False)
     return df_sweep
+
+
+def json_serialize(obj: Any) -> Any:
+    """JSON serializer helper for NumPy data types."""
+    if isinstance(obj, (np.integer, np.int64, np.int32)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, np.float64, np.float32)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, Path):
+        return str(obj)
+    raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+
+def compute_config_hash(cfg: LFMTConfig) -> str:
+    """Compute SHA-256 hash of simulation physics configuration."""
+    mat_base = get_material(cfg.geometry.plate.material)
+    mat_inc = get_material(cfg.geometry.inclusion.material)
+
+    k_base = cfg.geometry.plate.thermal_conductivity if getattr(cfg.geometry.plate, "thermal_conductivity", None) is not None else mat_base.thermal_conductivity
+    rho_base = cfg.geometry.plate.density if getattr(cfg.geometry.plate, "density", None) is not None else mat_base.density
+    cp_base = cfg.geometry.plate.specific_heat if getattr(cfg.geometry.plate, "specific_heat", None) is not None else mat_base.specific_heat
+
+    k_inc = cfg.geometry.inclusion.thermal_conductivity if getattr(cfg.geometry.inclusion, "thermal_conductivity", None) is not None else mat_inc.thermal_conductivity
+    rho_inc = cfg.geometry.inclusion.density if getattr(cfg.geometry.inclusion, "density", None) is not None else mat_inc.density
+    cp_inc = cfg.geometry.inclusion.specific_heat if getattr(cfg.geometry.inclusion, "specific_heat", None) is not None else mat_inc.specific_heat
+
+    d = {
+        "backend": cfg.simulation.backend,
+        "dx": cfg.simulation.spatial_resolution,
+        "dt": cfg.simulation.timestep_s,
+        "t_total": cfg.simulation.total_time_s,
+        "plate": {
+            "l": cfg.geometry.plate.length_mm,
+            "w": cfg.geometry.plate.width_mm,
+            "t": cfg.geometry.plate.thickness_mm,
+            "mat": cfg.geometry.plate.material,
+            "k": k_base,
+            "rho": rho_base,
+            "cp": cp_base,
+        },
+        "inclusion": {
+            "x": cfg.geometry.inclusion.center_x_mm,
+            "y": cfg.geometry.inclusion.center_y_mm,
+            "depth": cfg.geometry.inclusion.depth_mm,
+            "diam": cfg.geometry.inclusion.diameter_mm,
+            "thick": cfg.geometry.inclusion.thickness_mm,
+            "mat": cfg.geometry.inclusion.material,
+            "k": k_inc,
+            "rho": rho_inc,
+            "cp": cp_inc,
+        },
+        "excitation": {
+            "f0": cfg.excitation.f0_hz,
+            "f1": cfg.excitation.f1_hz,
+            "dur": cfg.excitation.duration_s,
+            "q0": cfg.excitation.q0_w_m2,
+            "h_conv": cfg.excitation.h_conv_w_m2k,
+            "t_amb": cfg.excitation.ambient_temp_k,
+        }
+    }
+    return hashlib.sha256(json.dumps(d, sort_keys=True, default=json_serialize).encode("utf-8")).hexdigest()[:16]
+

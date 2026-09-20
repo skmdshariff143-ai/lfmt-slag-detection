@@ -98,9 +98,13 @@ cd lfmt-slag-detection
 pip install -e ".[dev]"
 ```
 
-### 2. Run Single Case (CLI)
+### 2. Run Reproducible Scientific Conference Study (4,030 Evaluations)
 ```bash
-python scripts/run_single_case.py --config configs/quick.yaml --save-plots
+# Run full 10-seed FEM conference study across 25 geometries + healthy control
+python scripts/run_conference_study.py --conference --backend fem --resume
+
+# Validate data integrity, zero NaNs, monotonicity, and 100% healthy specificity
+python scripts/validate_experiment_results.py
 ```
 
 ### 3. Launch Interactive Streamlit Conference Dashboard
@@ -108,14 +112,14 @@ python scripts/run_single_case.py --config configs/quick.yaml --save-plots
 streamlit run app/dashboard.py
 ```
 
-### 4. Run Automated Parameter Sweep
+### 4. Run Single Case (CLI)
 ```bash
-python scripts/run_parameter_sweep.py --quick
+python scripts/run_single_case.py --config configs/quick.yaml --save-plots
 ```
 
-### 5. Generate All 17 Publication Figures
+### 5. Run FDM vs FEM Cross-Validation
 ```bash
-python scripts/generate_conference_figures.py --quick
+python scripts/compare_fdm_fem.py --quick
 ```
 
 ### 6. Run Numerical Validation Studies
@@ -126,17 +130,19 @@ python scripts/validate_timestep.py --quick
 
 ---
 
-## 📈 Performance Summary Benchmark
+## 📈 Comprehensive Scientific Benchmark (4,030 Evaluations)
 
-Representative results for $D = 8.0\text{ mm}$ slag inclusion at $z = 0.4\text{ mm}$ depth under $30\text{ dB}$ AWGN:
+Statistically aggregated results across 25 physical defect geometries ($D \in \{4,6,8,10,12\}\text{ mm}$, $z \in \{0.2,0.4,0.6,0.8,1.0\}\text{ mm}$) and 1 healthy control specimen under **Strict Anti-Leakage Blind Mode** with 10 random noise seeds:
 
-| Processing Method | Detected? | IoU | Dice | CNR | Loc. Error [mm] | Est. Diam [mm] | Runtime [ms] |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Raw Contrast** | NO | 0.00 | 0.00 | 0.4 | 26.33 | 11.39 | 0.4 ms |
-| **Matched Filter (MF)** | **YES** | 0.44 | 0.62 | 3.6 | 2.77 | 12.92 | 2.5 ms |
-| **PCT (Optimal EOF)** | **YES** | **0.53** | **0.70** | **6.0** | **0.39** | 11.79 | 3.7 ms |
-| **SPCT (Sparse PCA)** | **YES** | **0.53** | **0.70** | **6.0** | **0.39** | 11.79 | 1174.9 ms |
-| **RPT (Random Proj.)** | **YES** | 0.20 | 0.33 | 4.1 | 4.00 | 19.26 | 0.9 ms |
+| Processing Method | Overall Detection [%] | Clean Detection [%] | 30 dB SNR Detection [%] | Mean Full-Grid CNR | Mean IoU | Localization Error [mm] | Runtime [ms] | Healthy Specificity [%] |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Matched Filter (MF)** | **33.2%** | **68.0%** | **44.0%** | 1.34 | **0.192** | 24.58 | **8.63** | **100.0%** |
+| **PCT (Optimal EOF)** | **21.9%** | 0.0% | 28.0% | **2.30** | 0.155 | **10.08** | 12.11 | **100.0%** |
+| **RPT (Random Proj.)** | 16.8% | 0.0% | 32.0% | 0.81 | 0.093 | 12.54 | **1.92** | **100.0%** |
+| **SPCT (Sparse PCA)** | 12.9% | 0.0% | 24.0% | 2.11 | 0.068 | 22.15 | 145.17 | **100.0%** |
+| **Raw Contrast** | 0.9% | 28.0% | 0.0% | 0.49 | 0.005 | 25.48 | **0.63** | **100.0%** |
+
+*For complete depth/diameter breakdowns, parameter sensitivity analyses, and failure mode discussions, see [`docs/conference_results.md`](docs/conference_results.md) and [`docs/paper_results_summary.md`](docs/paper_results_summary.md).*
 
 ---
 

@@ -1,0 +1,10 @@
+variation,parameter,percentage_change,peak_contrast_k,pct_cnr,pct_iou,pct_loc_error_mm,is_detected
+Baseline,none,0.0,6.915,2.846,0.0,0.0,False
+Heat Flux q0 -10%,q0,-10.0,6.224,2.846,0.0,0.0,False
+Heat Flux q0 +10%,q0,10.0,7.607,2.846,0.0,0.0,False
+Conductivity k_slag -10%,k_slag,-10.0,6.915,2.846,0.0,0.0,False
+Conductivity k_slag +10%,k_slag,10.0,6.915,2.846,0.0,0.0,False
+Convection h -20%,h_conv,-20.0,6.915,2.846,0.0,0.0,False
+Convection h +20%,h_conv,20.0,6.915,2.846,0.0,0.0,False
+Specific Heat Cp_slag -10%,cp_slag,-10.0,6.915,2.846,0.0,0.0,False
+Specific Heat Cp_slag +10%,cp_slag,10.0,6.915,2.846,0.0,0.0,False

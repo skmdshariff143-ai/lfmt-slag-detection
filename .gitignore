@@ -63,6 +63,8 @@ data/generated/*
 !data/generated/.gitkeep
 results/*
 !results/.gitkeep
+!results/conference/
+!results/conference/**
 results/figures/*
 !results/figures/.gitkeep
 

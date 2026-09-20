@@ -144,8 +144,20 @@ def compute_metrics(
         defect_contrast = 0.0
         cnr = 0.0
 
-    # Defect is successfully detected if detected flag is true and localization error <= true radius
-    is_valid_detection = detection.is_detected and (loc_err_mm <= (true_diam_mm / 2.0 + 3.0))
+    # Defect detection success criteria (Frozen Protocol):
+    # 1. Defect anomaly isolated (is_detected == True, pred_sum >= 3)
+    # 2. Spatial overlap (intersection > 0)
+    # 3. Centroid localization within max(R_true, 5.0 mm)
+    if gt_sum > 0:
+        is_valid_detection = bool(
+            detection.is_detected and
+            (pred_sum >= 3) and
+            (intersection > 0) and
+            (loc_err_mm <= max(true_diam_mm / 2.0, 5.0))
+        )
+    else:
+        # Healthy specimen (0 inclusions)
+        is_valid_detection = False
 
     return EvaluationMetrics(
         method_name=method_name,
@@ -153,14 +165,14 @@ def compute_metrics(
         dice=dice,
         precision=precision,
         recall=recall,
-        localization_error_mm=loc_err_mm,
-        localization_error_px=loc_err_px,
-        true_centroid_mm=(gt_x_mm, gt_y_mm),
+        localization_error_mm=loc_err_mm if gt_sum > 0 else 0.0,
+        localization_error_px=loc_err_px if gt_sum > 0 else 0.0,
+        true_centroid_mm=(gt_x_mm, gt_y_mm) if gt_sum > 0 else (0.0, 0.0),
         predicted_centroid_mm=(pred_x_mm, pred_y_mm),
-        diameter_error_mm=diam_err_mm,
+        diameter_error_mm=diam_err_mm if gt_sum > 0 else float(pred_diam_mm),
         true_diameter_mm=true_diam_mm,
         predicted_diameter_mm=pred_diam_mm,
-        area_error_mm2=area_err_mm2,
+        area_error_mm2=area_err_mm2 if gt_sum > 0 else float(pred_area_mm2),
         true_area_mm2=true_area_mm2,
         predicted_area_mm2=pred_area_mm2,
         cnr=cnr,

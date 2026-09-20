@@ -258,7 +258,8 @@ else:
         "13. Validation",
         "14. Dataset Explorer",
         "15. Export & Figures",
-        "16. Methodology & Math"
+        "16. Methodology & Math",
+        "17. Conference Benchmark"
     ]
 
     tabs = st.tabs(tab_names)
@@ -478,3 +479,40 @@ else:
         #### 6. Random Projection Technique (RPT)
         $$\mathbf{Y} = \mathbf{\Phi} \mathbf{A}, \quad \mathbf{\Phi} \sim \mathcal{N}\left(0, \frac{1}{k}\right)$$
         """)
+
+    # TAB 17: Conference Benchmark
+    with tabs[16]:
+        st.markdown("### 🏆 Statistically Validated Conference Benchmark (4,030 Evaluations)")
+        st.markdown("""
+        Explore precomputed scientific results across 25 physical defect geometries ($D \in [4..12]$ mm, $z \in [0.2..1.0]$ mm)
+        and 1 healthy control specimen ($D=0$ mm), simulated with **scikit-fem 3-D ElementHex1** under strict **anti-leakage blind mode**.
+        """)
+
+        conf_dir = Path("results/conference")
+        if (conf_dir / "summary_by_method.csv").exists():
+            df_m = pd.read_csv(conf_dir / "summary_by_method.csv")
+            st.markdown("#### 📊 Overall Method Performance Summary")
+            st.dataframe(df_m, use_container_width=True, hide_index=True)
+
+            c1, c2 = st.columns(2)
+            with c1:
+                st.markdown("#### 📉 CNR vs Depth")
+                if (conf_dir / "figures" / "fig07_cnr_vs_depth.png").exists():
+                    st.image(str(conf_dir / "figures" / "fig07_cnr_vs_depth.png"), caption="Figure 7: CNR vs Depth")
+            with c2:
+                st.markdown("#### 🎯 Detection Rate vs Depth")
+                if (conf_dir / "figures" / "fig08_detection_rate_vs_depth.png").exists():
+                    st.image(str(conf_dir / "figures" / "fig08_detection_rate_vs_depth.png"), caption="Figure 8: Detection Rate vs Depth")
+
+            c3, c4 = st.columns(2)
+            with c3:
+                st.markdown("#### 📏 Maximum Detectable Depth ($z_{max}$)")
+                if (conf_dir / "figures" / "fig11_max_detectable_depth_vs_diameter.png").exists():
+                    st.image(str(conf_dir / "figures" / "fig11_max_detectable_depth_vs_diameter.png"), caption="Figure 11: z_max vs Diameter")
+            with c4:
+                st.markdown("#### ⏱️ Processing Execution Runtime")
+                if (conf_dir / "figures" / "fig13_processing_runtime_comparison.png").exists():
+                    st.image(str(conf_dir / "figures" / "fig13_processing_runtime_comparison.png"), caption="Figure 13: Computational Runtime")
+        else:
+            st.info("Run `python scripts/run_conference_study.py --conference --backend fem --resume` to compute conference dataset.")
+

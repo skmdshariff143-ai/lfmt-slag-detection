@@ -139,13 +139,6 @@ class DefectDetector:
         # 4. Connected components
         labeled_array, num_features = label(binary_cleaned, structure=struct)
 
-        if num_features == 0 or np.sum(binary_cleaned) < self.min_area_px:
-            # Fallback: Top 1% brightest cluster if Otsu is too conservative
-            fallback_thresh = np.percentile(norm_map, 98.0)
-            binary_cleaned = binary_opening(norm_map >= fallback_thresh, structure=struct)
-            labeled_array, num_features = label(binary_cleaned, structure=struct)
-            thresh = float(fallback_thresh)
-
         # Find largest / most significant component
         best_component_mask = np.zeros((H, W), dtype=bool)
         is_detected = False

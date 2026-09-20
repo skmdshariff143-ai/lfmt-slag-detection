@@ -49,6 +49,9 @@ class RawThermalContrast:
     Thermal Contrast Evaluator.
     """
 
+    def __init__(self, mode: str = "blind"):
+        self.mode = mode.lower().strip()
+
     def process(
         self,
         thermograms: np.ndarray,
@@ -61,7 +64,7 @@ class RawThermalContrast:
         Args:
             thermograms: 3D array (n_frames, H, W).
             time_vector: 1D time array (n_frames,).
-            ground_truth_mask: Optional 2D boolean mask of defect area.
+            ground_truth_mask: Optional 2D boolean mask. ONLY used if mode == 'oracle'.
 
         Returns:
             RawContrastResult instance.
@@ -69,38 +72,42 @@ class RawThermalContrast:
         start_t = time.perf_counter()
         n_frames, H, W = thermograms.shape
 
-        if ground_truth_mask is not None and np.any(ground_truth_mask) and np.any(~ground_truth_mask):
+        if self.mode == "oracle" and ground_truth_mask is not None and np.any(ground_truth_mask) and np.any(~ground_truth_mask):
             defect_mask = ground_truth_mask
-            # Sound mask: perimeter / corners far from defect
             sound_mask = ~defect_mask
+            t_defect = np.mean(thermograms[:, defect_mask], axis=1)  # (n_frames,)
+            t_sound = np.mean(thermograms[:, sound_mask], axis=1)    # (n_frames,)
+            delta_t = t_defect - t_sound
+            peak_idx = int(np.argmax(np.abs(delta_t)))
+            max_contrast = float(np.abs(delta_t[peak_idx]))
+            t_peak = float(time_vector[peak_idx])
+            sound_baseline_at_peak = float(np.mean(thermograms[peak_idx, sound_mask]))
+            contrast_map = thermograms[peak_idx] - sound_baseline_at_peak
         else:
-            # Blind automatic estimation: center region vs perimeter
-            y_c, x_c = H // 2, W // 2
-            r = min(H, W) // 8
-            Y, X = np.ogrid[:H, :W]
-            defect_mask = ((Y - y_c)**2 + (X - x_c)**2) <= r**2
-            sound_mask = ~defect_mask
+            # Blind mode: purely data-driven without spatial assumptions
+            # Find frame with maximum spatial standard deviation / non-uniformity
+            spatial_stds = np.std(thermograms, axis=(1, 2))
+            peak_idx = int(np.argmax(spatial_stds))
+            t_peak = float(time_vector[peak_idx])
+            
+            # Baseline is spatial median of peak frame
+            frame_peak = thermograms[peak_idx]
+            sound_baseline_at_peak = float(np.median(frame_peak))
+            contrast_map = frame_peak - sound_baseline_at_peak
+            
+            # Global mean temperature temporal curves
+            t_sound = np.mean(thermograms, axis=(1, 2))
+            t_defect = np.max(thermograms, axis=(1, 2))
+            delta_t = t_defect - t_sound
+            max_contrast = float(np.max(spatial_stds))
 
-        # Compute average temporal curves
-        t_defect = np.mean(thermograms[:, defect_mask], axis=1)  # (n_frames,)
-        t_sound = np.mean(thermograms[:, sound_mask], axis=1)    # (n_frames,)
-
-        delta_t = t_defect - t_sound
         eps = 1e-6
         norm_contrast = delta_t / (np.abs(t_sound) + eps)
-
-        # Peak contrast identification
-        peak_idx = int(np.argmax(np.abs(delta_t)))
-        max_contrast = float(np.abs(delta_t[peak_idx]))
-        t_peak = float(time_vector[peak_idx])
-
-        # Contrast spatial map at peak frame: T(t_peak, y, x) - mean(T_sound(t_peak))
-        sound_baseline_at_peak = float(np.mean(thermograms[peak_idx, sound_mask]))
-        contrast_map = thermograms[peak_idx] - sound_baseline_at_peak
 
         elapsed = time.perf_counter() - start_t
 
         metadata = {
+            "mode": self.mode,
             "peak_frame": peak_idx,
             "peak_time_s": t_peak,
             "max_delta_T_k": max_contrast,

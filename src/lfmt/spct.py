@@ -49,15 +49,19 @@ class SparsePrincipalComponentThermography:
         self,
         n_components: int = 6,
         alpha: float = 0.05,
-        max_iter: int = 200,
+        max_iter: int = 40,
+        tol: float = 1e-2,
         random_state: int = 42,
-        use_minibatch: bool = False
+        use_minibatch: bool = False,
+        mode: str = "blind"
     ):
         self.n_components = n_components
         self.alpha = alpha
         self.max_iter = max_iter
+        self.tol = tol
         self.random_state = random_state
         self.use_minibatch = use_minibatch
+        self.mode = mode.lower().strip()
 
     def process(
         self,
@@ -69,7 +73,7 @@ class SparsePrincipalComponentThermography:
 
         Args:
             thermograms: 3D array of shape (n_frames, H, W).
-            ground_truth_mask: Optional 2D boolean mask for ground-truth-guided component selection.
+            ground_truth_mask: Optional 2D boolean mask. ONLY used if mode == 'oracle'.
 
         Returns:
             SPCTResult object.
@@ -91,6 +95,7 @@ class SparsePrincipalComponentThermography:
                 n_components=n_comp,
                 alpha=self.alpha,
                 max_iter=self.max_iter,
+                tol=self.tol,
                 random_state=self.random_state,
                 batch_size=min(32, n_frames)
             )
@@ -99,6 +104,7 @@ class SparsePrincipalComponentThermography:
                 n_components=n_comp,
                 alpha=self.alpha,
                 max_iter=self.max_iter,
+                tol=self.tol,
                 random_state=self.random_state,
                 method="cd"
             )
@@ -114,17 +120,25 @@ class SparsePrincipalComponentThermography:
             for i in range(n_comp)
         ])
 
-        # 5. Select best component
-        best_idx = self._select_best_component(sparse_images, ground_truth_mask)
-        selected_image = sparse_images[best_idx]
-
-        # Polarity correction
-        if ground_truth_mask is not None and np.any(ground_truth_mask):
+        # 5. Select component and fix polarity
+        if self.mode == "oracle" and ground_truth_mask is not None and np.any(ground_truth_mask):
+            best_idx = self._select_best_component_oracle(sparse_images, ground_truth_mask)
+            selected_image = sparse_images[best_idx]
             defect_mean = np.mean(selected_image[ground_truth_mask])
             sound_mean = np.mean(selected_image[~ground_truth_mask])
             if defect_mean < sound_mean:
                 selected_image = -selected_image
                 sparse_images[best_idx] = selected_image
+            selection_method = "oracle_contrast"
+        else:
+            best_idx = self._select_best_component_blind(sparse_images)
+            selected_image = sparse_images[best_idx]
+            img_norm = (selected_image - np.mean(selected_image)) / (np.std(selected_image) + 1e-12)
+            skewness = float(np.mean(img_norm ** 3))
+            if skewness < 0:
+                selected_image = -selected_image
+                sparse_images[best_idx] = selected_image
+            selection_method = "blind_peak_to_background"
 
         elapsed = time.perf_counter() - start_t
 
@@ -134,6 +148,9 @@ class SparsePrincipalComponentThermography:
             "max_iter": self.max_iter,
             "n_components": n_comp,
             "use_minibatch": self.use_minibatch,
+            "selection_mode": self.mode,
+            "selection_method": selection_method,
+            "selected_component": best_idx + 1,
             "runtime_s": elapsed,
         }
 
@@ -148,24 +165,24 @@ class SparsePrincipalComponentThermography:
             metadata=metadata
         )
 
-    def _select_best_component(
-        self,
-        sparse_images: np.ndarray,
-        ground_truth_mask: Optional[np.ndarray]
-    ) -> int:
-        """Select component with strongest defect contrast or highest kurtosis."""
+    def _select_best_component_blind(self, sparse_images: np.ndarray) -> int:
+        """Blind selection by peak-to-background anomaly ratio."""
         n_comp = sparse_images.shape[0]
-
-        if ground_truth_mask is not None and np.any(ground_truth_mask) and np.any(~ground_truth_mask):
-            contrasts = [
-                abs(np.mean(sparse_images[i][ground_truth_mask]) - np.mean(sparse_images[i][~ground_truth_mask]))
-                for i in range(n_comp)
-            ]
-            return int(np.argmax(contrasts))
-
-        # Blind selection by peak-to-background ratio
         scores = []
         for i in range(n_comp):
             img = sparse_images[i]
             scores.append(np.max(np.abs(img)) / (np.std(img) + 1e-12))
         return int(np.argmax(scores))
+
+    def _select_best_component_oracle(
+        self,
+        sparse_images: np.ndarray,
+        ground_truth_mask: np.ndarray
+    ) -> int:
+        """Oracle selection using ground truth contrast."""
+        n_comp = sparse_images.shape[0]
+        contrasts = [
+            abs(np.mean(sparse_images[i][ground_truth_mask]) - np.mean(sparse_images[i][~ground_truth_mask]))
+            for i in range(n_comp)
+        ]
+        return int(np.argmax(contrasts))

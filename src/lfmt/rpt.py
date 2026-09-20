@@ -50,11 +50,13 @@ class RandomProjectionTechnique:
         self,
         n_components: int = 6,
         matrix_type: str = "gaussian",
-        random_state: int = 42
+        random_state: int = 42,
+        mode: str = "blind"
     ):
         self.n_components = n_components
         self.matrix_type = matrix_type.lower().strip()
         self.random_state = random_state
+        self.mode = mode.lower().strip()
 
     def process(
         self,
@@ -66,7 +68,7 @@ class RandomProjectionTechnique:
 
         Args:
             thermograms: 3D array (n_frames, H, W).
-            ground_truth_mask: Optional 2D boolean mask for component selection.
+            ground_truth_mask: Optional 2D boolean mask. ONLY used if mode == 'oracle'.
 
         Returns:
             RPTResult object.
@@ -76,7 +78,6 @@ class RandomProjectionTechnique:
         n_comp = min(self.n_components, n_frames - 1, H * W)
 
         # 1. Unfold 3D tensor to (n_pixels, n_frames) for projection across temporal features
-        # Note: Each pixel is a sample in R^{N_t} feature space
         A_pixels = thermograms.reshape(n_frames, H * W).T  # shape: (n_pixels, n_frames)
 
         # Mean-center temporal curves
@@ -101,17 +102,25 @@ class RandomProjectionTechnique:
         projected_T = projected.T  # (n_comp, n_pixels)
         proj_images = projected_T.reshape(n_comp, H, W)
 
-        # 3. Select best component
-        best_idx = self._select_best_component(proj_images, ground_truth_mask)
-        selected_image = proj_images[best_idx]
-
-        # Polarity check
-        if ground_truth_mask is not None and np.any(ground_truth_mask):
+        # 3. Component selection and polarity
+        if self.mode == "oracle" and ground_truth_mask is not None and np.any(ground_truth_mask):
+            best_idx = self._select_best_component_oracle(proj_images, ground_truth_mask)
+            selected_image = proj_images[best_idx]
             defect_mean = np.mean(selected_image[ground_truth_mask])
             sound_mean = np.mean(selected_image[~ground_truth_mask])
             if defect_mean < sound_mean:
                 selected_image = -selected_image
                 proj_images[best_idx] = selected_image
+            selection_method = "oracle_contrast"
+        else:
+            best_idx = self._select_best_component_blind(proj_images)
+            selected_image = proj_images[best_idx]
+            img_norm = (selected_image - np.mean(selected_image)) / (np.std(selected_image) + 1e-12)
+            skewness = float(np.mean(img_norm ** 3))
+            if skewness < 0:
+                selected_image = -selected_image
+                proj_images[best_idx] = selected_image
+            selection_method = "blind_dynamic_range"
 
         elapsed = time.perf_counter() - start_t
         comp_ratio = float(n_frames) / float(n_comp) if n_comp > 0 else 1.0
@@ -122,6 +131,9 @@ class RandomProjectionTechnique:
             "original_dim": n_frames,
             "projected_dim": n_comp,
             "compression_ratio": comp_ratio,
+            "selection_mode": self.mode,
+            "selection_method": selection_method,
+            "selected_component": best_idx + 1,
             "runtime_s": elapsed,
         }
 
@@ -136,20 +148,21 @@ class RandomProjectionTechnique:
             metadata=metadata
         )
 
-    def _select_best_component(
-        self,
-        proj_images: np.ndarray,
-        ground_truth_mask: Optional[np.ndarray]
-    ) -> int:
+    def _select_best_component_blind(self, proj_images: np.ndarray) -> int:
+        """Blind selection by maximum dynamic range / kurtosis."""
         n_comp = proj_images.shape[0]
-
-        if ground_truth_mask is not None and np.any(ground_truth_mask) and np.any(~ground_truth_mask):
-            contrasts = [
-                abs(np.mean(proj_images[i][ground_truth_mask]) - np.mean(proj_images[i][~ground_truth_mask]))
-                for i in range(n_comp)
-            ]
-            return int(np.argmax(contrasts))
-
-        # Blind selection: maximum variance / dynamic range
         ranges = [np.ptp(proj_images[i]) for i in range(n_comp)]
         return int(np.argmax(ranges))
+
+    def _select_best_component_oracle(
+        self,
+        proj_images: np.ndarray,
+        ground_truth_mask: np.ndarray
+    ) -> int:
+        """Oracle selection using ground truth contrast."""
+        n_comp = proj_images.shape[0]
+        contrasts = [
+            abs(np.mean(proj_images[i][ground_truth_mask]) - np.mean(proj_images[i][~ground_truth_mask]))
+            for i in range(n_comp)
+        ]
+        return int(np.argmax(contrasts))

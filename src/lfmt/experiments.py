@@ -193,10 +193,10 @@ class LFMTExperimentPipeline:
             min_area_px=config.processing.detection.min_area_px
         )
 
-        # 4. Processing Methods
+        # 4. Processing Methods (STRICT BLIND MODE - NO GROUND TRUTH LEAKAGE)
         # Method 1: Raw Thermal Contrast
-        contrast_engine = RawThermalContrast()
-        res_contrast = contrast_engine.process(capture_noisy.thermograms, capture_noisy.time_vector, ground_truth_mask=gt_mask)
+        contrast_engine = RawThermalContrast(mode="blind")
+        res_contrast = contrast_engine.process(capture_noisy.thermograms, capture_noisy.time_vector)
         det_contrast = detector.detect(res_contrast.contrast_map, fov_mm=fov)
         met_contrast = compute_metrics("Raw Contrast", det_contrast, gt, gt_mask, res_contrast.contrast_map, res_contrast.runtime_seconds, fov)
         bundle_contrast = MethodExecutionBundle("Raw Contrast", res_contrast.contrast_map, det_contrast, met_contrast, res_contrast)
@@ -215,33 +215,36 @@ class LFMTExperimentPipeline:
         met_mf = compute_metrics("Matched Filter", det_mf, gt, gt_mask, res_mf.normalized_map, res_mf.runtime_seconds, fov)
         bundle_mf = MethodExecutionBundle("Matched Filter", res_mf.normalized_map, det_mf, met_mf, res_mf)
 
-        # Method 3: PCT
+        # Method 3: PCT (Blind Excess Kurtosis)
         pct_engine = PrincipalComponentThermography(
             n_components=config.processing.pct.n_components,
-            selection_criterion=config.processing.pct.selection_criterion
+            selection_criterion=config.processing.pct.selection_criterion,
+            mode="blind"
         )
-        res_pct = pct_engine.process(capture_noisy.thermograms, ground_truth_mask=gt_mask)
+        res_pct = pct_engine.process(capture_noisy.thermograms)
         det_pct = detector.detect(res_pct.selected_eof_image, fov_mm=fov)
         met_pct = compute_metrics("PCT", det_pct, gt, gt_mask, res_pct.selected_eof_image, res_pct.runtime_seconds, fov)
         bundle_pct = MethodExecutionBundle("PCT", res_pct.selected_eof_image, det_pct, met_pct, res_pct)
 
-        # Method 4: SPCT
+        # Method 4: SPCT (Blind Anomaly Ratio)
         spct_engine = SparsePrincipalComponentThermography(
             n_components=config.processing.spct.n_components,
             alpha=config.processing.spct.alpha,
-            max_iter=config.processing.spct.max_iter
+            max_iter=config.processing.spct.max_iter,
+            mode="blind"
         )
-        res_spct = spct_engine.process(capture_noisy.thermograms, ground_truth_mask=gt_mask)
+        res_spct = spct_engine.process(capture_noisy.thermograms)
         det_spct = detector.detect(res_spct.selected_sparse_image, fov_mm=fov)
         met_spct = compute_metrics("SPCT", det_spct, gt, gt_mask, res_spct.selected_sparse_image, res_spct.runtime_seconds, fov)
         bundle_spct = MethodExecutionBundle("SPCT", res_spct.selected_sparse_image, det_spct, met_spct, res_spct)
 
-        # Method 5: RPT
+        # Method 5: RPT (Blind Dynamic Range)
         rpt_engine = RandomProjectionTechnique(
             n_components=config.processing.rpt.n_components,
-            matrix_type=config.processing.rpt.matrix_type
+            matrix_type=config.processing.rpt.matrix_type,
+            mode="blind"
         )
-        res_rpt = rpt_engine.process(capture_noisy.thermograms, ground_truth_mask=gt_mask)
+        res_rpt = rpt_engine.process(capture_noisy.thermograms)
         det_rpt = detector.detect(res_rpt.selected_rpt_image, fov_mm=fov)
         met_rpt = compute_metrics("RPT", det_rpt, gt, gt_mask, res_rpt.selected_rpt_image, res_rpt.runtime_seconds, fov)
         bundle_rpt = MethodExecutionBundle("RPT", res_rpt.selected_rpt_image, det_rpt, met_rpt, res_rpt)

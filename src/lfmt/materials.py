@@ -140,12 +140,28 @@ MATERIAL_DATABASE: Dict[str, Material] = {
 }
 
 
+ALIASES: Dict[str, str] = {
+    "mild_steel_1018": "mild_steel",
+    "aisi_1018": "mild_steel",
+    "steel": "mild_steel",
+    "welding_slag": "slag",
+    "welding_slag_silicate": "slag",
+    "silicate_slag": "slag",
+    "slag_silicate": "slag",
+    "air": "air_cavity",
+    "void": "air_cavity",
+    "ss304": "stainless_steel_304",
+    "slag_high_tio2": "slag_placeholder_variant",
+    "high_tio2": "slag_placeholder_variant"
+}
+
+
 def get_material(identifier: str) -> Material:
     """
-    Retrieve material by key name or case-insensitive search.
+    Retrieve material by key name, alias, or case-insensitive search.
 
     Args:
-        identifier: Key name (e.g. 'mild_steel', 'slag') or full name.
+        identifier: Key name (e.g. 'mild_steel', 'slag', 'welding_slag_silicate') or full name.
 
     Returns:
         Material dataclass instance.
@@ -153,7 +169,8 @@ def get_material(identifier: str) -> Material:
     Raises:
         KeyError: If material is not found in database.
     """
-    key = identifier.strip().lower().replace(" ", "_").replace("-", "_")
+    clean_id = identifier.strip().lower().replace(" ", "_").replace("-", "_")
+    key = ALIASES.get(clean_id, clean_id)
     if key in MATERIAL_DATABASE:
         return MATERIAL_DATABASE[key]
 
@@ -161,5 +178,5 @@ def get_material(identifier: str) -> Material:
         if identifier.lower() in mat.name.lower() or k == key:
             return mat
 
-    available = ", ".join(list(MATERIAL_DATABASE.keys()))
+    available = ", ".join(list(MATERIAL_DATABASE.keys()) + list(ALIASES.keys()))
     raise KeyError(f"Material '{identifier}' not found. Available materials: {available}")

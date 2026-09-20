@@ -1,20 +1,88 @@
 """
-Noise Injection & Degradation Models for Infrared Thermography.
+Noise Injection & Degradation Models for Infrared Thermography (Research V2).
 
 Supports:
 - Additive White Gaussian Noise (AWGN) at specified SNR (30 dB, 25 dB, 20 dB)
-- Spatially varying emissivity and surface roughness artifacts
-- Non-uniform optical heating patterns (Gaussian roll-off)
-- Fixed-pattern camera sensor noise and quantization
+- Post-injection measured SNR verification (baseline-subtracted AC power)
+- Radiance-domain emissivity and surface reflections
+- Physical Focal Plane Array (FPA) noise: NETD, Fixed-Pattern Noise, Optical PSF blur, ADC quantization, Sensor Drift
+- Three clean presets: IDEAL, CONTROLLED_AWGN, REALISTIC_CAMERA_NOISE
 - Fully deterministic reproducible seeding
 """
 
 from __future__ import annotations
 import math
-from typing import Optional, Tuple
+from enum import Enum
+from typing import Optional, Tuple, Dict, Any, Union
 import numpy as np
+from scipy.ndimage import gaussian_filter
 
-from lfmt.config import NoiseConfig
+from lfmt.config import NoiseConfig, CameraConfig
+
+
+class CameraNoisePreset(str, Enum):
+    IDEAL = "IDEAL"
+    CONTROLLED_AWGN = "CONTROLLED_AWGN"
+    REALISTIC_CAMERA_NOISE = "REALISTIC_CAMERA_NOISE"
+
+
+def add_thermal_camera_noise(
+    tensor_k: np.ndarray,
+    snr_db: Optional[float] = 30.0,
+    preset: Union[CameraNoisePreset, str] = CameraNoisePreset.CONTROLLED_AWGN,
+    emissivity: float = 0.95,
+    emissivity_variation: float = 0.005,
+    ambient_temp_k: float = 293.15,
+    use_radiance_emissivity: bool = True,
+    seed: int = 42
+) -> Tuple[np.ndarray, float]:
+    """
+    Convenience wrapper to degrade thermal sequence and return (noisy_tensor, actual_snr_db).
+    """
+    preset_str = preset.value if isinstance(preset, CameraNoisePreset) else str(preset)
+    noisy = tensor_k.copy()
+
+    if preset_str != "IDEAL":
+        if emissivity_variation > 0:
+            if use_radiance_emissivity:
+                noisy = add_radiance_emissivity_variation(
+                    noisy,
+                    base_emissivity=emissivity,
+                    variation_std=emissivity_variation,
+                    t_ambient_k=ambient_temp_k,
+                    seed=seed
+                )
+            else:
+                rng = np.random.default_rng(seed)
+                H, W = noisy.shape[1], noisy.shape[2]
+                emissivity_map = 1.0 + rng.normal(0.0, emissivity_variation, size=(1, H, W))
+                noisy = noisy * emissivity_map
+
+        if snr_db is not None:
+            noisy = add_awgn_noise(noisy, snr_db=snr_db, seed=seed)
+
+    actual_snr = measure_actual_snr_db(tensor_k, noisy)
+    return noisy, actual_snr
+
+
+
+def measure_actual_snr_db(clean_tensor: np.ndarray, noisy_tensor: np.ndarray) -> float:
+    """
+    Measure actual post-injection SNR in decibels on the baseline-subtracted dynamic AC signal.
+    """
+    # Dynamic AC signal power (subtract spatial-temporal mean to isolate modulation)
+    clean_ac = clean_tensor - np.mean(clean_tensor)
+    signal_power = np.mean(clean_ac ** 2)
+
+    noise_residual = noisy_tensor - clean_tensor
+    noise_power = np.mean(noise_residual ** 2)
+
+    if noise_power < 1e-15:
+        return float("inf")
+    if signal_power < 1e-15:
+        return 0.0
+
+    return float(10.0 * np.log10(signal_power / noise_power))
 
 
 def add_awgn_noise(
@@ -24,29 +92,18 @@ def add_awgn_noise(
 ) -> np.ndarray:
     """
     Inject Additive White Gaussian Noise (AWGN) based on signal AC dynamic power.
-
-    Args:
-        tensor: Thermogram tensor of shape (n_frames, H, W).
-        snr_db: Target Signal-to-Noise Ratio in decibels (e.g. 30, 25, 20). If None, returns copy.
-        seed: Random seed for deterministic reproducibility.
-
-    Returns:
-        Noisy thermogram tensor with identical shape.
     """
     if snr_db is None:
         return tensor.copy()
 
     rng = np.random.default_rng(seed)
     # Calculate temporal AC signal variance across entire sequence
-    # Subtract global baseline / mean to measure dynamic modulated signal power
-    signal_ac = tensor - np.mean(tensor)
-    signal_power = np.mean(signal_ac ** 2)
+    clean_ac = tensor - np.mean(tensor)
+    signal_power = np.mean(clean_ac ** 2)
 
     if signal_power < 1e-12:
         return tensor.copy()
 
-    # Noise power: SNR_dB = 10 * log10(P_signal / P_noise)
-    # => P_noise = P_signal / 10^(SNR_dB / 10)
     noise_power = signal_power / (10.0 ** (snr_db / 10.0))
     noise_std = math.sqrt(noise_power)
 
@@ -54,70 +111,137 @@ def add_awgn_noise(
     return tensor + noise
 
 
-def add_surface_emissivity_variation(
-    tensor: np.ndarray,
-    variation_fraction: float = 0.01,
+def add_radiance_emissivity_variation(
+    tensor_k: np.ndarray,
+    base_emissivity: float = 0.95,
+    variation_std: float = 0.005,
+    t_ambient_k: float = 293.15,
     seed: int | None = 42
 ) -> np.ndarray:
     """
-    Apply spatial surface emissivity non-uniformity (spatial multiplicative noise).
+    Apply physical radiance-level emissivity variations (Stefan-Boltzmann L ~ epsilon * T^4 + (1 - epsilon)*T_amb^4).
     """
-    if variation_fraction <= 0.0:
-        return tensor.copy()
+    if variation_std <= 0.0 and base_emissivity >= 0.999:
+        return tensor_k.copy()
 
     rng = np.random.default_rng(seed)
-    H, W = tensor.shape[1], tensor.shape[2]
-    # Spatial emissivity pattern centered at 1.0
-    emissivity_map = 1.0 + rng.normal(0.0, variation_fraction, size=(1, H, W))
-    return tensor * emissivity_map
+    H, W = tensor_k.shape[1], tensor_k.shape[2]
+    
+    eps_map = np.clip(
+        rng.normal(base_emissivity, variation_std, size=(1, H, W)),
+        0.50,
+        1.0
+    )
+
+    # Measured radiance L = eps * T^4 + (1 - eps) * T_amb^4
+    L_meas = eps_map * (tensor_k ** 4) + (1.0 - eps_map) * (t_ambient_k ** 4)
+    # Apparent radiometric temperature
+    T_apparent = (L_meas / eps_map) ** 0.25
+    return T_apparent
 
 
-def add_nonuniform_heating(
-    tensor: np.ndarray,
-    roll_off: float = 0.05
+def add_realistic_fpa_camera_noise(
+    tensor_k: np.ndarray,
+    netd_k: float = 0.025,
+    psf_sigma_px: float = 0.5,
+    fpn_factor: float = 0.002,
+    adc_bits: int = 14,
+    drift_rate_k_per_s: float = 0.001,
+    time_vector: Optional[np.ndarray] = None,
+    seed: int | None = 42
 ) -> np.ndarray:
     """
-    Simulate non-uniform heating distribution (e.g., Gaussian center bias from flash/halogen lamps).
+    Simulate realistic Focal Plane Array (FPA) camera sensor physics.
     """
-    if roll_off <= 0.0:
-        return tensor.copy()
+    rng = np.random.default_rng(seed)
+    n_frames, H, W = tensor_k.shape
+    noisy = tensor_k.copy()
 
-    H, W = tensor.shape[1], tensor.shape[2]
-    y = np.linspace(-1.0, 1.0, H)
-    x = np.linspace(-1.0, 1.0, W)
-    X, Y = np.meshgrid(x, y)
-    R_sq = X**2 + Y**2
-    # Center-biased heating field
-    heating_profile = (1.0 - roll_off * R_sq)[np.newaxis, :, :]
+    # 1. Optical Point Spread Function (PSF) spatial blur
+    if psf_sigma_px > 0:
+        for k in range(n_frames):
+            noisy[k] = gaussian_filter(noisy[k], sigma=psf_sigma_px, mode="nearest")
 
-    # Modulate thermal rise above ambient
-    T_min = np.min(tensor)
-    T_rise = tensor - T_min
-    return T_min + T_rise * heating_profile
+    # 2. Fixed-Pattern Noise (FPN) gain and offset spatial nonuniformity
+    if fpn_factor > 0:
+        gain_fpn = 1.0 + rng.normal(0.0, fpn_factor, size=(1, H, W))
+        offset_fpn = rng.normal(0.0, netd_k * 0.5, size=(1, H, W))
+        noisy = noisy * gain_fpn + offset_fpn
+
+    # 3. Temporal NETD Gaussian noise
+    if netd_k > 0:
+        temporal_noise = rng.normal(0.0, netd_k, size=noisy.shape)
+        noisy = noisy + temporal_noise
+
+    # 4. Slow temporal sensor drift
+    if drift_rate_k_per_s > 0 and time_vector is not None:
+        drift = (drift_rate_k_per_s * time_vector)[:, np.newaxis, np.newaxis]
+        noisy = noisy + drift
+
+    # 5. ADC Quantization
+    if adc_bits > 0:
+        t_min = np.min(noisy)
+        t_max = np.max(noisy)
+        span = max(1e-3, t_max - t_min)
+        q_levels = 2 ** adc_bits
+        noisy = t_min + np.round((noisy - t_min) / span * (q_levels - 1)) * (span / (q_levels - 1))
+
+    return noisy
 
 
 def apply_noise_pipeline(
     tensor: np.ndarray,
-    config: NoiseConfig
+    config: NoiseConfig,
+    camera_config: Optional[CameraConfig] = None,
+    time_vector: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """
-    Execute full configured noise degradation pipeline.
+    Execute configured noise degradation pipeline supporting V1 & Research V2 presets.
     """
+    preset = getattr(config, "preset", "CONTROLLED_AWGN")
+
+    if preset == "IDEAL":
+        return tensor.copy()
+
     noisy = tensor.copy()
 
+    # Emissivity degradation
     if config.emissivity_variation > 0:
-        noisy = add_surface_emissivity_variation(
+        emissivity_model = getattr(camera_config, "emissivity_model", "simplified_kelvin_v1") if camera_config else "simplified_kelvin_v1"
+        if emissivity_model == "radiance_planck_v2":
+            noisy = add_radiance_emissivity_variation(
+                noisy,
+                base_emissivity=0.95,
+                variation_std=config.emissivity_variation,
+                seed=config.seed
+            )
+        else:
+            # V1 simplified legacy
+            rng = np.random.default_rng(config.seed)
+            H, W = noisy.shape[1], noisy.shape[2]
+            emissivity_map = 1.0 + rng.normal(0.0, config.emissivity_variation, size=(1, H, W))
+            noisy = noisy * emissivity_map
+
+    # Realistic Camera Noise Mode
+    if preset == "REALISTIC_CAMERA_NOISE" and camera_config is not None:
+        netd_k = getattr(camera_config, "netd_mK", 25.0) * 1e-3
+        psf = getattr(camera_config, "psf_sigma_px", 0.5)
+        fpn = getattr(camera_config, "fpn_factor", 0.002)
+        bits = getattr(camera_config, "adc_bits", 14)
+        drift = getattr(camera_config, "drift_rate_k_per_s", 0.001)
+
+        noisy = add_realistic_fpa_camera_noise(
             noisy,
-            variation_fraction=config.emissivity_variation,
+            netd_k=netd_k,
+            psf_sigma_px=psf,
+            fpn_factor=fpn,
+            adc_bits=bits,
+            drift_rate_k_per_s=drift,
+            time_vector=time_vector,
             seed=config.seed
         )
 
-    if config.spatial_nonuniformity > 0:
-        noisy = add_nonuniform_heating(
-            noisy,
-            roll_off=config.spatial_nonuniformity
-        )
-
+    # AWGN Noise Injection
     if config.snr_db is not None:
         noisy = add_awgn_noise(
             noisy,

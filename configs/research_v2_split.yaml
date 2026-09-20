@@ -1,0 +1,36 @@
+# ==============================================================================
+# RESEARCH V2 DATASET & HYPERPARAMETER SPLIT CONFIGURATION
+# Physical-case-level partitioning ensuring zero noise or geometry leakage
+# ==============================================================================
+
+split_metadata:
+  protocol: "physical_geometry_held_out"
+  created_at_utc: "2026-09-20T13:20:00Z"
+  version: "research_v2_split_1.0"
+
+# Development / Tuning Set: For algorithmic design, lag windows, kernel size calibration
+development_set:
+  description: "Moderate size/depth geometries for parameter exploration and kernel calibration"
+  cases:
+    - { diameter_mm: 8.0, depth_mm: 0.4, shape: "cylinder" }
+    - { diameter_mm: 6.0, depth_mm: 0.2, shape: "cylinder" }
+    - { diameter_mm: 10.0, depth_mm: 0.6, shape: "cylinder" }
+    - { diameter_mm: 8.0, depth_mm: 0.6, shape: "ellipse" }
+
+# Validation Set: For blind component threshold selection and ROC operating point tuning
+validation_set:
+  description: "Intermediate and edge-case geometries for validation without test leakage"
+  cases:
+    - { diameter_mm: 4.0, depth_mm: 0.2, shape: "cylinder" }
+    - { diameter_mm: 12.0, depth_mm: 0.8, shape: "cylinder" }
+    - { diameter_mm: 6.0, depth_mm: 0.4, shape: "cylinder" }
+    - { diameter_mm: 8.0, depth_mm: 0.4, shape: "irregular" }
+    - { diameter_mm: 0.0, depth_mm: 0.0, shape: "healthy_control" }
+
+# Final Held-Out Test Set: Strictly evaluated once without iterative tuning
+held_out_test_set:
+  description: "Full orthogonal grid for unbiased statistical benchmarking"
+  diameters_mm: [4.0, 6.0, 8.0, 10.0, 12.0]
+  depths_mm: [0.2, 0.4, 0.6, 0.8, 1.0]
+  shapes: ["cylinder", "ellipse", "irregular"]
+  noise_levels_db: [30.0, 25.0, 20.0, null]

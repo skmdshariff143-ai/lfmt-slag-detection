@@ -181,12 +181,12 @@ class FEMBackend(ThermalSimulationBackend):
         nz = config.simulation.spatial_resolution.get("nz", 12)
 
         if mode_str in ("adaptive_tensor", "fine", "very_fine") and inc.diameter_mm > 0:
-            target_diam = getattr(mesh_mode, "target_elements_across_diameter", 8)
-            target_depth = getattr(mesh_mode, "target_elements_through_depth", 4)
+            target_diam = getattr(mesh_mode, "target_elements_across_diameter", 12)
+            target_depth = getattr(mesh_mode, "target_elements_through_depth", 5)
 
-            x_nodes = generate_graded_1d_nodes(L_x, c_x, radius_m, target_diam, nx // 4)
-            y_nodes = generate_graded_1d_nodes(L_y, c_y, radius_m, target_diam, ny // 4)
-            z_nodes = generate_graded_z_nodes(L_z, d_top, thickness_m, target_depth, 3, nz // 3)
+            x_nodes = generate_graded_1d_nodes(L_x, c_x, radius_m, target_diam, max(6, nx // 4))
+            y_nodes = generate_graded_1d_nodes(L_y, c_y, radius_m, target_diam, max(6, ny // 4))
+            z_nodes = generate_graded_z_nodes(L_z, d_top, thickness_m, target_depth, 5, max(4, nz // 3))
         elif mode_str == "coarse":
             x_nodes = np.linspace(0.0, L_x, 21)
             y_nodes = np.linspace(0.0, L_y, 15)

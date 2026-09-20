@@ -81,6 +81,22 @@ def run_crossval_case(
     fdm_dt = fdm_surf[:min_frames, :min_ny, :min_nx] - t_amb
     fem_dt = fem_surf[:min_frames, :min_ny, :min_nx] - t_amb
 
+    # Defect vs sound area contrast
+    ny, nx = fem_dt.shape[1], fem_dt.shape[2]
+    fem_c_def = fem_dt[:, ny // 2, nx // 2]
+    fem_c_snd = fem_dt[:, 2, 2]
+    fem_contrast = np.abs(fem_c_def - fem_c_snd)
+    fem_peak_contrast = float(np.max(fem_contrast))
+    fem_peak_dt = float(np.max(fem_dt))
+
+    fdm_c_def = fdm_dt[:, ny // 2, nx // 2]
+    fdm_c_snd = fdm_dt[:, 2, 2]
+    fdm_contrast = np.abs(fdm_c_def - fdm_c_snd)
+    fdm_peak_contrast = float(np.max(fdm_contrast))
+    fdm_peak_dt = float(np.max(fdm_dt))
+
+    contrast_rmse = float(np.sqrt(np.mean((fem_contrast - fdm_contrast) ** 2)))
+
     # Quantitative Comparison Metrics
     diff = fem_dt - fdm_dt
     rmse = float(np.sqrt(np.mean(diff ** 2)))
@@ -100,6 +116,11 @@ def run_crossval_case(
         "case": case_name,
         "diameter_mm": diameter_mm,
         "depth_mm": depth_mm,
+        "fem_peak_dt_k": round(fem_peak_dt, 4),
+        "fdm_peak_dt_k": round(fdm_peak_dt, 4),
+        "fem_peak_contrast_k": round(fem_peak_contrast, 4),
+        "fdm_peak_contrast_k": round(fdm_peak_contrast, 4),
+        "contrast_rmse_k": round(contrast_rmse, 4),
         "rmse_k": round(rmse, 4),
         "mae_k": round(mae, 4),
         "mean_temp_rise_k": round(mean_temp_rise, 4),

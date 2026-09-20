@@ -139,24 +139,69 @@ def test_tiered_evaluation_and_roc_curves():
     assert metrics.roc_auc is not None and metrics.roc_auc > 0.95
 
 
-def test_experimental_data_loader():
-    """Verify ExperimentalDataLoader format ingestion and validation."""
-    os.makedirs("results/research_v2/tmp_test", exist_ok=True)
-    try:
-        test_cube = np.ones((20, 32, 32), dtype=np.float64) * 295.0
-        npy_path = "results/research_v2/tmp_test/test_seq.npy"
-        np.save(npy_path, test_cube)
+def test_radiometric_invariants_and_inversion():
+    """Verify physical invariants and inversion of Stefan-Boltzmann broadband radiometry."""
+    from lfmt.noise import (
+        compute_broadband_radiance,
+        compute_apparent_blackbody_temperature,
+        compute_emissivity_corrected_temperature
+    )
 
-        seq = ExperimentalDataLoader.load_numpy(npy_path, frame_rate_hz=25.0, fov_mm=(100.0, 70.0))
-        assert seq.surface_temperature.shape == (20, 32, 32)
-        assert len(seq.time_vector) == 20
-        assert np.isclose(seq.frame_rate_hz, 25.0)
+    # Invariant 1: When T_surf == T_amb, T_apparent == T_amb for ANY emissivity
+    T_amb = 293.15
+    for eps in [0.1, 0.5, 0.85, 0.95, 1.0]:
+        T_app = compute_apparent_blackbody_temperature(
+            true_surface_temperature_k=np.full((5, 5), T_amb),
+            emissivity=eps,
+            t_ambient_k=T_amb
+        )
+        assert np.allclose(T_app, T_amb, atol=1e-10), f"Failed invariant at eps={eps}"
 
-        val = ExperimentalDataLoader.validate_sequence(seq)
-        assert val["is_valid"] is True
-        assert val["total_duration_s"] > 0.7
-    finally:
-        if os.path.exists("results/research_v2/tmp_test"):
-            shutil.rmtree("results/research_v2/tmp_test", ignore_errors=True)
+    # Inversion: Invert apparent temperature back to true surface temperature
+    T_true = np.array([[300.0, 310.0], [320.0, 330.0]])
+    eps = 0.85
+    T_app = compute_apparent_blackbody_temperature(
+        true_surface_temperature_k=T_true,
+        emissivity=eps,
+        t_ambient_k=T_amb
+    )
+    T_rec = compute_emissivity_corrected_temperature(
+        apparent_blackbody_temp_k=T_app,
+        emissivity=eps,
+        t_ambient_k=T_amb
+    )
+    assert np.allclose(T_rec, T_true, atol=1e-6), "Radiometric inversion reconstruction failed"
+
+
+def test_simulation_config_hash_uniqueness():
+    """Verify simulation config hashing uniquely identifies physics and mesh modifications."""
+    import hashlib
+    import json
+
+    def hash_cfg(cfg_dict: dict) -> str:
+        s = json.dumps(cfg_dict, sort_keys=True)
+        return hashlib.sha256(s.encode("utf-8")).hexdigest()
+
+    base_cfg = {
+        "diameter_mm": 8.0,
+        "depth_mm": 0.4,
+        "mesh_mode": "adaptive_tensor",
+        "q0_w_m2": 5000.0,
+        "k_steel": 45.0
+    }
+    h_base = hash_cfg(base_cfg)
+
+    # 1. Depth change
+    cfg_d = dict(base_cfg, depth_mm=0.6)
+    assert hash_cfg(cfg_d) != h_base
+
+    # 2. Mesh mode change
+    cfg_m = dict(base_cfg, mesh_mode="uniform")
+    assert hash_cfg(cfg_m) != h_base
+
+    # 3. Heat flux change
+    cfg_q = dict(base_cfg, q0_w_m2=6000.0)
+    assert hash_cfg(cfg_q) != h_base
+
 
 

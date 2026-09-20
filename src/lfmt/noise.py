@@ -111,33 +111,98 @@ def add_awgn_noise(
     return tensor + noise
 
 
+SIGMA_SB = 5.670374419e-8  # Stefan-Boltzmann constant [W/(m^2 K^4)]
+
+
+def compute_broadband_radiance(
+    true_surface_temperature_k: np.ndarray,
+    emissivity: np.ndarray | float = 0.95,
+    t_ambient_k: float = 293.15
+) -> np.ndarray:
+    """
+    Compute total exitant broadband thermal radiance [W/m^2] under graybody assumption.
+    Includes emitted thermal radiation and reflected ambient environmental radiation:
+        L_meas = epsilon * sigma * T_surf^4 + (1 - epsilon) * sigma * T_amb^4
+    """
+    eps = np.asarray(emissivity, dtype=np.float64)
+    T_surf = np.asarray(true_surface_temperature_k, dtype=np.float64)
+    T_amb = float(t_ambient_k)
+    return eps * SIGMA_SB * (T_surf ** 4) + (1.0 - eps) * SIGMA_SB * (T_amb ** 4)
+
+
+def compute_apparent_blackbody_temperature(
+    measured_radiance: Optional[np.ndarray] = None,
+    true_surface_temperature_k: Optional[np.ndarray] = None,
+    emissivity: np.ndarray | float = 0.95,
+    t_ambient_k: float = 293.15
+) -> np.ndarray:
+    """
+    Compute apparent blackbody temperature [K] measured by an uncalibrated radiometer (assuming epsilon=1).
+        T_apparent = (L_meas / sigma)^0.25 = [epsilon * T_surf^4 + (1 - epsilon) * T_amb^4]^0.25
+    Physical invariant: When T_surf == T_amb, T_apparent == T_amb regardless of emissivity.
+    """
+    if measured_radiance is not None:
+        L = np.asarray(measured_radiance, dtype=np.float64)
+        return (np.maximum(1e-12, L) / SIGMA_SB) ** 0.25
+
+    if true_surface_temperature_k is None:
+        raise ValueError("Either measured_radiance or true_surface_temperature_k must be provided")
+
+    eps = np.asarray(emissivity, dtype=np.float64)
+    T_surf = np.asarray(true_surface_temperature_k, dtype=np.float64)
+    T_amb = float(t_ambient_k)
+
+    rad_sum = eps * (T_surf ** 4) + (1.0 - eps) * (T_amb ** 4)
+    return (np.maximum(1e-12, rad_sum)) ** 0.25
+
+
+def compute_emissivity_corrected_temperature(
+    apparent_blackbody_temp_k: np.ndarray,
+    emissivity: np.ndarray | float = 0.95,
+    t_ambient_k: float = 293.15
+) -> np.ndarray:
+    """
+    Invert apparent radiometric temperature to retrieve true surface temperature [K]
+    given known surface emissivity and ambient reflected temperature:
+        T_corrected = [ (T_apparent^4 - (1 - epsilon) * T_amb^4) / epsilon ]^0.25
+    """
+    eps = np.maximum(1e-3, np.asarray(emissivity, dtype=np.float64))
+    T_app = np.asarray(apparent_blackbody_temp_k, dtype=np.float64)
+    T_amb = float(t_ambient_k)
+
+    rad_diff = (T_app ** 4) - (1.0 - eps) * (T_amb ** 4)
+    rad_corrected = np.maximum(1e-12, rad_diff / eps)
+    return rad_corrected ** 0.25
+
+
 def add_radiance_emissivity_variation(
-    tensor_k: np.ndarray,
+    true_surface_temperature_k: np.ndarray,
     base_emissivity: float = 0.95,
     variation_std: float = 0.005,
     t_ambient_k: float = 293.15,
     seed: int | None = 42
 ) -> np.ndarray:
     """
-    Apply physical radiance-level emissivity variations (Stefan-Boltzmann L ~ epsilon * T^4 + (1 - epsilon)*T_amb^4).
+    Apply physical broadband radiance-level emissivity variations (Stefan-Boltzmann model).
+    Returns apparent blackbody temperature cube [K].
     """
     if variation_std <= 0.0 and base_emissivity >= 0.999:
-        return tensor_k.copy()
+        return true_surface_temperature_k.copy()
 
     rng = np.random.default_rng(seed)
-    H, W = tensor_k.shape[1], tensor_k.shape[2]
-    
+    H, W = true_surface_temperature_k.shape[1], true_surface_temperature_k.shape[2]
+
     eps_map = np.clip(
         rng.normal(base_emissivity, variation_std, size=(1, H, W)),
-        0.50,
+        0.10,
         1.0
     )
 
-    # Measured radiance L = eps * T^4 + (1 - eps) * T_amb^4
-    L_meas = eps_map * (tensor_k ** 4) + (1.0 - eps_map) * (t_ambient_k ** 4)
-    # Apparent radiometric temperature
-    T_apparent = (L_meas / eps_map) ** 0.25
-    return T_apparent
+    return compute_apparent_blackbody_temperature(
+        true_surface_temperature_k=true_surface_temperature_k,
+        emissivity=eps_map,
+        t_ambient_k=t_ambient_k
+    )
 
 
 def add_realistic_fpa_camera_noise(
@@ -151,18 +216,23 @@ def add_realistic_fpa_camera_noise(
     seed: int | None = 42
 ) -> np.ndarray:
     """
-    Simulate realistic Focal Plane Array (FPA) camera sensor physics.
+    Simulate realistic Focal Plane Array (FPA) camera sensor physics:
+    1. Optical PSF spatial blur (diffraction/defocus)
+    2. Fixed-Pattern Noise (FPN) gain & offset spatial non-uniformity
+    3. NETD Gaussian temporal noise
+    4. Sensor drift across acquisition duration
+    5. ADC bit depth quantization
     """
     rng = np.random.default_rng(seed)
     n_frames, H, W = tensor_k.shape
     noisy = tensor_k.copy()
 
-    # 1. Optical Point Spread Function (PSF) spatial blur
+    # 1. Optical PSF blur
     if psf_sigma_px > 0:
         for k in range(n_frames):
             noisy[k] = gaussian_filter(noisy[k], sigma=psf_sigma_px, mode="nearest")
 
-    # 2. Fixed-Pattern Noise (FPN) gain and offset spatial nonuniformity
+    # 2. Fixed-Pattern Noise (FPN)
     if fpn_factor > 0:
         gain_fpn = 1.0 + rng.normal(0.0, fpn_factor, size=(1, H, W))
         offset_fpn = rng.normal(0.0, netd_k * 0.5, size=(1, H, W))
@@ -216,7 +286,6 @@ def apply_noise_pipeline(
                 seed=config.seed
             )
         else:
-            # V1 simplified legacy
             rng = np.random.default_rng(config.seed)
             H, W = noisy.shape[1], noisy.shape[2]
             emissivity_map = 1.0 + rng.normal(0.0, config.emissivity_variation, size=(1, H, W))
@@ -250,3 +319,4 @@ def apply_noise_pipeline(
         )
 
     return noisy
+

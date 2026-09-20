@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lfmt-slag-detection"
+version = "0.1.0"
+description = "Linear Frequency-Modulated Infrared Thermography for Subsurface Slag Inclusion Detection in Mild Steel"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Research Team", email = "research@example.com"}
+]
+keywords = ["thermography", "NDT", "LFMT", "infrared", "slag-detection", "finite-element", "signal-processing"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "scikit-learn>=1.2.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "streamlit>=1.30.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.65.0",
+    "rich>=13.0.0",
+    "pandas>=2.0.0",
+    "numba>=0.58.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

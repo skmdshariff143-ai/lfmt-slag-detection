@@ -1,0 +1,70 @@
+# High-Resolution Publication & Conference Demo Configuration
+project:
+  name: "LFMT Conference Demonstration"
+  version: "0.1.0"
+  random_seed: 42
+
+simulation:
+  backend: "finite_difference"
+  spatial_resolution:
+    nx: 100
+    ny: 70
+    nz: 30
+  timestep_s: 0.04
+  total_time_s: 14.0
+
+geometry:
+  plate:
+    length_mm: 100.0
+    width_mm: 70.0
+    thickness_mm: 2.3
+    material: "mild_steel"
+  inclusion:
+    shape: "cylinder"
+    center_x_mm: 50.0
+    center_y_mm: 35.0
+    depth_mm: 0.6
+    diameter_mm: 8.0
+    thickness_mm: 0.5
+    material: "slag"
+
+excitation:
+  type: "linear_chirp"
+  f0_hz: 0.05
+  f1_hz: 0.60
+  duration_s: 10.0
+  q0_w_m2: 6000.0
+  ambient_temp_k: 293.15
+  h_conv_w_m2k: 10.0
+  emissivity: 0.95
+
+camera:
+  resolution_x: 128
+  resolution_y: 128
+  sampling_rate_hz: 10.0
+  lens_fov_mm: [100.0, 70.0]
+
+noise:
+  snr_db: 25
+  spatial_nonuniformity: 0.005
+  emissivity_variation: 0.005
+  seed: 42
+
+processing:
+  pct:
+    n_components: 6
+    selection_criterion: "contrast"
+  spct:
+    n_components: 6
+    alpha: 0.05
+    max_iter: 200
+  rpt:
+    n_components: 6
+    matrix_type: "gaussian"
+  matched_filter:
+    normalize: true
+    zero_pad: true
+  detection:
+    threshold_method: "adaptive_otsu"
+    morphology_kernel_size: 3
+    min_area_px: 6

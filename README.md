@@ -102,14 +102,11 @@ streamlit run app/dashboard.py
 
 ---
 
-## 🌐 Next.js Conference Web Portal & Presentation Engine
+## Live Conference Portal
 
-### 🚀 Live Production Deployment
-
-- **Production Portal:** [https://web-kappa-woad-56.vercel.app](https://web-kappa-woad-56.vercel.app)
-- **Conference Presentation Mode:** [https://web-kappa-woad-56.vercel.app/conference](https://web-kappa-woad-56.vercel.app/conference)
-- **Interactive Defect Explorer:** [https://web-kappa-woad-56.vercel.app/explorer](https://web-kappa-woad-56.vercel.app/explorer)
-- **GitHub Repository:** [https://github.com/skmdshariff143-ai/lfmt-slag-detection](https://github.com/skmdshariff143-ai/lfmt-slag-detection)
+- **Production:** https://web-kappa-woad-56.vercel.app
+- **Conference Mode:** https://web-kappa-woad-56.vercel.app/conference
+- **GitHub:** https://github.com/skmdshariff143-ai/lfmt-slag-detection
 
 ### 💻 Web Features
 

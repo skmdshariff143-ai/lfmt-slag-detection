@@ -193,7 +193,7 @@ def validate_conference_results(results_dir: Path) -> bool:
 
     print("\n" + "=" * 70)
     if passed:
-        print("ALL SCIENTIFIC VALIDATION CHECKS PASSED SUCCESSFULLY (100% PASS RATE)")
+        print("ALL SCIENTIFIC VALIDATION CHECKS PASSED.")
     else:
         print("[ERROR] SOME INTEGRITY CHECKS FAILED.")
     print("=" * 70)

@@ -1,6 +1,6 @@
-﻿# Linear Frequency-Modulated Thermography for Subsurface Slag Inclusion Detection in Mild Steel: Paper Evidence Package
+# Linear Frequency-Modulated Thermography for Subsurface Slag Inclusion Detection in Mild Steel: Paper Evidence Package
 
-**Target Venues:** IEEE Transactions on Industrial Informatics / IEEE I2MTC / NDT&E International  
+**Potential Submission Venues:** IEEE Transactions on Industrial Informatics / IEEE I2MTC / NDT&E International  
 **Authors / Research Team:** Project Team  
 **Scope:** Computational Thermal-NDT Benchmark (3D FEM Forward Modeling & Synthetic Sensor Noise Protocols)  
 **Artifact Purpose:** Standalone numerical evidence package and benchmark synthesis for paper writing.

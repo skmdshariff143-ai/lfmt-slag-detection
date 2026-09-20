@@ -1,0 +1,162 @@
+[
+  {
+    "method":"Matched Filter",
+    "noise_condition":"Clean",
+    "total_evaluations":1,
+    "false_positive_count":1,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Matched Filter",
+    "noise_condition":"SNR 20 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Matched Filter",
+    "noise_condition":"SNR 25 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Matched Filter",
+    "noise_condition":"SNR 30 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"PCT",
+    "noise_condition":"Clean",
+    "total_evaluations":1,
+    "false_positive_count":1,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"PCT",
+    "noise_condition":"SNR 20 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"PCT",
+    "noise_condition":"SNR 25 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"PCT",
+    "noise_condition":"SNR 30 dB",
+    "total_evaluations":10,
+    "false_positive_count":0,
+    "false_positive_rate":0.0,
+    "specificity_pct":100.0
+  },
+  {
+    "method":"RPT",
+    "noise_condition":"Clean",
+    "total_evaluations":1,
+    "false_positive_count":1,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"RPT",
+    "noise_condition":"SNR 20 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"RPT",
+    "noise_condition":"SNR 25 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"RPT",
+    "noise_condition":"SNR 30 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Raw Contrast",
+    "noise_condition":"Clean",
+    "total_evaluations":1,
+    "false_positive_count":1,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Raw Contrast",
+    "noise_condition":"SNR 20 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Raw Contrast",
+    "noise_condition":"SNR 25 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"Raw Contrast",
+    "noise_condition":"SNR 30 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"SPCT",
+    "noise_condition":"Clean",
+    "total_evaluations":1,
+    "false_positive_count":1,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"SPCT",
+    "noise_condition":"SNR 20 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"SPCT",
+    "noise_condition":"SNR 25 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  },
+  {
+    "method":"SPCT",
+    "noise_condition":"SNR 30 dB",
+    "total_evaluations":10,
+    "false_positive_count":10,
+    "false_positive_rate":1.0,
+    "specificity_pct":0.0
+  }
+]

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Scientific Conference Results Integrity Audit Script.
 
@@ -102,7 +102,7 @@ def audit_results(base_dir: Path = Path("results/conference/final")) -> bool:
         print(f"[+] Sensitivity Integrity: Monotonic physical scaling verified (q0: {q_minus_rise}K -> {base_rise}K -> {q_plus_rise}K).")
 
     print("=" * 70)
-    print("ALL AUDIT CHECKS PASSED PERFECTLY (100% SCIENTIFIC INTEGRITY).")
+    print("ALL AUDIT CHECKS PASSED SUCCESSFULLY.")
     print("=" * 70)
     return True
 

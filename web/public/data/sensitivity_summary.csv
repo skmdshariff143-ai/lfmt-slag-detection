@@ -1,0 +1,10 @@
+variation,parameter,percentage_change,peak_surface_temp_rise_k,peak_defect_thermal_contrast_k,pct_cnr,pct_iou,pct_loc_error_mm,is_detected
+Baseline,none,0.0,6.915,0.6151,2.846,0.0,,False
+Heat Flux q0 -10%,q0,-10.0,6.224,0.5536,2.846,0.0,,False
+Heat Flux q0 +10%,q0,10.0,7.607,0.6766,2.846,0.0,,False
+Conductivity k_slag -10%,k_slag,-10.0,6.931,0.6325,2.844,0.0,,False
+Conductivity k_slag +10%,k_slag,10.0,6.901,0.5987,2.848,0.0,,False
+Convection h -20%,h_conv,-20.0,6.931,0.6154,2.847,0.0,,False
+Convection h +20%,h_conv,20.0,6.9,0.6148,2.845,0.0,,False
+Specific Heat Cp_slag -10%,cp_slag,-10.0,6.929,0.6299,2.862,0.0,,False
+Specific Heat Cp_slag +10%,cp_slag,10.0,6.902,0.6004,2.83,0.0,,False

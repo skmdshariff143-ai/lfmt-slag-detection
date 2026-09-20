@@ -1,0 +1,21 @@
+method,noise_condition,total_evaluations,false_positive_count,false_positive_rate,specificity_pct
+Matched Filter,Clean,1,1,1.0,0.0
+Matched Filter,SNR 20 dB,10,10,1.0,0.0
+Matched Filter,SNR 25 dB,10,10,1.0,0.0
+Matched Filter,SNR 30 dB,10,10,1.0,0.0
+PCT,Clean,1,1,1.0,0.0
+PCT,SNR 20 dB,10,10,1.0,0.0
+PCT,SNR 25 dB,10,10,1.0,0.0
+PCT,SNR 30 dB,10,0,0.0,100.0
+RPT,Clean,1,1,1.0,0.0
+RPT,SNR 20 dB,10,10,1.0,0.0
+RPT,SNR 25 dB,10,10,1.0,0.0
+RPT,SNR 30 dB,10,10,1.0,0.0
+Raw Contrast,Clean,1,1,1.0,0.0
+Raw Contrast,SNR 20 dB,10,10,1.0,0.0
+Raw Contrast,SNR 25 dB,10,10,1.0,0.0
+Raw Contrast,SNR 30 dB,10,10,1.0,0.0
+SPCT,Clean,1,1,1.0,0.0
+SPCT,SNR 20 dB,10,10,1.0,0.0
+SPCT,SNR 25 dB,10,10,1.0,0.0
+SPCT,SNR 30 dB,10,10,1.0,0.0

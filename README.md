@@ -1,4 +1,4 @@
-﻿# Linear Frequency-Modulated Infrared Thermography for Subsurface Slag Inclusion Detection in Mild Steel
+# Linear Frequency-Modulated Infrared Thermography for Subsurface Slag Inclusion Detection in Mild Steel
 
 [![CI Test Suite](https://github.com/skmdshariff143-ai/lfmt-slag-detection/actions/workflows/ci.yml/badge.svg)](https://github.com/skmdshariff143-ai/lfmt-slag-detection/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -132,11 +132,11 @@ Statistically aggregated results across 25 physical defect geometries ($D \in \{
 ## 📄 Citation
 
 ```bibtex
-@article{lfmt_slag_detection_2026,
-  title={Linear Frequency-Modulated Infrared Thermography for Subsurface Slag Inclusion Detection in Mild Steel},
-  author={Project Team},
-  journal={IEEE Transactions on Industrial Informatics / NDT&E International},
-  year={2026}
+@software{lfmt_slag_detection_2026,
+  title  = {Linear Frequency-Modulated Infrared Thermography for Subsurface Slag Inclusion Detection in Mild Steel},
+  author = {Project Team},
+  year   = {2026},
+  url    = {https://github.com/skmdshariff143-ai/lfmt-slag-detection}
 }
 ```
 

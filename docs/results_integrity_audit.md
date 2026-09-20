@@ -1,10 +1,10 @@
-﻿# Scientific Results Integrity Audit & Verification Report
+# Scientific Results Integrity Audit & Verification Report
 
 **Project Title:** Linear Frequency-Modulated Infrared Thermography for Subsurface Slag Inclusion Detection in Mild Steel  
 **Author:** Project Team  
 **Audit Date:** September 2026  
 **Repository:** [https://github.com/skmdshariff143-ai/lfmt-slag-detection](https://github.com/skmdshariff143-ai/lfmt-slag-detection)  
-**Verification Status:** 100% PASSED (Fully Audited & Mathematically Consistent)  
+**Verification Status:** PASSED (Audited & Mathematically Consistent)  
 **Dataset Version:** `2.1.0-final-audited`  
 **Forward Solver:** 3D Finite Element Method (`scikit-fem`, Hexahedral `ElementHex1`)  
 

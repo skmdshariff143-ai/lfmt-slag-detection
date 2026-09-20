@@ -104,14 +104,21 @@ streamlit run app/dashboard.py
 
 ## 🌐 Next.js Conference Web Portal & Presentation Engine
 
-A Next.js 14 App Router presentation portal is located in [`web/`](web/):
+### 🚀 Live Production Deployment
+
+- **Production Portal:** [https://web-kappa-woad-56.vercel.app](https://web-kappa-woad-56.vercel.app)
+- **Conference Presentation Mode:** [https://web-kappa-woad-56.vercel.app/conference](https://web-kappa-woad-56.vercel.app/conference)
+- **Interactive Defect Explorer:** [https://web-kappa-woad-56.vercel.app/explorer](https://web-kappa-woad-56.vercel.app/explorer)
+- **GitHub Repository:** [https://github.com/skmdshariff143-ai/lfmt-slag-detection](https://github.com/skmdshariff143-ai/lfmt-slag-detection)
+
+### 💻 Web Features
 
 - **Conference Presentation Mode (`/conference`):** Fullscreen projector dashboard with dynamic noise toggles, specimen filters, and live metric tables.
 - **Single-Case Defect Explorer (`/explorer`):** Side-by-side post-processing maps across 25 geometries + healthy control under variable AWGN.
 - **Virtual IR Camera Animated Scrubber (`/thermograms`):** 10-second LFMT chirp excitation sequence playback with real-time temperature telemetry HUD.
 - **Zero Runtime Simulation:** Consumes cryptographically locked, pre-compiled JSON summaries (`web/public/data/dataset-lock.json`) exported from the audited 4,030-evaluation FEM benchmark.
 
-### 🚀 Running the Web Portal Locally
+### 🛠️ Running Locally & Building
 
 ```bash
 # Navigate to web application directory
@@ -122,32 +129,14 @@ npm install
 
 # Launch local development server
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### 📦 Production Build & Verification
-
-```bash
-# Strict TypeScript typecheck
+# Strict TypeScript typecheck & ESLint
 npm run typecheck
-
-# ESLint static analysis
 npm run lint
 
-# Production compilation (17 routes)
+# Production build (14 user-facing routes + _not-found)
 npm run build
-
-# Start local production server
-npm start
 ```
-
-### ☁️ Vercel Deployment
-
-- **Root Directory:** `web`
-- **Framework Preset:** `Next.js`
-- **Build Command:** `next build`
-- **Output Directory:** `.next`
 
 ---
 

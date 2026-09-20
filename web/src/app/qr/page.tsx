@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function QRPage() {
   const repoUrl = "https://github.com/skmdshariff143-ai/lfmt-slag-detection";
-  const webPortalUrl = "https://lfmt-slag-detection.vercel.app";
+  const webPortalUrl = "https://web-kappa-woad-56.vercel.app";
 
   // Public QR code generators (reliable, high contrast, SVG/PNG)
   const repoQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(repoUrl)}&bgcolor=0f172a&color=38bdf8&margin=10`;

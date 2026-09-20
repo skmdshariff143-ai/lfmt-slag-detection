@@ -16,6 +16,9 @@ class PlateConfig:
     width_mm: float = 70.0
     thickness_mm: float = 2.3
     material: str = "mild_steel"
+    thermal_conductivity: Optional[float] = None
+    density: Optional[float] = None
+    specific_heat: Optional[float] = None
 
     def __post_init__(self):
         if self.length_mm <= 0 or self.width_mm <= 0 or self.thickness_mm <= 0:
@@ -31,12 +34,15 @@ class InclusionConfig:
     diameter_mm: float = 8.0
     thickness_mm: float = 0.5
     material: str = "slag"
+    thermal_conductivity: Optional[float] = None
+    density: Optional[float] = None
+    specific_heat: Optional[float] = None
 
     def __post_init__(self):
         if self.depth_mm < 0:
             raise ValueError(f"Inclusion depth must be >= 0, got {self.depth_mm}")
-        if self.diameter_mm <= 0 or self.thickness_mm <= 0:
-            raise ValueError("Inclusion diameter and thickness must be strictly positive.")
+        if self.diameter_mm < 0 or self.thickness_mm <= 0:
+            raise ValueError("Inclusion thickness must be strictly positive and diameter >= 0.")
 
 
 @dataclass

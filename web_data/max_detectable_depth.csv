@@ -1,0 +1,101 @@
+method,diameter_mm,noise_condition,max_detectable_depth_mm,satisfies_80pct_criterion
+Raw Contrast,4.0,Clean,1.0,True
+Raw Contrast,4.0,SNR 30 dB,0.0,False
+Raw Contrast,4.0,SNR 25 dB,0.0,False
+Raw Contrast,4.0,SNR 20 dB,0.0,False
+Raw Contrast,6.0,Clean,0.0,False
+Raw Contrast,6.0,SNR 30 dB,0.0,False
+Raw Contrast,6.0,SNR 25 dB,0.0,False
+Raw Contrast,6.0,SNR 20 dB,0.0,False
+Raw Contrast,8.0,Clean,0.0,False
+Raw Contrast,8.0,SNR 30 dB,0.0,False
+Raw Contrast,8.0,SNR 25 dB,0.0,False
+Raw Contrast,8.0,SNR 20 dB,0.0,False
+Raw Contrast,10.0,Clean,1.0,True
+Raw Contrast,10.0,SNR 30 dB,0.0,False
+Raw Contrast,10.0,SNR 25 dB,0.0,False
+Raw Contrast,10.0,SNR 20 dB,0.0,False
+Raw Contrast,12.0,Clean,1.0,True
+Raw Contrast,12.0,SNR 30 dB,0.0,False
+Raw Contrast,12.0,SNR 25 dB,0.0,False
+Raw Contrast,12.0,SNR 20 dB,0.0,False
+Matched Filter,4.0,Clean,1.0,True
+Matched Filter,4.0,SNR 30 dB,0.0,False
+Matched Filter,4.0,SNR 25 dB,0.0,False
+Matched Filter,4.0,SNR 20 dB,0.0,False
+Matched Filter,6.0,Clean,1.0,True
+Matched Filter,6.0,SNR 30 dB,0.0,False
+Matched Filter,6.0,SNR 25 dB,0.0,False
+Matched Filter,6.0,SNR 20 dB,0.0,False
+Matched Filter,8.0,Clean,1.0,True
+Matched Filter,8.0,SNR 30 dB,0.6,True
+Matched Filter,8.0,SNR 25 dB,0.2,True
+Matched Filter,8.0,SNR 20 dB,0.0,False
+Matched Filter,10.0,Clean,1.0,True
+Matched Filter,10.0,SNR 30 dB,1.0,True
+Matched Filter,10.0,SNR 25 dB,0.6,True
+Matched Filter,10.0,SNR 20 dB,0.2,True
+Matched Filter,12.0,Clean,1.0,True
+Matched Filter,12.0,SNR 30 dB,1.0,True
+Matched Filter,12.0,SNR 25 dB,1.0,True
+Matched Filter,12.0,SNR 20 dB,1.0,True
+PCT,4.0,Clean,0.0,False
+PCT,4.0,SNR 30 dB,0.0,False
+PCT,4.0,SNR 25 dB,0.0,False
+PCT,4.0,SNR 20 dB,0.0,False
+PCT,6.0,Clean,0.0,False
+PCT,6.0,SNR 30 dB,0.0,False
+PCT,6.0,SNR 25 dB,0.0,False
+PCT,6.0,SNR 20 dB,0.0,False
+PCT,8.0,Clean,0.0,False
+PCT,8.0,SNR 30 dB,0.8,True
+PCT,8.0,SNR 25 dB,0.0,False
+PCT,8.0,SNR 20 dB,0.2,True
+PCT,10.0,Clean,0.0,False
+PCT,10.0,SNR 30 dB,1.0,True
+PCT,10.0,SNR 25 dB,0.8,True
+PCT,10.0,SNR 20 dB,0.2,True
+PCT,12.0,Clean,0.0,False
+PCT,12.0,SNR 30 dB,1.0,True
+PCT,12.0,SNR 25 dB,1.0,True
+PCT,12.0,SNR 20 dB,0.8,True
+SPCT,4.0,Clean,0.0,False
+SPCT,4.0,SNR 30 dB,0.0,False
+SPCT,4.0,SNR 25 dB,0.0,False
+SPCT,4.0,SNR 20 dB,0.0,False
+SPCT,6.0,Clean,0.0,False
+SPCT,6.0,SNR 30 dB,0.0,False
+SPCT,6.0,SNR 25 dB,0.0,False
+SPCT,6.0,SNR 20 dB,0.0,False
+SPCT,8.0,Clean,0.0,False
+SPCT,8.0,SNR 30 dB,0.0,False
+SPCT,8.0,SNR 25 dB,0.0,False
+SPCT,8.0,SNR 20 dB,0.0,False
+SPCT,10.0,Clean,0.0,False
+SPCT,10.0,SNR 30 dB,1.0,True
+SPCT,10.0,SNR 25 dB,0.4,True
+SPCT,10.0,SNR 20 dB,0.0,False
+SPCT,12.0,Clean,0.0,False
+SPCT,12.0,SNR 30 dB,1.0,True
+SPCT,12.0,SNR 25 dB,1.0,True
+SPCT,12.0,SNR 20 dB,0.0,False
+RPT,4.0,Clean,0.0,False
+RPT,4.0,SNR 30 dB,0.0,False
+RPT,4.0,SNR 25 dB,0.0,False
+RPT,4.0,SNR 20 dB,0.0,False
+RPT,6.0,Clean,0.0,False
+RPT,6.0,SNR 30 dB,0.0,False
+RPT,6.0,SNR 25 dB,0.0,False
+RPT,6.0,SNR 20 dB,0.0,False
+RPT,8.0,Clean,0.0,False
+RPT,8.0,SNR 30 dB,0.0,False
+RPT,8.0,SNR 25 dB,0.0,False
+RPT,8.0,SNR 20 dB,0.0,False
+RPT,10.0,Clean,0.0,False
+RPT,10.0,SNR 30 dB,0.8,True
+RPT,10.0,SNR 25 dB,0.0,False
+RPT,10.0,SNR 20 dB,0.0,False
+RPT,12.0,Clean,0.0,False
+RPT,12.0,SNR 30 dB,1.0,True
+RPT,12.0,SNR 25 dB,0.8,True
+RPT,12.0,SNR 20 dB,0.2,True

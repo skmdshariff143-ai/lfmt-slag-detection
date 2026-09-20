@@ -1,0 +1,702 @@
+[
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":4.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":6.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":8.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":10.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":12.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Raw Contrast",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":4.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":6.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":8.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.6,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.2,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":10.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.6,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.2,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":12.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"Matched Filter",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":4.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":6.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":8.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.8,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.2,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":10.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.8,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.2,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":12.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"PCT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.8,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":4.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":6.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":8.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":10.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.4,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":12.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"SPCT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":4.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":4.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":6.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":6.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":8.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":8.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":10.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":0.8,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":10.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":12.0,
+    "noise_condition":"Clean",
+    "max_detectable_depth_mm":0.0,
+    "satisfies_80pct_criterion":false
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 30 dB",
+    "max_detectable_depth_mm":1.0,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 25 dB",
+    "max_detectable_depth_mm":0.8,
+    "satisfies_80pct_criterion":true
+  },
+  {
+    "method":"RPT",
+    "diameter_mm":12.0,
+    "noise_condition":"SNR 20 dB",
+    "max_detectable_depth_mm":0.2,
+    "satisfies_80pct_criterion":true
+  }
+]

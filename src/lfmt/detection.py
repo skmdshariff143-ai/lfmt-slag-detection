@@ -142,12 +142,12 @@ class DefectDetector:
         # Find largest / most significant component
         best_component_mask = np.zeros((H, W), dtype=bool)
         is_detected = False
-        centroid_px = (W / 2.0, H / 2.0)
-        centroid_mm = (fov_x_mm / 2.0, fov_y_mm / 2.0)
+        centroid_px = (float("nan"), float("nan"))
+        centroid_mm = (float("nan"), float("nan"))
         area_px = 0
         area_mm2 = 0.0
-        equiv_diam_mm = 0.0
-        bbox_px = (0, 0, H, W)
+        equiv_diam_mm = float("nan")
+        bbox_px = (0, 0, 0, 0)
         confidence = 0.0
 
         if num_features > 0:

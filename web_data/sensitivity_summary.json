@@ -1,0 +1,101 @@
+[
+  {
+    "variation":"Baseline",
+    "parameter":"none",
+    "percentage_change":0.0,
+    "peak_surface_temp_rise_k":6.915,
+    "peak_defect_thermal_contrast_k":0.6151,
+    "pct_cnr":2.846,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Heat Flux q0 -10%",
+    "parameter":"q0",
+    "percentage_change":-10.0,
+    "peak_surface_temp_rise_k":6.224,
+    "peak_defect_thermal_contrast_k":0.5536,
+    "pct_cnr":2.846,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Heat Flux q0 +10%",
+    "parameter":"q0",
+    "percentage_change":10.0,
+    "peak_surface_temp_rise_k":7.607,
+    "peak_defect_thermal_contrast_k":0.6766,
+    "pct_cnr":2.846,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Conductivity k_slag -10%",
+    "parameter":"k_slag",
+    "percentage_change":-10.0,
+    "peak_surface_temp_rise_k":6.931,
+    "peak_defect_thermal_contrast_k":0.6325,
+    "pct_cnr":2.844,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Conductivity k_slag +10%",
+    "parameter":"k_slag",
+    "percentage_change":10.0,
+    "peak_surface_temp_rise_k":6.901,
+    "peak_defect_thermal_contrast_k":0.5987,
+    "pct_cnr":2.848,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Convection h -20%",
+    "parameter":"h_conv",
+    "percentage_change":-20.0,
+    "peak_surface_temp_rise_k":6.931,
+    "peak_defect_thermal_contrast_k":0.6154,
+    "pct_cnr":2.847,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Convection h +20%",
+    "parameter":"h_conv",
+    "percentage_change":20.0,
+    "peak_surface_temp_rise_k":6.9,
+    "peak_defect_thermal_contrast_k":0.6148,
+    "pct_cnr":2.845,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Specific Heat Cp_slag -10%",
+    "parameter":"cp_slag",
+    "percentage_change":-10.0,
+    "peak_surface_temp_rise_k":6.929,
+    "peak_defect_thermal_contrast_k":0.6299,
+    "pct_cnr":2.862,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  },
+  {
+    "variation":"Specific Heat Cp_slag +10%",
+    "parameter":"cp_slag",
+    "percentage_change":10.0,
+    "peak_surface_temp_rise_k":6.902,
+    "peak_defect_thermal_contrast_k":0.6004,
+    "pct_cnr":2.83,
+    "pct_iou":0.0,
+    "pct_loc_error_mm":null,
+    "is_detected":false
+  }
+]

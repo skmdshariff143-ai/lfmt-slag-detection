@@ -75,6 +75,17 @@ def get_git_commit_hash() -> str:
 
 def compute_config_hash(cfg: LFMTConfig) -> str:
     """Compute SHA-256 hash of simulation physics configuration."""
+    mat_base = get_material(cfg.geometry.plate.material)
+    mat_inc = get_material(cfg.geometry.inclusion.material)
+
+    k_base = cfg.geometry.plate.thermal_conductivity if getattr(cfg.geometry.plate, "thermal_conductivity", None) is not None else mat_base.thermal_conductivity
+    rho_base = cfg.geometry.plate.density if getattr(cfg.geometry.plate, "density", None) is not None else mat_base.density
+    cp_base = cfg.geometry.plate.specific_heat if getattr(cfg.geometry.plate, "specific_heat", None) is not None else mat_base.specific_heat
+
+    k_inc = cfg.geometry.inclusion.thermal_conductivity if getattr(cfg.geometry.inclusion, "thermal_conductivity", None) is not None else mat_inc.thermal_conductivity
+    rho_inc = cfg.geometry.inclusion.density if getattr(cfg.geometry.inclusion, "density", None) is not None else mat_inc.density
+    cp_inc = cfg.geometry.inclusion.specific_heat if getattr(cfg.geometry.inclusion, "specific_heat", None) is not None else mat_inc.specific_heat
+
     d = {
         "backend": cfg.simulation.backend,
         "dx": cfg.simulation.spatial_resolution,
@@ -85,6 +96,9 @@ def compute_config_hash(cfg: LFMTConfig) -> str:
             "w": cfg.geometry.plate.width_mm,
             "t": cfg.geometry.plate.thickness_mm,
             "mat": cfg.geometry.plate.material,
+            "k": k_base,
+            "rho": rho_base,
+            "cp": cp_base,
         },
         "inclusion": {
             "x": cfg.geometry.inclusion.center_x_mm,
@@ -93,15 +107,20 @@ def compute_config_hash(cfg: LFMTConfig) -> str:
             "diam": cfg.geometry.inclusion.diameter_mm,
             "thick": cfg.geometry.inclusion.thickness_mm,
             "mat": cfg.geometry.inclusion.material,
+            "k": k_inc,
+            "rho": rho_inc,
+            "cp": cp_inc,
         },
         "excitation": {
             "f0": cfg.excitation.f0_hz,
             "f1": cfg.excitation.f1_hz,
             "dur": cfg.excitation.duration_s,
             "q0": cfg.excitation.q0_w_m2,
+            "h_conv": cfg.excitation.h_conv_w_m2k,
+            "t_amb": cfg.excitation.ambient_temp_k,
         }
     }
-    return hashlib.sha256(json.dumps(d, sort_keys=True).encode("utf-8")).hexdigest()[:16]
+    return hashlib.sha256(json.dumps(d, sort_keys=True, default=json_serialize).encode("utf-8")).hexdigest()[:16]
 
 
 def json_serialize(obj: Any) -> Any:
@@ -307,19 +326,36 @@ def run_parameter_sensitivity(
     # Apply parameter adjustments
     variations[1][3].excitation.q0_w_m2 = 4500.0
     variations[2][3].excitation.q0_w_m2 = 5500.0
+    variations[3][3].geometry.inclusion.thermal_conductivity = 1.08
+    variations[4][3].geometry.inclusion.thermal_conductivity = 1.32
     variations[5][3].simulation.convection_coeff_w_m2k = 8.0
+    variations[5][3].excitation.h_conv_w_m2k = 8.0
     variations[6][3].simulation.convection_coeff_w_m2k = 12.0
+    variations[6][3].excitation.h_conv_w_m2k = 12.0
+    variations[7][3].geometry.inclusion.specific_heat = 765.0
+    variations[8][3].geometry.inclusion.specific_heat = 935.0
 
     records = []
     backend = get_simulation_backend(cfg.simulation.backend)
 
     for label, param, pct_change, run_cfg in variations:
-        # Note: For material property variations, we can adjust material properties if needed
         sim_res = backend.run(run_cfg)
         cam = VirtualIRCamera(run_cfg.camera)
         capture = cam.capture(sim_res)
         gt = capture.ground_truth
         gt_mask = capture.ground_truth_mask
+
+        # Compute peak surface temperature rise and peak defect thermal contrast
+        t_amb = run_cfg.excitation.ambient_temp_k
+        peak_temp_rise = float(np.max(sim_res.surface_temperature) - t_amb)
+        
+        # Defect center (50, 35) vs sound reference (15, 15)
+        ix_def = np.argmin(np.abs(sim_res.x_grid_mm - 50.0))
+        iy_def = np.argmin(np.abs(sim_res.y_grid_mm - 35.0))
+        ix_snd = np.argmin(np.abs(sim_res.x_grid_mm - 15.0))
+        iy_snd = np.argmin(np.abs(sim_res.y_grid_mm - 15.0))
+        t_diff = np.abs(sim_res.surface_temperature[:, iy_def, ix_def] - sim_res.surface_temperature[:, iy_snd, ix_snd])
+        peak_defect_contrast = float(np.max(t_diff))
 
         # Process with PCT (representative robust algorithm)
         pct_eng = PrincipalComponentThermography(n_components=6, mode="blind")
@@ -332,10 +368,11 @@ def run_parameter_sensitivity(
             "variation": label,
             "parameter": param,
             "percentage_change": pct_change,
-            "peak_contrast_k": round(float(np.max(sim_res.surface_temperature) - 293.15), 3),
+            "peak_surface_temp_rise_k": round(peak_temp_rise, 3),
+            "peak_defect_thermal_contrast_k": round(peak_defect_contrast, 4),
             "pct_cnr": round(met.cnr, 3),
             "pct_iou": round(met.iou, 4),
-            "pct_loc_error_mm": round(met.localization_error_mm, 3),
+            "pct_loc_error_mm": round(met.localization_error_detected_mm, 3) if not math.isnan(met.localization_error_detected_mm) else None,
             "is_detected": met.is_detected
         })
 
@@ -365,6 +402,10 @@ def calculate_statistical_summaries(df_raw: pd.DataFrame, out_dir: Path) -> Dict
         std_iou=("iou", "std"),
         mean_dice=("dice", "mean"),
         std_dice=("dice", "std"),
+        mean_loc_error_detected_mm=("loc_error_detected_mm", "mean"),
+        std_loc_error_detected_mm=("loc_error_detected_mm", "std"),
+        mean_loc_error_all_mm=("loc_error_all_mm", "mean"),
+        std_loc_error_all_mm=("loc_error_all_mm", "std"),
         mean_loc_error_mm=("loc_error_mm", "mean"),
         std_loc_error_mm=("loc_error_mm", "std"),
         mean_runtime_ms=("runtime_seconds", lambda x: float(np.mean(x) * 1000.0)),
@@ -372,8 +413,12 @@ def calculate_statistical_summaries(df_raw: pd.DataFrame, out_dir: Path) -> Dict
     ).reset_index()
 
     method_summary["detection_rate_pct"] = (method_summary["detection_rate"] * 100.0).round(1)
-    for col in ["mean_cnr", "std_cnr", "mean_iou", "std_iou", "mean_dice", "std_dice", "mean_loc_error_mm", "std_loc_error_mm", "mean_runtime_ms"]:
-        method_summary[col] = method_summary[col].round(3)
+    for col in ["mean_cnr", "std_cnr", "mean_iou", "std_iou", "mean_dice", "std_dice",
+                "mean_loc_error_detected_mm", "std_loc_error_detected_mm",
+                "mean_loc_error_all_mm", "std_loc_error_all_mm",
+                "mean_loc_error_mm", "std_loc_error_mm", "mean_runtime_ms", "std_runtime_ms"]:
+        if col in method_summary.columns:
+            method_summary[col] = method_summary[col].round(3)
 
     method_summary.to_csv(out_dir / "summary_by_method.csv", index=False)
     summaries["method"] = method_summary
@@ -385,9 +430,16 @@ def calculate_statistical_summaries(df_raw: pd.DataFrame, out_dir: Path) -> Dict
         std_cnr=("cnr", "std"),
         mean_iou=("iou", "mean"),
         std_iou=("iou", "std"),
+        mean_loc_error_detected_mm=("loc_error_detected_mm", "mean"),
+        std_loc_error_detected_mm=("loc_error_detected_mm", "std"),
         mean_loc_error_mm=("loc_error_mm", "mean"),
         std_loc_error_mm=("loc_error_mm", "std")
     ).reset_index()
+    for col in ["mean_cnr", "std_cnr", "mean_iou", "std_iou",
+                "mean_loc_error_detected_mm", "std_loc_error_detected_mm",
+                "mean_loc_error_mm", "std_loc_error_mm"]:
+        if col in depth_summary.columns:
+            depth_summary[col] = depth_summary[col].round(3)
     depth_summary.to_csv(out_dir / "summary_by_depth.csv", index=False)
     summaries["depth"] = depth_summary
 
@@ -398,9 +450,16 @@ def calculate_statistical_summaries(df_raw: pd.DataFrame, out_dir: Path) -> Dict
         std_cnr=("cnr", "std"),
         mean_iou=("iou", "mean"),
         std_iou=("iou", "std"),
+        mean_loc_error_detected_mm=("loc_error_detected_mm", "mean"),
+        std_loc_error_detected_mm=("loc_error_detected_mm", "std"),
         mean_loc_error_mm=("loc_error_mm", "mean"),
         std_loc_error_mm=("loc_error_mm", "std")
     ).reset_index()
+    for col in ["mean_cnr", "std_cnr", "mean_iou", "std_iou",
+                "mean_loc_error_detected_mm", "std_loc_error_detected_mm",
+                "mean_loc_error_mm", "std_loc_error_mm"]:
+        if col in diam_summary.columns:
+            diam_summary[col] = diam_summary[col].round(3)
     diam_summary.to_csv(out_dir / "summary_by_diameter.csv", index=False)
     summaries["diameter"] = diam_summary
 
@@ -411,8 +470,13 @@ def calculate_statistical_summaries(df_raw: pd.DataFrame, out_dir: Path) -> Dict
         std_cnr=("cnr", "std"),
         mean_iou=("iou", "mean"),
         std_iou=("iou", "std"),
+        mean_loc_error_detected_mm=("loc_error_detected_mm", "mean"),
         mean_loc_error_mm=("loc_error_mm", "mean")
     ).reset_index()
+    for col in ["mean_cnr", "std_cnr", "mean_iou", "std_iou",
+                "mean_loc_error_detected_mm", "mean_loc_error_mm"]:
+        if col in noise_summary.columns:
+            noise_summary[col] = noise_summary[col].round(3)
     noise_summary.to_csv(out_dir / "summary_by_noise.csv", index=False)
     summaries["noise"] = noise_summary
 
@@ -447,14 +511,15 @@ def calculate_statistical_summaries(df_raw: pd.DataFrame, out_dir: Path) -> Dict
     df_max_depth.to_csv(out_dir / "max_detectable_depth.csv", index=False)
     summaries["max_depth"] = df_max_depth
 
-    # 6. Healthy False Positive Summary
+    # 6. Healthy False Positive & Specificity Summary
     df_healthy = df_raw[df_raw["is_healthy"]].copy()
     healthy_summary = df_healthy.groupby(["method", "noise_condition"]).agg(
-        total_evaluations=("is_detected", "count"),
-        false_positive_count=("is_detected", "sum"),
-        false_positive_rate=("is_detected", "mean"),
+        total_evaluations=("is_false_positive", "count"),
+        false_positive_count=("is_false_positive", "sum"),
+        false_positive_rate=("is_false_positive", "mean"),
     ).reset_index()
     healthy_summary["specificity_pct"] = ((1.0 - healthy_summary["false_positive_rate"]) * 100.0).round(1)
+    healthy_summary.to_csv(out_dir / "healthy_specificity.csv", index=False)
     healthy_summary.to_csv(out_dir / "healthy_false_positive_summary.csv", index=False)
     summaries["healthy"] = healthy_summary
 
@@ -800,14 +865,18 @@ def main():
                     "noise_db": 0.0,
                     "noise_seed": 0,
                     "method": m.method_name,
+                    "candidate_detected": m.candidate_detected,
                     "is_detected": m.is_detected,
+                    "is_false_positive": m.is_false_positive,
                     "cnr": m.cnr,
                     "defect_contrast": m.defect_contrast,
                     "iou": m.iou,
                     "dice": m.dice,
                     "precision": m.precision,
                     "recall": m.recall,
-                    "loc_error_mm": m.localization_error_mm,
+                    "loc_error_detected_mm": m.localization_error_detected_mm,
+                    "loc_error_all_mm": m.localization_error_all_mm,
+                    "loc_error_mm": m.localization_error_detected_mm,
                     "loc_error_px": m.localization_error_px,
                     "true_diameter_mm": m.true_diameter_mm,
                     "pred_diameter_mm": m.predicted_diameter_mm,
@@ -844,14 +913,18 @@ def main():
                             "noise_db": snr_db,
                             "noise_seed": seed,
                             "method": m.method_name,
+                            "candidate_detected": m.candidate_detected,
                             "is_detected": m.is_detected,
+                            "is_false_positive": m.is_false_positive,
                             "cnr": m.cnr,
                             "defect_contrast": m.defect_contrast,
                             "iou": m.iou,
                             "dice": m.dice,
                             "precision": m.precision,
                             "recall": m.recall,
-                            "loc_error_mm": m.localization_error_mm,
+                            "loc_error_detected_mm": m.localization_error_detected_mm,
+                            "loc_error_all_mm": m.localization_error_all_mm,
+                            "loc_error_mm": m.localization_error_detected_mm,
                             "loc_error_px": m.localization_error_px,
                             "true_diameter_mm": m.true_diameter_mm,
                             "pred_diameter_mm": m.predicted_diameter_mm,
@@ -893,15 +966,19 @@ def main():
             "noise_db": 0.0,
             "noise_seed": 0,
             "method": m.method_name,
-            "is_detected": m.is_detected,
+            "candidate_detected": m.candidate_detected,
+            "is_detected": False,
+            "is_false_positive": m.candidate_detected,
             "cnr": m.cnr,
             "defect_contrast": m.defect_contrast,
             "iou": m.iou,
             "dice": m.dice,
             "precision": m.precision,
             "recall": m.recall,
-            "loc_error_mm": 0.0,
-            "loc_error_px": 0.0,
+            "loc_error_detected_mm": np.nan,
+            "loc_error_all_mm": m.localization_error_all_mm,
+            "loc_error_mm": np.nan,
+            "loc_error_px": np.nan,
             "true_diameter_mm": 0.0,
             "pred_diameter_mm": m.predicted_diameter_mm,
             "diam_error_mm": m.diameter_error_mm,
@@ -937,15 +1014,19 @@ def main():
                     "noise_db": snr_db,
                     "noise_seed": seed,
                     "method": m.method_name,
-                    "is_detected": m.is_detected,
+                    "candidate_detected": m.candidate_detected,
+                    "is_detected": False,
+                    "is_false_positive": m.candidate_detected,
                     "cnr": m.cnr,
                     "defect_contrast": m.defect_contrast,
                     "iou": m.iou,
                     "dice": m.dice,
                     "precision": m.precision,
                     "recall": m.recall,
-                    "loc_error_mm": 0.0,
-                    "loc_error_px": 0.0,
+                    "loc_error_detected_mm": np.nan,
+                    "loc_error_all_mm": m.localization_error_all_mm,
+                    "loc_error_mm": np.nan,
+                    "loc_error_px": np.nan,
                     "true_diameter_mm": 0.0,
                     "pred_diameter_mm": m.predicted_diameter_mm,
                     "diam_error_mm": m.diameter_error_mm,
@@ -1029,6 +1110,30 @@ def main():
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2)
     print(f"\nReproducibility manifest written to: {manifest_path}")
+
+    # 8. Freeze Final Verified Dataset into results/conference/final/
+    final_dir = out_dir / "final"
+    final_dir.mkdir(parents=True, exist_ok=True)
+    import shutil
+    df_raw.to_csv(final_dir / "raw_results_final.csv", index=False)
+    if (out_dir / "summary_by_method.csv").exists():
+        shutil.copy(out_dir / "summary_by_method.csv", final_dir / "summary_by_method_final.csv")
+    if (out_dir / "summary_by_depth.csv").exists():
+        shutil.copy(out_dir / "summary_by_depth.csv", final_dir / "summary_by_depth_final.csv")
+    if (out_dir / "summary_by_diameter.csv").exists():
+        shutil.copy(out_dir / "summary_by_diameter.csv", final_dir / "summary_by_diameter_final.csv")
+    if (out_dir / "summary_by_noise.csv").exists():
+        shutil.copy(out_dir / "summary_by_noise.csv", final_dir / "summary_by_noise_final.csv")
+    if (out_dir / "healthy_specificity.csv").exists():
+        shutil.copy(out_dir / "healthy_specificity.csv", final_dir / "healthy_specificity_final.csv")
+    if (out_dir / "max_detectable_depth.csv").exists():
+        shutil.copy(out_dir / "max_detectable_depth.csv", final_dir / "max_detectable_depth_final.csv")
+    if (out_dir / "sensitivity_summary.csv").exists():
+        shutil.copy(out_dir / "sensitivity_summary.csv", final_dir / "sensitivity_final.csv")
+    if (out_dir / "experiment_manifest.json").exists():
+        shutil.copy(out_dir / "experiment_manifest.json", final_dir / "experiment_manifest_final.json")
+    print(f"Frozen verified benchmark dataset saved to: {final_dir}")
+
     print(f"Total Experiment Time: {time.perf_counter() - start_total_time:.2f} s")
     print("=" * 70)
 

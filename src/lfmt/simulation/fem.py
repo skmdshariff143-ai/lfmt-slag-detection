@@ -107,11 +107,15 @@ class FEMBackend(ThermalSimulationBackend):
         mat_base = get_material(config.geometry.plate.material)
         mat_inc = get_material(config.geometry.inclusion.material)
 
-        k_steel = mat_base.thermal_conductivity
-        Cv_steel = mat_base.density * mat_base.specific_heat
+        k_steel = config.geometry.plate.thermal_conductivity if getattr(config.geometry.plate, "thermal_conductivity", None) is not None else mat_base.thermal_conductivity
+        rho_steel = config.geometry.plate.density if getattr(config.geometry.plate, "density", None) is not None else mat_base.density
+        cp_steel = config.geometry.plate.specific_heat if getattr(config.geometry.plate, "specific_heat", None) is not None else mat_base.specific_heat
+        Cv_steel = rho_steel * cp_steel
 
-        k_slag = mat_inc.thermal_conductivity
-        Cv_slag = mat_inc.density * mat_inc.specific_heat
+        k_slag = config.geometry.inclusion.thermal_conductivity if getattr(config.geometry.inclusion, "thermal_conductivity", None) is not None else mat_inc.thermal_conductivity
+        rho_slag = config.geometry.inclusion.density if getattr(config.geometry.inclusion, "density", None) is not None else mat_inc.density
+        cp_slag = config.geometry.inclusion.specific_heat if getattr(config.geometry.inclusion, "specific_heat", None) is not None else mat_inc.specific_heat
+        Cv_slag = rho_slag * cp_slag
 
         inc = config.geometry.inclusion
         c_x = inc.center_x_mm * 1e-3

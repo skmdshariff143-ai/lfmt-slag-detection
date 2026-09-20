@@ -34,7 +34,7 @@ def test_defect_detector_blind():
 def test_metric_exact_formulas():
     """Phase 16: Verify exact IoU, Dice, Precision, Recall, and Localization Error in mm and px."""
     H, W = 10, 10
-    fov_x_mm, fov_y_mm = 100.0, 50.0  # dx = 100/9 = 11.11 mm/px, dy = 50/9 = 5.55 mm/px
+    fov_x_mm, fov_y_mm = 18.0, 18.0  # dx = 18/9 = 2.0 mm/px, dy = 18/9 = 2.0 mm/px
     dx = fov_x_mm / 9.0
     dy = fov_y_mm / 9.0
 

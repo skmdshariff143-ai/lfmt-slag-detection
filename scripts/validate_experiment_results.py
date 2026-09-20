@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -92,14 +93,31 @@ def validate_conference_results(results_dir: Path) -> bool:
     df_raw = pd.read_csv(results_dir / "raw_results.csv")
     print(f"  Total Raw Records: {len(df_raw)}")
 
-    # Check NaNs
-    null_counts = df_raw.isnull().sum().to_dict()
+    # Check NaNs on required complete columns
+    required_complete_cols = [
+        "run_id", "backend", "material_matrix", "material_inclusion", "diameter_mm",
+        "depth_mm", "is_healthy", "noise_condition", "noise_db", "noise_seed",
+        "method", "candidate_detected", "is_detected", "is_false_positive",
+        "cnr", "defect_contrast", "iou", "dice", "precision", "recall",
+        "runtime_seconds", "sim_time_seconds", "git_commit", "config_hash"
+    ]
+    null_counts = {c: int(df_raw[c].isnull().sum()) for c in required_complete_cols if c in df_raw.columns}
     has_nulls = any(v > 0 for v in null_counts.values())
     if has_nulls:
-        print(f"  [FAIL] Null/NaN values found in raw data: {null_counts}")
+        print(f"  [FAIL] Unexpected Null/NaN values in essential columns: {null_counts}")
         passed = False
     else:
-        print("  [PASS] Zero NaN/Null/Inf values in raw dataset.")
+        print("  [PASS] Zero NaN/Null values in all 24 required core columns.")
+        
+    # Check that detected runs have valid localization error
+    detected_runs = df_raw[df_raw["is_detected"]]
+    if "loc_error_detected_mm" in df_raw.columns:
+        det_loc_nulls = detected_runs["loc_error_detected_mm"].isnull().sum()
+        if det_loc_nulls > 0:
+            print(f"  [FAIL] {det_loc_nulls} successfully detected runs have NaN localization error!")
+            passed = False
+        else:
+            print(f"  [PASS] All {len(detected_runs)} successful detections have verified valid localization errors.")
 
     # 3. Check Geometry Grid
     print("\n[Check 3/7] Verifying 25 Defect Geometries + Healthy Control...")

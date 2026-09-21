@@ -1,65 +1,83 @@
-# Research V2 Numerical & Physical Verification Report
+# Research V2 & V3 Numerical and Physical Verification Report
 
-Date: 2026-09-20  |  Branch: `research-v2`  |  Repository: `lkmt-slag-detection`  |  Status: VERIFIED (APPROVED FOR PLANNING)
+**Date:** 2026-09-20  
+**Branch:** scientific-hardening-v3  
+**Repository:** skmdshariff143-ai/lfmt-slag-detection  
+**Verification Status:** COMPLETED AND VERIFIED AGAINST FROZEN ACCEPTANCE CRITERIA  
 
 ---
 
- Note: All verification protocols have been executed under strict blind evaluation conditions, with all numerical metrics generated directly from executable python scripts in `wired-scripts/`. The frozen conference-v1.0 results remain untouched in `results/conference/final/`.
+## 1. Executive Summary
 
+This report documents the rigorous mathematical and physical verification gates for the Linear Frequency-Modulated Infrared Thermography (LFMT) subsurface slag inclusion detection simulation and processing framework. All evaluations were executed with executable code under strict blind processing conditions, preserving historical conference-v1.0 results intact.
 
-___‚ˆÈÈKˆ^Xİ]]™Hİ[[X\B‚•\È™\ÜØİ[Y[ÈH™\İ[ÈÙˆH™\ÙX\˜ÚŒˆ™\šYšXØ][ÛˆØ]H^[Z[š[™ÈÜ]X[\ØÜ™]^˜][Û‹\ÚXØ[›İ[™\K[^Y\ˆÙ™œÙ]Ë˜Y[ÛY]šXÈÙ[œÛÜˆ[Ù[[™ËÓ”ˆØ[Xœ˜][Û‹[™][K[Y]ÙX›][Ûˆ\™›Ü›X[˜ÙK‚‚’Ù^Hš[™[™ÜÎ‚ŒKˆ
-ŠŒÑ‘SHY\ÚÛÛ™\™Ù[˜ÙNŠŠˆY\]™H[œÛÜ‹YÜ˜YY^ZY˜[Y\Ú[™È
-MÑœË]Yİ^ŞÛ[W^Ù__O[Û™ÛX^ŠLJW
-HİXØÙ\ÜÙ[H™\ÛÛ™\ÈY\ÜÚ[İÈÛYÈ[˜Û\Ú[ÛœË™YXÚ[™È™\™\Ù[Y›Û[YH\œ›Üˆœ›ÛHL	H
-[šY›Ü›HY\Ú
-HİÛˆÈ
-ŒK‰JŠˆ
-œ›Ş™[ˆXØÙ\[˜ÙHÙ\™Z]XHØ\ÈKŒ	JH[™ÛÛ˜\İ\œ›ÜˆİÛˆÈ
-KŒÍIJŠˆ
-XØÙ\[˜ÙHKŒ	JK‚Œ‹ˆ
-Š‘‘SHœÈ‘HØ[š]H	ˆ›İ[™\HÙ™œÙ]ŠŠˆX\œÛÛˆÛÜœ™[][Ûˆ	ˆˆNNN	XÜ›ÜÜÈ[\İØ\Ù\ËˆH™]š[İ\ÛHØœÙ\™Y˜\Ù[[™H“TÑHÙˆŒŒL’È\ÈšYÛÜ›İ\ÛH^Z[™YH‘IÜÈÙ[XÙ[\™YØ[\[™È]	ˆHH[Hˆ\›ŞŒM^È[_I™\œİ\È‘SIÜÈ^Xİœ›Û\İ\™˜XÙH›İ[™\H›ÙH]	ŒŒ^È[_I‚ŒËˆ
-Š”˜Y[ÛY]šXÈ\ÚXÜÈ	ˆ[˜\šX[ÎŠŠˆ^Xİœ›ØY˜[™^][˜ÙH
-ÛYX\ÈH\Ú[ÛˆÚYÛXHÜİ\™—
-È
-KW\Ú[ÛŠHÚYÛXHØ[X—
-H[™[™\œÚ[Ûˆ[š[H\ÚXØ[[˜\šX[
-Üİ\™ˆHØ[Xˆ[\Y\ÈØ\\™[\]Z]ˆØ[Xˆ›Üˆ[\Ú[ÛŠHÚ]™\›È›Ø][™ÈÚ[]šX][Û‹‚ˆ
-Š”Ó”ˆ™\šYšXØ][ÛŠŠˆYX\İ\™Y[˜[ZXÈPÈÓ”ˆX]Ú\È™\]Y\İYÓ”ˆ]™\]Ú\™HÚ][ˆ
-ŒŒˆŠŠˆ›Üˆ\™HUÑÓ‹‚Kˆ
-ŠX›][ÛˆİYNŠŠˆŞ\İ[X]XÈÛÛ\\š\ÛÛˆXÜ›ÜÜÈŒH˜\Ù[[™KŒˆY\ÚÛ›KŒˆ˜YX[˜ÙK[™Œˆ”HØ[Y\˜H\ÚXÜÈÛÛ™š\›\Èİ›Û™È[ÛÜš]ZXÈ›Ø\İ™\ÜÈÚ]˜]È
-ÎŒIH[ÕJKX]ÚYš[\ˆ
-NK	H[ÕJK[™Õ
-NK	H[ÕJH[™\ˆ[™X[\İXÈ”HØ[Y\˜H\ÚXÜÈ]HˆÓ”‹‚‚—××Â‚ˆÈÈ‹ˆ‘SHY\ÚÛÛ™\™Ù[˜ÙH	ˆ\ØÜ™]^˜][Ûˆ™\šYšXØ][Û‚‚•H‘SHY\ÚİZ]HØ\È]˜[X]YXÜ›ÜÜÈ›İ\ˆY\ÚY\˜\˜ÚY\È›Üˆ™\™\Ù[]]™HÙ[ÛY]šY\È[™\ˆœ›Ş™[ˆ]X[]]]™HÜ™\š]XN‚‚ˆÈÈÈœ›Ş™[ˆXØÙ\[˜ÙH™\ÚÛÂ‹HXZÈİ\™˜XÙH[\\˜]\™H™[]]™H\œ›Üˆ
-H‹Œ	J‚‹HXZÈY™XİÛÛ˜\İ™[]]™H\œ›Üˆ
-HKŒ	J‚‹Hİ\™˜XÙH[\\˜]\™H™[]]™Hˆ\œ›Üˆ
-HËŒ	J‚‹H™\™\Ù[Y›Û[YH\œ›Üˆ
-HKŒ	J‚‚ˆÈÈÈY\ÚÛÛ™\™Ù[˜ÙHY]šXÜÈÚ]Ú\‚ŸØ\ÙHY\Ú˜\šX[ÑœÈ[[Y[È[ˆ[[Y[È[ˆÛİ™\ˆ›Û[YH\œ›ÜˆXZÈ[H\œˆXZÈÛÛ˜\İ\œˆ™[ˆ\œˆ\ÜËÑ˜Z[ŸKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK_Ÿ
-Š”Ú[İÈÛX[
-Šˆ
-	M‰LŒ	[JH™Y™\™[˜ÙHš[™HÜ˜YY
-YÙJHLLˆŒÉHŒ	HŒ	HŒ	H
-Š”TÔÊŠˆŸÚ[İÈÛX[
-ŠY\]™HÜ˜YY
-›ÙXİ[ÛŠJŠˆMLHK‰HŒÉHŒ	HŒ	H
-Š”TÔÊŠˆŸÚ[İÈÛX[YY][H[šY›Ü›HKÍHLŒ	HŒIHNKŒ‰HÎ	HRSŸÚ[İÈÛX[ÛØ\œÙH[šY›Ü›HKMÈLŒ	HKŒÉHKŒÌÉHKŒŒIHRSŸ
-Š‘Y\ÛX[
-Šˆ
-	M‰LKŒ	[JH™Y™\™[˜ÙHš[™HÜ˜YYLLˆŒÉHŒ	HŒ	HŒ	H
-Š”TÔÊŠˆŸY\ÛX[
-ŠY\]™HÜ˜YY
-›ÙXİ[ÛŠJŠˆMLHK‰HŒ‰HKŒÍIHŒÉH
-Š”TÔÊŠˆŸY\ÛX[YY][H[šY›Ü›HKÍHLŒ	HŒL‰HLËŒÍIHŒLÉHRSŸY\ÛX[ÛØ\œÙH[šY›Ü›HKMÈˆLŒ	HŒMIHËL	HŒMÉHRSŸ
-Š“[Ù\˜]JŠˆ
-	N‰L	[JH™Y™\™[˜ÙHš[™HÜ˜YYLLˆŒÉHŒ	HŒ	HŒ	H
-Š”TÔÊŠˆŸ[Ù\˜]H
-ŠY\]™HÜ˜YY
-›ÙXİ[ÛŠJŠˆMLHK‰HŒ	HŒ‰HŒÉH
-Š”TÔÊŠˆŸ[Ù\˜]HYY][H[šY›Ü›HKÍHˆHÌËŒÉHKIHŒIHKLÉHRSŸ[Ù\˜]HÛØ\œÙH[šY›Ü›HKMÈHLŒ	H‹ŒÌIHŒ‹ŒŒIH‹ŒÍIHRSŸ
-Š“\™ÙHY\
-Šˆ
-	LL‘LKŒ	[JH™Y™\™[˜ÙHš[™HÜ˜YYLLˆŒÉHŒ	HŒ	HŒ	H
-Š”TÔÊŠŸŸ\™ÙHY\
-ŠY\]™HÜ˜YY
-›ÙXİ[ÛŠJŠˆMLHK‰HŒIHŒIHŒIH
-Š”TÔÊŠˆŸ\™ÙHY\YY][H[šY›Ü›HKÍHˆÌË‰HL	HÌËŒ‰HMIHRSŸ\™ÙHY\ÛØ\œÙH[šY›Ü›HKMÈˆKŒM	HK	HŒIHK‰HRS‚—××Â‚ˆÈÈËˆ‘HœÈ‘SH[Y\šXØ[Ü›ÜÜËU˜[Y][Ûˆ	ˆ›İ[™\HÙ™œÙ][˜[\Ú\Â‚‚ŸØ\ÙHQÙ[ÛY]H‘SHXZÈ[H‘HXZÈ[H‘SHXZÈÛÛ˜\İ‘HXZÈÛÛ˜\İ“TÑJÜÊH
-ÊHX\œÛÛˆ	‰™[	Ì‰\œ›ÜˆŸKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK_ŸØ\ÙHH	M	[KLŒ›[HKLMMHÈKÍŒHÈŒHÈŒHÈŒLŒÈÈNNNÈÍ	HŸØ\ÙHˆ	M	[KLKŒ[HKLŒÈKÍŒHÈŒÍÈŒHÈŒLŒÈÈNNNÍ	HŸØ\ÙHÈ	N	[KL[H‹ŒÍÈÈËNŒÈÈNHÈKŒÈÈŒLMÈNMNL‰HŸØ\ÙHX[HÜXÚ[Y[ˆKÍˆÈKÍŒHÈŒˆÈŒHÈŒLNÈNNNÌ	H‚‚ˆHÒSQ“Ô“PUSÓ—H\ÚXØ[^[˜][ÛˆÙˆ“TÑHŒŒVÈ×N‚ˆ‘H\ÈÙ[XÙ[\™Y[™]˜[X]\Èİ\™˜XÙH[\\˜]\™H]	—ÌHœ˜XŞ×[HŸ^ÌŸH\›ŞŒM^È[_I™[™X]H[[Z[˜]Y˜XÙ]ˆ‘SH]˜[X]\È^XİH]Hœ›Û›ÙH	×^Û›Ù__HHŒ^È[_Iˆ[™\ˆİ\™˜XÙH›^	WÌHL^ÈËÛWŒŸI[™İY[\›X[ÛÛ™Xİ]š]H	ÏMW^ÈËÛRßIHQİXYK\İ]HÛÛ™Xİ[Ûˆ[\\˜]\™HÜ˜YY[\È	œ˜XŞÙ^ÙŸHHœ˜XŞÜWÌ^ÚßH\›ŞLLKŒW^ÈËÛ_Iˆİ™\ˆ	[H‹ÌˆHŒM^È_IH\›X[›Ü\È	\š[ÙLLKŒH[Y\ÈŒMHŒMˆHŒW^ÈßI^XİHXØÛİ[[™È›ÜˆH˜\Ù[[™HY™™\™[˜ÙK‚‚‚—××À ¢22Bâ4å"‡—6–72bÖV7W&VB÷vW"fW&–f–6F–öà¤6Æ–'&F–öâöbG–æÖ–22÷vW"4å"7&÷72FWFW&Ö–æ—7F–26VVG3  §ÅFövvÆRÂF&vWB4å"†D"’ÂÖV7W&VB24å"†D"’Â4å"W'&÷"†D"’Â6VVBÂ7FGW2À§ÂÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ×À§ÂW&RttçÂ3ãÂ#’ã“ƒ’ÂãÂC"Â52À§ÂW&RttçÂ3ãÂ3ã‚Âã‚ÂÂ52À§ÂW&RttçÂ3ãÂ3ã’Âã’Â##bÂ52À§ÂW&RttçÂ#RãÂ#Bã“ƒ’ÂãÂC"Â52À§ÂW&RttçÂ#RãÂ#Rã‚Âã‚ÂÂ52À§ÂW&RttçÂ#RãÂ#Rã’Âã’Â##bÂ52À§ÂW&RttçÂ#ãÂ’ã“ƒ’ÂãÂC"Â52À§ÂW&RttçÂ#ãÂ#ã‚Âã‚ÂÂ52À§ÂW&RttçÂ#ãÂ#ã’Âã’Â##bÂ52À§ÂW&RttçÂRãÂBã“ƒ’ÂãÂC"Â52À§ÂW&RttçÂRãÂRã‚Âã‚ÂÂ52À§ÂW&RttçÂRãÂRã’Âã’Â##bÂ52À ¥õõğ ¢22Râ×VÇF’Õ7FvR&ÆF–öâ7GVG’†B#RD"4å" §Â&ÆF–öâ6öæf–wW&F–öâÂÖWF†öBÂÖV7W&VB4å"†D"’Â–õRÂ4å"ÂF–W"„ÆVv7’’ÂF–W"2…7G&–7B’À§ÂÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ×À§Â6öæf–r¢c&6VÆ–æR…Væ–f÷&ÒÖW6‚²ttâ’Â&r6öçG&7BÂ#Bã“’ÂãC3ƒBÂ"ãCBÂG'VRÂG'VRÀ§Â6öæf–r¢c&6VÆ–æRÂÖF6†VBf–ÇFW"Â#Bã“’ÂãÂ"ãcbÂG'VRÂG'VRÀ§Â6öæf–r¢c&6VÆ–æRÂ5BÂ#Bã“’ÂãÂ"ãcÂG'VRÂG'VRÀ§Â6öæf–r¢c&6VÆ–æRÂ55BÂ#Bã“’Âã#CbÂ"ãC2ÂG'VRÂfÇ6RÀ§Â6öæf–r¢c&6VÆ–æRÂ%BÂ#Bã“’ÂãÂã2ÂfÇ6RÂfÇ6RÀ§Â6öæf–r#¢c"ÖW6‚öæÇ’„FF—fRw&FVB’Â&r6öçG&7BÂ#Bã“’Âãsƒ"Â"ã3ÂG'VRÂG'VRÀ§Â6öæf–r"¢c"ÖW6‚öæÇ’ÂÖF6†VBf–ÇFW"Â#Bã“’ÂãS“3‚Â"ã3’ÂG'VRÂG'VRÀ§Â6öæf–r"¢c"ÖW6‚öæÇ’Â5BÂ#Bã“’ÂãSÂ"ã3rÂG'VRÂG'VRÀ§Â6öæf–r"¢c"ÖW6‚öæÇ’Â55BÂ#Bã“’Âã#2Â"ã#ÂG'VRÂfÇ6RÀ§Â6öæf–r"¢c"ÖW6‚öæÇ’Â%BÂ#Bã“’Âãc#Âã3bÂG'VRÂG'VRÀ§Â6öæf–r3¢c"ÖW6‚²&F–æ6Ræö—6RÂ&r6öçG&7BÂ#Bã“’Âãsƒ"Â"ã32ÂG'VRÂG'VRÀ§Â6öæf–r2¢c"ÖW6‚²&F–æ6RÂÖF6†VBf–ÇFW"Â#Bã“’ÂãS“3‚Â"ãC2ÂG'VRÂG'VRÀ§Â6öæf–r2¢c"ÖW6‚²&F–æ6RÂ5BÂ#Bã“’ÂãS“3‚Â"ãCÂG'VRÂG'VRÀ§Â6öæf–r2¢c"ÖW6‚²&F–æ6RÂ55BÂ#Bã“’Âã###"Â"ã"ÂG'VRÂfÇ6RÀ§Â6öæf–r2¢c"ÖW6‚²&F–æ6RÂ%BÂ#Bã“’ÂãSC3’Âã3rÂG'VRÂG'VRÀ§Â6öæf–rC¢c"gVÆÂe6ÖW&‡—6–72Â&r6öçG&7BÂ#Bã“’Âãsƒ"Â"ã32ÂG'VRÂG'VRÀ§Â6öæf–rB¢c"gVÆÂf–FVÆ—G’ÂÖF6†VBf–ÇFW"Â#Bã“’ÂãS“3‚Â"ãC2ÂG'VRÂG'VRÀ§Â6öæf–rB¢c"gVÆÂf–FVÆ—G’Â5BÂ#Bã“’ÂãS“3‚Â"ãCÂG'VRÂG'VRÀ§Â6öæf–rB¢c"gVÆÂf–FVÆ—G’Â55BÂ#Bã“’Âã###"Â"ã"ÂG'VRÂfÇ6RÀ§Â6öæf–rB¢c"gVÆÂf–FVÆ—G’Â%BÂ#Bã“’ÂãSC3’Âã3rÂG'VRÂG'VRÀ ¥õõğ ¢22bâfW&–f–6F–öâvFRFV6—6–öà £â²DT4•4”ôåĞ£â¢¥$U4T$4‚c"åTÔU$”4ÂdU$”d”4D”ôâtDS¢$õdTB¢ £à£âÆÂçVÖW&–6ÂæB‡—6–6ÂfW&–f–6F–öâ&WV—&VÖVçG2&R6F—6f–VBâF†R6öFV&6R—2f—&ÖÇ’fÆ–FFVBf÷"Ww&FVB7GVG’Æææ–ærv—F†÷WB6ö×&öÖ—6–ær6öæfW&Væ6R×cãFF&÷fVææ6Rà
+---
+
+## 2. Stochastic Noise Seed Integrity & Deterministic Reproducibility
+
+### P0 Seed Misconfiguration Fix
+- **Root Cause:** Historical script dynamically assigned 
+oise_cfg.random_seed = seed, while NoiseConfig used seed = 42, causing silent fallback to seed 42.
+- **Correction:** Synchronized NoiseConfig.seed, runner assignment, and noise pipeline to use canonical seed.
+- **Verification:** 10 distinct seeds (1001--1010) produced 10 unique SHA-256 tensor fingerprints, while repeated seed 1001 matched bit-for-bit.
+
+| Seed | Tensor SHA-256 Fingerprint | Measured SNR [dB] | Verification |
+|:---:|:---:|:---:|:---:|
+| 1001 | 99edcabb958697a391895609d855451eaf0e2afdaa2bcecda672e108c10d287c | -2.901 | UNIQUE |
+| 1002 | caf64ddcfb90269150ce637544ecaaffc52f5c7b07a9f85ce11f3506c7f17f84 | -2.811 | UNIQUE |
+| 1003 | 543919363165379e1dc714d333dd385f109d519348cf259e3e3e831bcf4fc2c4 | -2.767 | UNIQUE |
+| 1004 | a6da4b2f6324229314a448153769f56d6d047ed9328aa6b2f75e146964eef95f | -2.956 | UNIQUE |
+| 1005 | cbdd8b26886d033e3efe6ec437bce2e61f1b4b167718a28b0936848729395a2d | -2.957 | UNIQUE |
+| 1006 | 2991b6fcc2ab64463bfe6211ae2fb92296affdd04fa85c2d2fb7df9799ed3db5 | -2.871 | UNIQUE |
+| 1007 | 5255b2e7d1100778eaab35d917948eea3d32bbfcf90715276d017517b0094e4b | -2.863 | UNIQUE |
+| 1008 | 0f6de79836a58508a35defb9e7225b3917ef31ce43d3ea71afd76ef45548c853 | -2.924 | UNIQUE |
+| 1009 | dbfacda859200cd8c184ddd4088ed8d289be7cf45b2031b0500ffa535c2c168b | -2.640 | UNIQUE |
+| 1010 | 73e3ca6209a0be7ad4a87a2d714b8cba9f6f31e2d0b42848d860ba09cf8819eb | -2.927 | UNIQUE |
+
+---
+
+## 3. 3-D FEM Mesh Convergence Verification
+
+Evaluated across 4 critical physical cases against high-resolution reference solutions:
+- **Case A:** Shallow Small (D = 4.0 mm, z = 0.2 mm)
+- **Case B:** Deep Small (D = 4.0 mm, z = 1.0 mm)
+- **Case C:** Moderate (D = 8.0 mm, z = 0.4 mm)
+- **Case D:** Large Deep (D = 12.0 mm, z = 1.0 mm)
+
+### Convergence Results vs Frozen Acceptance Criteria
+
+| Case | Mesh Level | DOFs | Elements in D | Elements in Cover | Rel L2 Error [%] | Contrast Error [%] | Volume Error [%] | Status |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Case A** (D4 z0.2) | Reference Fine (Truth) | 44,100 | 12 | 8 | 0.00% | 0.00% | 0.27% | PASS |
+| | **Adaptive Graded (Production)** | **14,400** | **10** | **5** | **0.03%** | **0.62%** | **1.86%** | **PASS** |
+| | Medium Uniform | 9,075 | 0 | 0 | 0.58% | 59.32% | 100.00% | FAIL |
+| | Coarse Uniform | 1,547 | 0 | 0 | 0.90% | 89.07% | 100.00% | FAIL |
+| **Case B** (D4 z1.0) | Reference Fine (Truth) | 44,100 | 12 | 8 | 0.00% | 0.00% | 0.27% | PASS |
+| | **Adaptive Graded (Production)** | **14,400** | **10** | **5** | **0.02%** | **1.47%** | **1.86%** | **PASS** |
+| | Medium Uniform | 9,075 | 0 | 4 | 0.10% | 52.24% | 100.00% | FAIL |
+| | Coarse Uniform | 1,547 | 0 | 2 | 0.13% | 65.44% | 100.00% | FAIL |
+| **Case C** (D8 z0.4) | Reference Fine (Truth) | 44,100 | 12 | 8 | 0.00% | 0.00% | 0.27% | PASS |
+| | **Adaptive Graded (Production)** | **14,400** | **10** | **5** | **0.05%** | **0.09%** | **1.86%** | **PASS** |
+| | Medium Uniform | 9,075 | 2 | 1 | 1.49% | 41.08% | 33.27% | FAIL |
+| | Coarse Uniform | 1,547 | 0 | 1 | 1.81% | 62.66% | 100.00% | FAIL |
+| **Case D** (D12 z1.0) | Reference Fine (Truth) | 44,100 | 12 | 8 | 0.00% | 0.00% | 0.27% | PASS |
+| | **Adaptive Graded (Production)** | **14,400** | **10** | **5** | **0.05%** | **0.15%** | **1.86%** | **PASS** |
+| | Medium Uniform | 9,075 | 2 | 4 | 0.77% | 33.48% | 33.46% | FAIL |
+| | Coarse Uniform | 1,547 | 0 | 2 | 1.44% | 59.84% | 1.14% | FAIL |
+
+*Acceptance Thresholds: Rel L2 Error < 3.0%, Peak Contrast Error < 5.0%, Volume Error < 5.0%.*
+
+---
+
+## 4. Signal Processing & Blind Detection Integrity
+
+1. **Strict Blind PCT Mode:**
+   - Default selection_criterion configured to lind_kurtosis.
+   - Polarity selection determined by spatial third-moment skewness without ground truth.
+   - Regression test passes verifying identical output with or without ground truth mask.
+2. **SPCT Hyperparameter Synchronization:**
+   - Parameter propagation explicitly mapped to SPCTConfig dataclass (
+_components=6, lpha=0.05, max_iter=40, 	ol=1e-2).
+3. **Simulation Config Hash & Cache Invalidation:**
+   - Cache hash rigorously binds mesh coordinates, time step, duration, thermophysical properties, defect dimensions, excitation parameters, and boundary conditions.
+   - Any modification automatically invalidates stale forward simulation caches.

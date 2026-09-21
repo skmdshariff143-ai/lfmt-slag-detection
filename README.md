@@ -156,6 +156,21 @@ Statistically aggregated results across 25 physical defect geometries ($D \in \{
 
 ---
 
+## 🔬 External Real-World Thermography Transfer Example
+
+To demonstrate non-synthetic data ingestion architecture and evaluate signal-processing pipeline compatibility with physical laboratory thermograms, an external measured thermography sequence on mild steel is integrated from a public NDT benchmark dataset (PolyU Research Data Repository, DOI: [10.60933/PRDR/HJYNZB](https://doi.org/10.60933/PRDR/HJYNZB)).
+
+> [!NOTE]
+> **Scientific Integrity & Scope Notice**:
+> - **Specimen**: Mild steel plate ($150 \times 150 \times 10\text{ mm}$) containing manufactured flat-bottom holes (air/void surrogates).
+> - **Excitation**: 6 kJ pulsed optical flash (4 ms pulse).
+> - **Processing**: Strict blind evaluation using Raw Contrast, PCT, SPCT, and RPT. Matched Filtering is explicitly disabled because the excitation is pulsed, not LFMT chirp.
+> - **Classification**: This is an **external measured transfer example**. It is **NOT** experimental LFMT validation, real slag inclusion validation, or industrial weld validation. The 4,030-row LFMT slag benchmark remains an audited numerical 3-D FEM simulation study.
+
+Detailed documentation, radiometric validation figures, and future physical LFMT experiment schemas are available in [`docs/external_real_world_example.md`](docs/external_real_world_example.md) and [`data/experimental_lfmt_slag/README_TEMPLATE.md`](data/experimental_lfmt_slag/README_TEMPLATE.md).
+
+---
+
 ## 🧪 Material Database
 
 | Material | Conductivity $k$ [W/(m·K)] | Density $\rho$ [kg/m³] | Specific Heat $C_p$ [J/(kg·K)] | Diffusivity $\alpha$ [m²/s] | Effusivity $e$ [W·s$^{1/2}$/(m²·K)] | Status |
@@ -164,6 +179,45 @@ Statistically aggregated results across 25 physical defect geometries ($D \in \{
 | **Welding Slag (Silicate)** | 1.20 | 2800 | 850 | $5.04 \times 10^{-7}$ | 1,690 | Verified (Mills 1993) |
 | **Air Void / Delamination** | 0.026 | 1.161 | 1007 | $2.22 \times 10^{-5}$ | 5.5 | Verified (NIST) |
 | **Stainless Steel (304)** | 14.9 | 7900 | 477 | $3.95 \times 10^{-6}$ | 7,495 | Verified (Incropera) |
+
+---
+
+## 🤖 Research V3: Intelligent Thermographic Defect Analyzer & Scientific AI Platform
+
+Research V3 introduces an end-to-end, physics-informed defect analysis engine connecting multi-format radiometric data ingestion to automated spatial-temporal signal processing, deep learning multi-task diagnosis, uncertainty estimation, and consensus fusion:
+
+```
+DATA INGESTION (2D/3D TIFF, CSV, MAT, NPY, NPZ)
+                       ↓
+  PHYSICAL & METADATA VALIDATION ENGINE
+                       ↓
+ METHOD APPLICABILITY & SIGNAL PROCESSING (Raw, PCT, SPCT, RPT, Matched Filter)
+                       ↓
+ 14D PHYSICS SPATIO-TEMPORAL FEATURE EXTRACTION (α, e, μ(f), FFT, z-scores)
+                       ↓
+ PHYSICS-INFORMED MULTI-TASK DL (U-Net Lite + Spatial CNN + Physics MLP)
+                       ↓
+ MC DROPOUT UNCERTAINTY (95% CI) & MAHALANOBIS OOD ESTIMATION
+                       ↓
+ MULTI-METHOD CONSENSUS EVIDENCE FUSION & STRUCTURED EXPLANATION
+                       ↓
+ REPORT GENERATION (report.json, defects_summary.csv, 300 DPI diagnostic_panel.png)
+```
+
+### 📋 Research Provenance & Scientific Boundary Guardrails
+
+| Category | Dataset / Benchmark | Methodology | Status & Guardrails |
+|:---|:---|:---|:---|
+| **Category A** | **LFMT Slag Inclusion Benchmark** | 3-D FEM transient heat conduction on mild steel | Audited numerical simulation benchmark (`configs/research_v3_high_fidelity.yaml`). |
+| **Category B** | **External Measured Transfer Study** | PolyU mild steel flash pulsed thermography (11 FBHs) | External measured transfer study under strict blind evaluation (`scripts/run_external_real_world_example.py`). Matched filter guarded. |
+| **Category C** | **Physical LFMT Slag Validation** | Laboratory LFMT chirp on welded mild steel plates | **Future Work / Not Yet Performed**. Standardized protocol in `data/experimental_lfmt_slag/README_TEMPLATE.md`. |
+
+### 🚀 Interactive Web Analyzer & REST API
+
+- **Next.js Web Portal**: Run analysis directly via `/analyze` interactive route.
+- **FastAPI Engine**: Asynchronous job queue at `/api/v1/analyze/upload` and `/api/v1/analyze/preset/{preset_id}`.
+- **Edge Deployment**: Models exportable to ONNX with sub-millisecond CPU latency via `ml/export/onnx_exporter.py`.
+- **Google Colab Workbooks**: 7 reproducible headless notebooks in `notebooks/colab/` (01 to 07).
 
 ---
 

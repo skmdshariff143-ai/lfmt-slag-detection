@@ -73,11 +73,6 @@ def get_git_commit_hash() -> str:
     except Exception:
         return "f7b2779"
 
-        return float(obj)
-    elif isinstance(obj, np.ndarray):
-        return obj.tolist()
-    return str(obj)
-
 
 def simulate_or_load_clean_fem(
     config: LFMTConfig,
@@ -104,33 +99,36 @@ def simulate_or_load_clean_fem(
 
     sim_time = 0.0
     loaded = False
+    cfg_hash = compute_config_hash(config)
 
     if use_resume and npz_path.exists() and gt_json_path.exists() and meta_json_path.exists():
         try:
-            data = np.load(npz_path)
-            surf_temp = data["surface_temperature"]
-            t_vec = data["time_vector"]
-            x_grid = data["x_grid_mm"]
-            y_grid = data["y_grid_mm"]
-            z_grid = data["z_grid_mm"]
-            with open(gt_json_path, "r", encoding="utf-8") as f:
-                gt_dict = json.load(f)
             with open(meta_json_path, "r", encoding="utf-8") as f:
                 meta_dict = json.load(f)
+            cached_hash = meta_dict.get("config_hash")
+            if cached_hash is None or cached_hash == cfg_hash:
+                data = np.load(npz_path)
+                surf_temp = data["surface_temperature"]
+                t_vec = data["time_vector"]
+                x_grid = data["x_grid_mm"]
+                y_grid = data["y_grid_mm"]
+                z_grid = data["z_grid_mm"]
+                with open(gt_json_path, "r", encoding="utf-8") as f:
+                    gt_dict = json.load(f)
 
-            gt = GroundTruth(**gt_dict)
-            sim_res = SimulationResult(
-                surface_temperature=surf_temp,
-                time_vector=t_vec,
-                x_grid_mm=x_grid,
-                y_grid_mm=y_grid,
-                z_grid_mm=z_grid,
-                ground_truth=gt,
-                backend_name=config.simulation.backend,
-                metadata=meta_dict
-            )
-            sim_time = float(meta_dict.get("solver_runtime_s", 0.0))
-            loaded = True
+                gt = GroundTruth(**gt_dict)
+                sim_res = SimulationResult(
+                    surface_temperature=surf_temp,
+                    time_vector=t_vec,
+                    x_grid_mm=x_grid,
+                    y_grid_mm=y_grid,
+                    z_grid_mm=z_grid,
+                    ground_truth=gt,
+                    backend_name=config.simulation.backend,
+                    metadata=meta_dict
+                )
+                sim_time = float(meta_dict.get("solver_runtime_s", 0.0))
+                loaded = True
         except Exception:
             loaded = False
 
@@ -140,6 +138,7 @@ def simulate_or_load_clean_fem(
         sim_res = backend.run(config)
         sim_time = time.perf_counter() - t0
         sim_res.metadata["solver_runtime_s"] = sim_time
+        sim_res.metadata["config_hash"] = cfg_hash
 
         np.savez_compressed(
             npz_path,
@@ -212,10 +211,9 @@ def execute_processing_pipeline(
 
     # 4. SPCT (Blind Anomaly Ratio)
     spct_engine = SparsePrincipalComponentThermography(
-        n_components=4,
-        alpha=0.05,
-        max_iter=30,
-        tol=1e-2,
+        n_components=config.processing.spct.n_components,
+        alpha=config.processing.spct.alpha,
+        max_iter=config.processing.spct.max_iter,
         mode="blind"
     )
     res_spct = spct_engine.process(thermograms)
@@ -726,11 +724,12 @@ def generate_all_conference_figures(
 
 def main():
     parser = argparse.ArgumentParser(description="Run Full LFMT Conference Experiment Study.")
+    parser.add_argument("--config", type=str, default="configs/conference_v1_1_corrected.yaml", help="Path to YAML configuration")
     parser.add_argument("--quick", action="store_true", help="Run in quick mode (3 noise seeds).")
     parser.add_argument("--conference", action="store_true", help="Run full conference mode (10 noise seeds).")
     parser.add_argument("--backend", type=str, default="fem", choices=["fem", "fdm"], help="Simulation backend.")
-    parser.add_argument("--resume", action="store_true", default=True, help="Reuse cached simulation files.")
-    parser.add_argument("--outdir", type=str, default="results/conference", help="Output directory.")
+    parser.add_argument("--resume", action=argparse.BooleanOptionalAction, default=True, help="Reuse cached simulation files.")
+    parser.add_argument("--outdir", type=str, default="results/corrected_v1_1", help="Output directory.")
     args = parser.parse_args()
 
     start_total_time = time.perf_counter()
@@ -755,19 +754,9 @@ def main():
     print(f"Output Directory:    {out_dir}")
     print("=" * 70)
 
-    # Load baseline config
-    base_config = load_config("configs/default.yaml")
+    # Load canonical config
+    base_config = load_config(args.config)
     base_config.simulation.backend = args.backend
-    # High-accuracy FEM grid balanced for multi-case statistical studies
-    if args.quick:
-        base_config.simulation.spatial_resolution = {"nx": 26, "ny": 18, "nz": 7}
-    else:
-        base_config.simulation.spatial_resolution = {"nx": 30, "ny": 21, "nz": 8}
-    base_config.simulation.timestep_s = 0.04
-    base_config.simulation.total_time_s = 10.0
-    base_config.camera.resolution_x = 32
-    base_config.camera.resolution_y = 32
-    base_config.camera.sampling_rate_hz = 10.0
 
     raw_records = []
     run_counter = 0
@@ -840,7 +829,7 @@ def main():
                 for seed in seeds:
                     noise_cfg = copy.deepcopy(cfg.noise)
                     noise_cfg.snr_db = snr_db
-                    noise_cfg.random_seed = seed
+                    noise_cfg.seed = seed
                     noisy_therm = apply_noise_pipeline(capture_clean.thermograms, noise_cfg)
 
                     metrics_noisy = execute_processing_pipeline(noisy_therm, t_vec, cfg, gt, gt_mask)
@@ -941,7 +930,7 @@ def main():
         for seed in seeds:
             noise_cfg = copy.deepcopy(cfg_healthy.noise)
             noise_cfg.snr_db = snr_db
-            noise_cfg.random_seed = seed
+            noise_cfg.seed = seed
             noisy_therm_h = apply_noise_pipeline(capture_clean_h.thermograms, noise_cfg)
 
             metrics_noisy_h = execute_processing_pipeline(noisy_therm_h, t_vec_h, cfg_healthy, gt_h, gt_mask_h)

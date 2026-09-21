@@ -267,6 +267,11 @@ class FEMBackend(ThermalSimulationBackend):
                 r_dist = np.sqrt(dx_m**2 + dy_m**2)
                 r_perturbed = radius_m * (1.0 + 0.20 * np.cos(2 * angle) + 0.15 * np.sin(3 * angle))
                 in_xy = r_dist <= r_perturbed
+            elif shape_type in ("multi", "multi_inclusion"):
+                sep = radius_m * 2.5
+                in_1 = ((dx_m + sep / 2.0)**2 + dy_m**2) <= radius_m**2
+                in_2 = ((dx_m - sep / 2.0)**2 + dy_m**2) <= (0.8 * radius_m)**2
+                in_xy = in_1 | in_2
             else:
                 # Default cylinder
                 in_xy = (dx_m**2 + dy_m**2) <= radius_m**2
@@ -393,10 +398,12 @@ class FEMBackend(ThermalSimulationBackend):
         # 10. Transient Time Loop
         u_k = np.full(basis.N, T_amb, dtype=np.float64)
         surface_frames = np.zeros((n_frames, cam_ny, cam_nx), dtype=np.float64)
+        surface_frames[0] = T_amb
 
         M_over_dt = (1.0 / dt) * M
 
-        for k, t_curr in enumerate(t_out):
+        for k in range(1, n_frames):
+            t_curr = t_out[k]
             q_curr = exc.heat_flux(t_curr)
             rhs = M_over_dt.dot(u_k) + q_curr * f_front_unit + f_amb
             u_k = solve_implicit_step(rhs)

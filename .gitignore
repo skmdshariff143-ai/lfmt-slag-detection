@@ -79,3 +79,15 @@ results/figures/*
 *.mp4
 *.gif
 *.log
+*.zip
+*.tif
+*.tiff
+
+# External real-world raw datasets
+data/real_world_external/**/raw/
+data/real_world_external/**/*.zip
+data/real_world_external/**/*.npy
+data/real_world_external/**/*.npz
+data/real_world_external/**/*.mat
+data/real_world_external/**/*.tif
+data/real_world_external/**/*.tiff

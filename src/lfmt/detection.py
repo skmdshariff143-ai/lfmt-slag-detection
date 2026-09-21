@@ -78,6 +78,10 @@ class MultiDetectionResult:
     runtime_seconds: float
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def is_detected(self) -> bool:
+        return self.n_candidates > 0
+
     def to_single_result(self) -> DetectionResult:
         """Convert multi-defect result to primary DetectionResult for backward compatibility."""
         if self.n_candidates > 0:
@@ -193,9 +197,18 @@ class MultiDefectDetector:
         binary_raw = norm_map >= thresh
 
         # 3. Morphological filtering
-        struct = generate_binary_structure(2, 2)
-        binary_cleaned = binary_opening(binary_raw, structure=struct)
-        binary_cleaned = binary_closing(binary_cleaned, structure=struct)
+        k_size = self.morphology_kernel_size
+        if k_size <= 1:
+            binary_cleaned = binary_raw
+            struct = generate_binary_structure(2, 2)
+        elif k_size == 3:
+            struct = generate_binary_structure(2, 2)
+            binary_cleaned = binary_opening(binary_raw, structure=struct)
+            binary_cleaned = binary_closing(binary_cleaned, structure=struct)
+        else:
+            struct = np.ones((k_size, k_size), dtype=bool)
+            binary_cleaned = binary_opening(binary_raw, structure=struct)
+            binary_cleaned = binary_closing(binary_cleaned, structure=struct)
 
         # 4. Connected components
         labeled_array, num_features = label(binary_cleaned, structure=struct)
@@ -228,6 +241,9 @@ class MultiDefectDetector:
                 peak_in = float(np.max(norm_map[comp_mask]))
                 mu_out = float(np.mean(norm_map[~comp_mask])) if np.any(~comp_mask) else 0.0
                 conf = float(max(0.0, (mu_in - mu_out) / (mu_out + 1e-6)))
+
+                if conf < self.min_confidence:
+                    continue
 
                 candidate = DefectCandidate(
                     component_id=comp_id,

@@ -162,6 +162,14 @@ class NoiseConfig:
     emissivity_variation: float = 0.005
     seed: int = 42
 
+    @property
+    def random_seed(self) -> int:
+        return self.seed
+
+    @random_seed.setter
+    def random_seed(self, value: int):
+        self.seed = int(value)
+
 
 @dataclass
 class MaterialUncertaintyConfig:
@@ -179,7 +187,7 @@ class MaterialUncertaintyConfig:
 @dataclass
 class PCTConfig:
     n_components: int = 6
-    selection_criterion: str = "contrast"  # "contrast", "snr", "blind_kurtosis"
+    selection_criterion: str = "blind_kurtosis"  # "contrast", "snr", "blind_kurtosis"
 
 
 @dataclass

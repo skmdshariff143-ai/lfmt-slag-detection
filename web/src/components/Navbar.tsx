@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,7 +15,8 @@ import {
   Github, 
   Menu, 
   X,
-  Presentation
+  Presentation,
+  Sparkles
 } from "lucide-react";
 
 export const Navbar: React.FC = () => {
@@ -24,6 +25,7 @@ export const Navbar: React.FC = () => {
 
   const navItems = [
     { name: "Conference", href: "/conference", icon: Presentation, highlight: true },
+    { name: "Analyzer", href: "/analyze", icon: Sparkles, highlight: true },
     { name: "Results", href: "/results", icon: BarChart3 },
     { name: "Explorer", href: "/explorer", icon: Eye },
     { name: "Thermograms", href: "/thermograms", icon: Film },

@@ -2,9 +2,9 @@ name: CI Test & Verification Suite
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, research-v2, scientific-hardening-v3 ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, research-v2, scientific-hardening-v3 ]
 
 jobs:
   python-test:

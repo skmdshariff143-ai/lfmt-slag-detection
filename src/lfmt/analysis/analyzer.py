@@ -347,13 +347,14 @@ class AutoDefectAnalyzer:
         )
 
         # 9. Defect Sizing & Characterization
-        detector = MultiDefectDetector(threshold_method="adaptive_otsu", min_area_px=4, min_confidence=0.04)
+        detector = MultiDefectDetector(threshold_method="adaptive_otsu", morphology_kernel_size=1, min_area_px=3, min_confidence=0.04)
         det_all = detector.detect_all(primary_map, fov_mm=fov)
 
         defect_instances: List[DefectInstance] = []
-        for i, cand in enumerate(det_all.candidates):
-            d_id = f"DEFECT-{i+1:02d}"
-            d_type = consensus.likely_defect_type
+        if consensus.is_anomaly_detected:
+            for i, cand in enumerate(det_all.candidates):
+                d_id = f"DEFECT-{i+1:02d}"
+                d_type = consensus.likely_defect_type
             
             # Sizing & Depth estimation
             diam_mm = cand.equivalent_diameter_mm if inspection.fov_mm else None

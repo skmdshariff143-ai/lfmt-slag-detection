@@ -1,0 +1,64 @@
+{
+  "example_id": "slag_deep",
+  "title": "Deep Subsurface Slag Inclusion (d = 0.8 mm, D = 8.0 mm)",
+  "category": "A",
+  "source_type": "NUMERICAL_FEM",
+  "material": "mild_steel",
+  "plate_dimensions_mm": [
+    100.0,
+    70.0,
+    2.3
+  ],
+  "defects": [
+    {
+      "defect_id": "SLAG-01",
+      "defect_type": "SLAG_INCLUSION",
+      "diameter_mm": 8.0,
+      "depth_mm": 0.8,
+      "thickness_mm": 0.5,
+      "center_x_mm": 50.0,
+      "center_y_mm": 35.0,
+      "aspect_ratio": 10.0
+    }
+  ],
+  "depth_definition": "front_surface_to_top_of_inclusion",
+  "excitation": {
+    "type": "lfmt_chirp",
+    "f0_hz": 0.05,
+    "f1_hz": 0.5,
+    "q0_w_m2": 5000.0,
+    "duration_s": 10.0
+  },
+  "mesh": {
+    "backend": "fem",
+    "resolution": {
+      "nx": 40,
+      "ny": 28,
+      "nz": 12
+    },
+    "strategy": "uniform_hex"
+  },
+  "time": {
+    "dt_s": 0.1,
+    "n_frames": 101,
+    "duration_s": 10.0
+  },
+  "camera": {
+    "frame_rate_hz": 10.0,
+    "resolution": [
+      28,
+      40
+    ],
+    "fov_mm": [
+      100.0,
+      70.0
+    ]
+  },
+  "temperature_units": "K",
+  "temperature_unit_status": "SOURCE_VERIFIED",
+  "radiometric_status": "VERIFIED_NUMERICAL",
+  "software_git_sha": "115fa00e6e8ce0cc7742c0659717e179e520bfe7",
+  "generated_timestamp": "2026-09-21T01:05:22Z",
+  "generator_script": "scripts/generate_verified_examples.py",
+  "scientific_status": "VERIFIED_FEM_MODERATE_DEPTH_ANOMALY"
+}

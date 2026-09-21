@@ -1,0 +1,214 @@
+{
+  "schema_version": "3.0.0",
+  "generator_git_sha": "115fa00e6e8ce0cc7742c0659717e179e520bfe7",
+  "generated_timestamp": "2026-09-21T01:05:22Z",
+  "total_examples": 6,
+  "categories": {
+    "A": "NUMERICAL_FEM_LFMT",
+    "B": "EXTERNAL_MEASURED_THERMOGRAPHY"
+  },
+  "examples": [
+    {
+      "id": "healthy_lfmt",
+      "title": "Healthy Mild Steel Plate",
+      "short_description": "Homogeneous AISI 1018 steel without inclusions under LFMT chirp.",
+      "category": "A",
+      "source_type": "NUMERICAL_FEM",
+      "material": "mild_steel",
+      "excitation_type": "lfmt_chirp",
+      "defect_description": "None (Negative control)",
+      "frames": 101,
+      "resolution": [
+        28,
+        40
+      ],
+      "frame_rate_hz": 10.0,
+      "duration_s": 10.0,
+      "temperature_unit_status": "SOURCE_VERIFIED",
+      "radiometric_status": "VERIFIED_NUMERICAL",
+      "fov_status": "VERIFIED_100x70_MM",
+      "GT_available": false,
+      "example_available": true,
+      "classifier_required": false,
+      "supported_methods": [
+        "raw_contrast",
+        "lfmt_matched_filter",
+        "pct",
+        "spct",
+        "rpt"
+      ],
+      "data_path": "data/examples/healthy_lfmt/thermograms.npz",
+      "metadata_path": "data/examples/healthy_lfmt/metadata.json",
+      "expected_result_path": "data/examples/healthy_lfmt/expected_result.json",
+      "data_size_bytes": 43457
+    },
+    {
+      "id": "slag_shallow",
+      "title": "Shallow Slag Inclusion (d = 0.4 mm)",
+      "short_description": "Single cylindrical welding slag inclusion (D = 8.0 mm, d = 0.4 mm) in mild steel.",
+      "category": "A",
+      "source_type": "NUMERICAL_FEM",
+      "material": "mild_steel",
+      "excitation_type": "lfmt_chirp",
+      "defect_description": "Single slag inclusion (D = 8.0 mm, d = 0.4 mm)",
+      "frames": 101,
+      "resolution": [
+        28,
+        40
+      ],
+      "frame_rate_hz": 10.0,
+      "duration_s": 10.0,
+      "temperature_unit_status": "SOURCE_VERIFIED",
+      "radiometric_status": "VERIFIED_NUMERICAL",
+      "fov_status": "VERIFIED_100x70_MM",
+      "GT_available": true,
+      "example_available": true,
+      "classifier_required": false,
+      "supported_methods": [
+        "raw_contrast",
+        "lfmt_matched_filter",
+        "pct",
+        "spct",
+        "rpt"
+      ],
+      "data_path": "data/examples/slag_shallow/thermograms.npz",
+      "metadata_path": "data/examples/slag_shallow/metadata.json",
+      "ground_truth_path": "data/examples/slag_shallow/ground_truth.json",
+      "expected_result_path": "data/examples/slag_shallow/expected_result.json",
+      "data_size_bytes": 69235
+    },
+    {
+      "id": "slag_deep",
+      "title": "Deep Slag Inclusion (d = 0.8 mm)",
+      "short_description": "Single cylindrical slag inclusion (D = 8.0 mm, d = 0.8 mm) with lower surface thermal elevation.",
+      "category": "A",
+      "source_type": "NUMERICAL_FEM",
+      "material": "mild_steel",
+      "excitation_type": "lfmt_chirp",
+      "defect_description": "Single deep slag inclusion (D = 8.0 mm, d = 0.8 mm)",
+      "frames": 101,
+      "resolution": [
+        28,
+        40
+      ],
+      "frame_rate_hz": 10.0,
+      "duration_s": 10.0,
+      "temperature_unit_status": "SOURCE_VERIFIED",
+      "radiometric_status": "VERIFIED_NUMERICAL",
+      "fov_status": "VERIFIED_100x70_MM",
+      "GT_available": true,
+      "example_available": true,
+      "classifier_required": false,
+      "supported_methods": [
+        "raw_contrast",
+        "lfmt_matched_filter",
+        "pct",
+        "spct",
+        "rpt"
+      ],
+      "data_path": "data/examples/slag_deep/thermograms.npz",
+      "metadata_path": "data/examples/slag_deep/metadata.json",
+      "ground_truth_path": "data/examples/slag_deep/ground_truth.json",
+      "expected_result_path": "data/examples/slag_deep/expected_result.json",
+      "data_size_bytes": 69214
+    },
+    {
+      "id": "multi_slag",
+      "title": "Multiple Slag Inclusions",
+      "short_description": "Two spatially disjoint slag inclusions (D = 6.0 mm and 4.8 mm, d = 0.4 mm) in mild steel.",
+      "category": "A",
+      "source_type": "NUMERICAL_FEM",
+      "material": "mild_steel",
+      "excitation_type": "lfmt_chirp",
+      "defect_description": "Multiple slag inclusions (dual disjoint domain)",
+      "frames": 101,
+      "resolution": [
+        28,
+        40
+      ],
+      "frame_rate_hz": 10.0,
+      "duration_s": 10.0,
+      "temperature_unit_status": "SOURCE_VERIFIED",
+      "radiometric_status": "VERIFIED_NUMERICAL",
+      "fov_status": "VERIFIED_100x70_MM",
+      "GT_available": true,
+      "example_available": true,
+      "classifier_required": false,
+      "supported_methods": [
+        "raw_contrast",
+        "lfmt_matched_filter",
+        "pct",
+        "spct",
+        "rpt"
+      ],
+      "data_path": "data/examples/multi_slag/thermograms.npz",
+      "metadata_path": "data/examples/multi_slag/metadata.json",
+      "ground_truth_path": "data/examples/multi_slag/ground_truth.json",
+      "expected_result_path": "data/examples/multi_slag/expected_result.json",
+      "data_size_bytes": 75729
+    },
+    {
+      "id": "single_thermal_frame",
+      "title": "Single Thermogram Snapshot",
+      "short_description": "Single 2D infrared thermal image (t = 8.0 s extract). Temporal methods automatically disabled.",
+      "category": "A",
+      "source_type": "NUMERICAL_FEM_EXTRACT",
+      "material": "mild_steel",
+      "excitation_type": "single_snapshot",
+      "defect_description": "Single-frame spatial anomaly",
+      "frames": 1,
+      "resolution": [
+        28,
+        40
+      ],
+      "frame_rate_hz": 0.0,
+      "duration_s": 0.0,
+      "temperature_unit_status": "SOURCE_VERIFIED",
+      "radiometric_status": "VERIFIED_NUMERICAL",
+      "fov_status": "VERIFIED_100x70_MM",
+      "GT_available": false,
+      "example_available": true,
+      "classifier_required": false,
+      "supported_methods": [
+        "single_frame_spatial"
+      ],
+      "data_path": "data/examples/single_thermal_frame/thermal_frame.npy",
+      "metadata_path": "data/examples/single_thermal_frame/metadata.json",
+      "expected_result_path": "data/examples/single_thermal_frame/expected_result.json",
+      "data_size_bytes": 4608
+    },
+    {
+      "id": "measured_polyu_preview",
+      "title": "PolyU Measured Pulsed Thermography",
+      "short_description": "Real laboratory flash pulsed thermography on 10 mm mild steel with 11 flat-bottom holes.",
+      "category": "B",
+      "source_type": "EXTERNAL_MEASURED",
+      "material": "mild_steel",
+      "excitation_type": "pulsed_flash",
+      "defect_description": "11 Flat-Bottom Holes (corrosion / wall-thinning surrogates)",
+      "frames": 1000,
+      "resolution": [
+        256,
+        320
+      ],
+      "frame_rate_hz": 50.0,
+      "duration_s": 20.0,
+      "temperature_unit_status": "EXPLICIT",
+      "radiometric_status": "MEASURED_RADIOMETRIC",
+      "fov_status": "VERIFIED_150x150_MM",
+      "GT_available": true,
+      "example_available": true,
+      "classifier_required": false,
+      "supported_methods": [
+        "raw_contrast",
+        "pct",
+        "spct",
+        "rpt"
+      ],
+      "data_path": "data/real_world_external/polyu_mild_steel_pulsed/raw/MS-facq-50Hz-air-cir-1_0-999.zip",
+      "metadata_path": "data/examples/measured_polyu_preview/metadata.json",
+      "expected_result_path": "data/examples/measured_polyu_preview/expected_result.json",
+      "data_size_bytes": 0
+    }
+  ]
+}

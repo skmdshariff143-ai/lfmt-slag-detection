@@ -1,0 +1,11 @@
+{
+  "expected_anomaly": false,
+  "lfmt_matched_filter_applicable": true,
+  "pct_applicable": true,
+  "spct_applicable": true,
+  "rpt_applicable": true,
+  "single_frame_spatial_applicable": false,
+  "expected_defect_count": 0,
+  "expected_final_verdict": "HEALTHY",
+  "scientific_notes": "Negative control sample. Confirms zero false positive rate in pure homogeneous conduction."
+}

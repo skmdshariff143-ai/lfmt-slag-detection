@@ -257,21 +257,23 @@ class MultiMethodConsensusEngine:
         else:
             agr_level = "CONFLICTING"
 
-        # Final Defect Type Determination
+        # Final Defect Type Determination (Strict Anomaly vs Specific Classification Separation)
         is_detected = (fused_score >= 0.45)
         if not is_detected:
             final_type = "HEALTHY"
             rec = "Specimen exhibits healthy homogeneous thermal behavior. No defect action required."
         else:
+            is_ai_validated = getattr(multitask_prediction, "is_validated", False)
             if ood_status == "OUT_OF_DISTRIBUTION":
-                final_type = "GENERIC_SUBSURFACE_ANOMALY"
-                rec = "Thermal anomaly detected, but sample lies outside validated AI domain. Classify as Generic Subsurface Anomaly."
-            elif ai_defect_type not in ("HEALTHY", "UNKNOWN_DEFECT") and is_detected:
+                final_type = "GENERIC_SUBSURFACE_THERMAL_ANOMALY"
+                rec = "Thermal anomaly detected, but sample lies outside validated AI domain. Classify as Generic Subsurface Thermal Anomaly."
+            elif is_ai_validated and ai_defect_type not in ("HEALTHY", "UNKNOWN_DEFECT", "NOT_AVAILABLE"):
                 final_type = ai_defect_type
-                rec = f"Consensus supports '{final_type}' signature across thermal processing and AI."
+                rec = f"Consensus supports '{final_type}' signature across thermal processing and validated AI."
             else:
-                final_type = "SLAG_INCLUSION" if "lfmt_matched_filter" in method_results else "GENERIC_SUBSURFACE_ANOMALY"
-                rec = f"Consensus indicates {final_type}."
+                # LFMT Matched Filter establishes an anomaly, NOT metallurgical defect identity without a validated classifier
+                final_type = "GENERIC_SUBSURFACE_THERMAL_ANOMALY"
+                rec = "Consensus confirms subsurface thermal anomaly detection. Specific defect classification is unavailable without a validated classifier."
 
         return ConsensusVerdict(
             is_anomaly_detected=is_detected,

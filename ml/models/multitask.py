@@ -37,6 +37,7 @@ class MultiTaskPrediction:
     predicted_centroid_mm: Optional[Tuple[float, float]]
     confidence_score: float
     latent_embedding: np.ndarray
+    is_validated: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {

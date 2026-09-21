@@ -13,7 +13,8 @@ repo_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(repo_root))
 sys.path.insert(0, str(repo_root / "src"))
 
-from api.routes import analyze
+import os
+from api.routes import analyze, examples
 
 app = FastAPI(
     title="LFMT Intelligent Thermographic Defect Analyzer API",
@@ -27,10 +28,13 @@ app = FastAPI(
     redoc_url="/api/redoc"
 )
 
-# Configure CORS for Next.js frontend
+# Configure CORS with explicit allowed origins
+raw_origins = os.getenv("LFMT_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000")
+allowed_origins = [orig.strip() for orig in raw_origins.split(",") if orig.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins if "*" not in allowed_origins else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -38,6 +42,7 @@ app.add_middleware(
 
 # Register API routers
 app.include_router(analyze.router, prefix="/api/v1")
+app.include_router(examples.router, prefix="/api/v1")
 
 
 @app.get("/")

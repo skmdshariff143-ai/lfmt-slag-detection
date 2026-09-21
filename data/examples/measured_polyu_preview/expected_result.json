@@ -1,0 +1,10 @@
+{
+  "expected_anomaly": true,
+  "lfmt_matched_filter_applicable": false,
+  "pct_applicable": true,
+  "spct_applicable": true,
+  "rpt_applicable": true,
+  "single_frame_spatial_applicable": false,
+  "expected_uncalibrated_verdict": "GENERIC_SUBSURFACE_THERMAL_ANOMALY",
+  "scientific_notes": "Flash pulsed sequence on mild steel. Matched filter strictly disabled."
+}

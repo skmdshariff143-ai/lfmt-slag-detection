@@ -1,0 +1,11 @@
+{
+  "expected_anomaly": true,
+  "single_frame_spatial_applicable": true,
+  "lfmt_matched_filter_applicable": false,
+  "pct_applicable": false,
+  "spct_applicable": false,
+  "rpt_applicable": false,
+  "expected_defect_count_min": 1,
+  "expected_uncalibrated_verdict": "GENERIC_SUBSURFACE_THERMAL_ANOMALY",
+  "scientific_notes": "Temporal processing methods are strictly disabled for single frames."
+}

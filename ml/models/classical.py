@@ -30,6 +30,7 @@ class MLPredictionResult:
     feature_importances: Dict[str, float] = field(default_factory=dict)
     model_name: str = "RandomForest"
     confidence_score: float = 0.0
+    is_validated: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {

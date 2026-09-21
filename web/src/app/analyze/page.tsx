@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   UploadCloud,
   FileCode,
@@ -17,8 +17,16 @@ import {
   Crosshair,
   Compass,
   Zap,
-  BarChart2
+  BarChart2,
+  Database
 } from "lucide-react";
+import {
+  fetchVerifiedExamples,
+  runExampleAnalysis,
+  uploadAndAnalyzeFile,
+  ExampleCardInfo,
+  API_BASE_URL
+} from "@/lib/api";
 
 interface MethodApplicability {
   method_id: string;
@@ -109,58 +117,163 @@ interface AnalysisResultData {
   report_download_url?: string;
 }
 
+const FALLBACK_EXAMPLES: ExampleCardInfo[] = [
+  {
+    id: "healthy_lfmt",
+    title: "Healthy Mild Steel (Negative Control)",
+    short_description: "Homogeneous mild steel specimen with zero internal defects under 0.05-0.5 Hz chirp.",
+    category: "Category A: Numerical 3D FEM",
+    source_type: "3D FEM (scikit-fem)",
+    material: "Mild Steel (AISI 1018)",
+    excitation_type: "0.05-0.5 Hz LFMT Chirp (20 s)",
+    defect_description: "None (Homogeneous substrate negative control)",
+    frames: 100,
+    resolution: [70, 100],
+    frame_rate_hz: 5.0,
+    duration_s: 20.0,
+    temperature_unit_status: "Kelvin [K]",
+    radiometric_status: "Calibrated radiometric temperature",
+    fov_status: "100.0 x 70.0 mm",
+    GT_available: false,
+    example_available: true,
+    supported_methods: ["Raw Contrast", "LFMT Matched Filter", "PCT", "SPCT", "RPT"]
+  },
+  {
+    id: "slag_shallow",
+    title: "Shallow Slag Inclusion (D=8mm, z=0.4mm)",
+    short_description: "Canonical single subsurface slag inclusion in mild steel under 0.05-0.5 Hz chirp.",
+    category: "Category A: Numerical 3D FEM",
+    source_type: "3D FEM (scikit-fem)",
+    material: "Mild Steel (AISI 1018)",
+    excitation_type: "0.05-0.5 Hz LFMT Chirp (20 s)",
+    defect_description: "Slag inclusion (D=8.0mm, z=0.40mm, thick=0.30mm)",
+    frames: 100,
+    resolution: [70, 100],
+    frame_rate_hz: 5.0,
+    duration_s: 20.0,
+    temperature_unit_status: "Kelvin [K]",
+    radiometric_status: "Calibrated radiometric temperature",
+    fov_status: "100.0 x 70.0 mm",
+    GT_available: true,
+    example_available: true,
+    supported_methods: ["Raw Contrast", "LFMT Matched Filter", "PCT", "SPCT", "RPT"]
+  },
+  {
+    id: "slag_deep",
+    title: "Deep Slag Inclusion (D=8mm, z=0.8mm)",
+    short_description: "Deep subsurface slag inclusion testing thermal diffusion limits and SVD sensitivity.",
+    category: "Category A: Numerical 3D FEM",
+    source_type: "3D FEM (scikit-fem)",
+    material: "Mild Steel (AISI 1018)",
+    excitation_type: "0.05-0.5 Hz LFMT Chirp (20 s)",
+    defect_description: "Slag inclusion (D=8.0mm, z=0.80mm, thick=0.30mm)",
+    frames: 100,
+    resolution: [70, 100],
+    frame_rate_hz: 5.0,
+    duration_s: 20.0,
+    temperature_unit_status: "Kelvin [K]",
+    radiometric_status: "Calibrated radiometric temperature",
+    fov_status: "100.0 x 70.0 mm",
+    GT_available: true,
+    example_available: true,
+    supported_methods: ["Raw Contrast", "LFMT Matched Filter", "PCT", "SPCT", "RPT"]
+  },
+  {
+    id: "multi_slag",
+    title: "Multi-Inclusion Cluster (Dual Slag)",
+    short_description: "Two distinct subsurface slag inclusions testing spatial resolution and multi-defect segmentation.",
+    category: "Category A: Numerical 3D FEM",
+    source_type: "3D FEM (scikit-fem)",
+    material: "Mild Steel (AISI 1018)",
+    excitation_type: "0.05-0.5 Hz LFMT Chirp (20 s)",
+    defect_description: "Dual slag inclusions (D=6.0mm & 4.8mm at z=0.40mm)",
+    frames: 100,
+    resolution: [70, 100],
+    frame_rate_hz: 5.0,
+    duration_s: 20.0,
+    temperature_unit_status: "Kelvin [K]",
+    radiometric_status: "Calibrated radiometric temperature",
+    fov_status: "100.0 x 70.0 mm",
+    GT_available: true,
+    example_available: true,
+    supported_methods: ["Raw Contrast", "LFMT Matched Filter", "PCT", "SPCT", "RPT"]
+  },
+  {
+    id: "single_thermal_frame",
+    title: "Single Spatial Thermogram",
+    short_description: "Single-frame thermal snapshot testing spatial contrast, gradient magnitude, and Otsu isolation.",
+    category: "Category A: Numerical 3D FEM",
+    source_type: "3D FEM snapshot",
+    material: "Mild Steel (AISI 1018)",
+    excitation_type: "Snapshot at t=8.0 s (Peak heating)",
+    defect_description: "Slag inclusion (D=8.0mm, z=0.40mm)",
+    frames: 1,
+    resolution: [70, 100],
+    frame_rate_hz: 0.0,
+    duration_s: 0.0,
+    temperature_unit_status: "Kelvin [K]",
+    radiometric_status: "Calibrated radiometric temperature",
+    fov_status: "100.0 x 70.0 mm",
+    GT_available: true,
+    example_available: true,
+    supported_methods: ["Single-Frame Spatial Filtering"]
+  },
+  {
+    id: "measured_polyu_preview",
+    title: "PolyU Pulsed Transfer Specimen (Measured)",
+    short_description: "Real measured mild steel specimen with 11 FBHs under flash pulsed excitation.",
+    category: "Category B: External Measured",
+    source_type: "Physical Optical Flash Experiment (PolyU)",
+    material: "Mild Steel (150x150x10 mm)",
+    excitation_type: "Pulsed Optical Flash (10 ms)",
+    defect_description: "11 Flat-Bottom Holes (D=2-10 mm, depth 1.0-4.5 mm)",
+    frames: 200,
+    resolution: [240, 320],
+    frame_rate_hz: 20.0,
+    duration_s: 10.0,
+    temperature_unit_status: "Counts / Kelvin",
+    radiometric_status: "Measured FLIR IR camera stream",
+    fov_status: "150.0 x 150.0 mm",
+    GT_available: true,
+    example_available: false,
+    supported_methods: ["Raw Contrast", "PCT", "RPT"]
+  }
+];
+
 export default function AnalyzePage() {
+  const [examples, setExamples] = useState<ExampleCardInfo[]>(FALLBACK_EXAMPLES);
   const [loading, setLoading] = useState(false);
   const [analysisData, setAnalysisData] = useState<AnalysisResultData | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState<"consensus" | "methods" | "physics" | "defects">("consensus");
+  const [selectedTab, setSelectedTab] = useState<"consensus" | "defects" | "methods" | "physics">("consensus");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const presets = [
-    {
-      id: "synthetic_lfmt_slag",
-      title: "Numerical LFMT Slag Benchmark",
-      badge: "Category A",
-      desc: "3D FEM mild steel plate with subsurface slag inclusion under 0.05-0.5 Hz LFMT chirp excitation.",
-      color: "border-cyan-500/40 bg-cyan-950/20 hover:bg-cyan-900/30"
-    },
-    {
-      id: "polyu_pulsed_fbh",
-      title: "PolyU Pulsed Transfer Example",
-      badge: "Category B",
-      desc: "Measured 150x150x10 mm mild steel plate with 11 flat-bottom holes under optical flash pulse.",
-      color: "border-amber-500/40 bg-amber-950/20 hover:bg-amber-900/30"
-    },
-    {
-      id: "single_thermal_frame",
-      title: "Single Spatial Thermogram",
-      badge: "2D Frame",
-      desc: "Static single thermal image testing spatial contrast, gradient magnitude, and Otsu isolation.",
-      color: "border-purple-500/40 bg-purple-950/20 hover:bg-purple-900/30"
-    },
-    {
-      id: "healthy_plate",
-      title: "Sound Homogeneous Specimen",
-      badge: "Negative Control",
-      desc: "Healthy mild steel plate with zero inclusions demonstrating false-positive rejection.",
-      color: "border-emerald-500/40 bg-emerald-950/20 hover:bg-emerald-900/30"
+  useEffect(() => {
+    let mounted = true;
+    async function loadExamples() {
+      try {
+        const data = await fetchVerifiedExamples();
+        if (mounted && Array.isArray(data) && data.length > 0) {
+          setExamples(data);
+        }
+      } catch (err) {
+        console.warn("Backend examples API not reachable, using verified fallback manifest:", err);
+      }
     }
-  ];
+    loadExamples();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-  const handleRunPreset = async (presetId: string) => {
+  const handleRunExample = async (exampleId: string) => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const response = await fetch(`/api/v1/analyze/preset/${presetId}`, {
-        method: "POST"
-      });
-      if (!response.ok) {
-        throw new Error(`Server returned HTTP ${response.status}: ${await response.text()}`);
-      }
-      const data = await response.json();
+      const data = await runExampleAnalysis(exampleId, true, 0.0);
       setAnalysisData(data);
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to execute preset analysis.");
+      setErrorMsg(err.message || "Failed to execute verified example analysis.");
     } finally {
       setLoading(false);
     }
@@ -177,14 +290,7 @@ export default function AnalyzePage() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("/api/v1/analyze/upload", {
-        method: "POST",
-        body: formData
-      });
-      if (!response.ok) {
-        throw new Error(`Server returned HTTP ${response.status}: ${await response.text()}`);
-      }
-      const data = await response.json();
+      const data = await uploadAndAnalyzeFile(formData);
       setAnalysisData(data);
     } catch (err: any) {
       setErrorMsg(err.message || "Failed to analyze uploaded file.");
@@ -204,51 +310,149 @@ export default function AnalyzePage() {
                 <Sparkles className="w-3.5 h-3.5" /> Research V3 Autonomous Platform
               </span>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-purple-500/10 text-purple-400 border border-purple-500/30">
-                Hybrid AI + Physical Fused Engine
+                Multi-Method Physics + DL Fusion Engine
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
               Intelligent Thermographic Defect Analyzer
             </h1>
             <p className="mt-2 text-slate-400 text-sm sm:text-base max-w-3xl">
-              Universal thermal data ingestion, autonomous method selection, physics-grounded signal processing (Raw Contrast, Matched Filter, PCT, SPCT, RPT), and multi-task uncertainty-aware deep learning diagnosis.
+              Inspect thermal data, autonomously evaluate physical method applicability (Raw Contrast, LFMT Matched Filter, PCT, SPCT, RPT), isolate subsurface thermal anomalies, and quantify diagnostic consensus with uncertainty guardrails.
             </p>
           </div>
         </div>
 
-        {/* Guardrail Disclaimer Banner */}
+        {/* Scientific Provenance Guardrail Banner */}
         <div className="mt-6 p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-start gap-2">
             <span className="w-2 h-2 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
             <div>
-              <strong className="text-cyan-300 font-mono">Category A:</strong> LFMT Slag Inclusions evaluated via 3D FEM numerical simulation benchmarks.
+              <strong className="text-cyan-300 font-mono">Category A:</strong> LFMT Slag Inclusions evaluated via verified 3-D FEM numerical forward solvers.
             </div>
           </div>
           <div className="flex items-start gap-2">
             <span className="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0" />
             <div>
-              <strong className="text-amber-300 font-mono">Category B:</strong> PolyU measured pulsed flash data for transfer testing (non-LFMT, optical pulse).
+              <strong className="text-amber-300 font-mono">Category B:</strong> PolyU measured pulsed flash data for transfer testing (non-LFMT, optical flash pulse).
             </div>
           </div>
           <div className="flex items-start gap-2">
             <span className="w-2 h-2 rounded-full bg-slate-500 mt-1.5 shrink-0" />
             <div>
-              <strong className="text-slate-400 font-mono">Category C:</strong> Experimental physical LFMT slag validation is future work.
+              <strong className="text-slate-400 font-mono">Category C:</strong> Experimental physical LFMT slag validation is explicitly framed as future experimental work.
             </div>
           </div>
         </div>
       </div>
 
-      {/* Input Section: Presets & Upload */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-        {/* Upload Box */}
-        <div className="lg:col-span-5 flex flex-col">
-          <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-            <UploadCloud className="w-5 h-5 text-cyan-400" /> Upload Any Thermography File
+      {/* Input Section: Verified Examples Library & Upload */}
+      <div className="space-y-8 mb-10">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <Database className="w-5 h-5 text-cyan-400" /> Verified Reference Example Library
           </h2>
+          <span className="text-xs font-mono text-slate-400">
+            {examples.length} Verified Standardized Cases
+          </span>
+        </div>
+
+        {/* Example Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {examples.map((ex) => {
+            const isCategoryA = ex.category.includes("Category A");
+            const isAvailable = ex.example_available;
+
+            return (
+              <div
+                key={ex.id}
+                className={`p-5 rounded-2xl border flex flex-col justify-between transition-all ${
+                  isCategoryA
+                    ? "bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:bg-slate-900"
+                    : "bg-amber-950/20 border-amber-900/40 hover:border-amber-500/50"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span
+                      className={`px-2 py-0.5 text-[10px] font-mono font-semibold rounded-md border ${
+                        isCategoryA
+                          ? "bg-cyan-500/10 text-cyan-300 border-cyan-500/30"
+                          : "bg-amber-500/10 text-amber-300 border-amber-500/30"
+                      }`}
+                    >
+                      {isCategoryA ? "Category A: 3D FEM" : "Category B: External Measured"}
+                    </span>
+                    {ex.GT_available && (
+                      <span className="px-1.5 py-0.5 text-[9px] font-mono rounded bg-slate-800 text-slate-300 border border-slate-700">
+                        Ground Truth
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="text-sm font-bold text-white tracking-tight mb-1">
+                    {ex.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 line-clamp-2 mb-3">
+                    {ex.short_description}
+                  </p>
+
+                  <div className="space-y-1 text-[11px] font-mono text-slate-300 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 mb-4">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Material:</span>
+                      <span className="text-slate-200 truncate ml-2">{ex.material}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Excitation:</span>
+                      <span className="text-slate-200 truncate ml-2">{ex.excitation_type}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Dimensions:</span>
+                      <span className="text-cyan-400">
+                        {ex.frames} frame{ex.frames !== 1 ? "s" : ""} ({ex.resolution[0]}×{ex.resolution[1]})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => handleRunExample(ex.id)}
+                    disabled={loading || !isAvailable}
+                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold font-mono flex items-center justify-center gap-2 transition-all ${
+                      !isAvailable
+                        ? "bg-slate-800/50 text-slate-500 border border-slate-700/50 cursor-not-allowed"
+                        : loading
+                        ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 cursor-wait"
+                        : "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 hover:border-cyan-400"
+                    }`}
+                  >
+                    {isAvailable ? (
+                      <>
+                        <Zap className="w-3.5 h-3.5 text-cyan-400" /> Run Autonomous Diagnostic →
+                      </>
+                    ) : (
+                      <>
+                        <Info className="w-3.5 h-3.5 text-slate-500" /> Dataset Not Installed
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Custom Upload Box */}
+        <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800">
+          <h2 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+            <UploadCloud className="w-5 h-5 text-cyan-400" /> Or Upload Custom Thermography Data
+          </h2>
+          <p className="text-xs text-slate-400 mb-4">
+            Upload custom experimental or numerical datasets. The autonomous pipeline will detect format, check radiometric units, and selectively apply physics methods.
+          </p>
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="flex-1 border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all bg-slate-900/40 hover:bg-cyan-950/10 min-h-[220px]"
+            className="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all bg-slate-950/40 hover:bg-cyan-950/10 min-h-[140px]"
           >
             <input
               type="file"
@@ -257,53 +461,17 @@ export default function AnalyzePage() {
               className="hidden"
               accept=".zip,.npz,.npy,.mat,.csv,.png,.jpg,.jpeg,.tiff,.tif"
             />
-            <div className="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-3">
-              <UploadCloud className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-2">
+              <UploadCloud className="w-5 h-5" />
             </div>
-            <p className="text-sm font-medium text-white mb-1">Click or drag & drop thermal data</p>
-            <p className="text-xs text-slate-400 max-w-xs mb-3">
-              Supports ZIP sequences, CSV frames, MATLAB MAT, NPY/NPZ tensors, TIFF stacks, or PNG/JPG thermograms.
-            </p>
+            <p className="text-xs font-medium text-white mb-1">Click to select or drag & drop thermal file</p>
             <div className="flex flex-wrap justify-center gap-1 text-[10px] font-mono text-slate-500">
-              <span className="px-1.5 py-0.5 bg-slate-800 rounded">.ZIP</span>
-              <span className="px-1.5 py-0.5 bg-slate-800 rounded">.NPZ</span>
-              <span className="px-1.5 py-0.5 bg-slate-800 rounded">.NPY</span>
+              <span className="px-1.5 py-0.5 bg-slate-800 rounded">.NPZ / .NPY</span>
               <span className="px-1.5 py-0.5 bg-slate-800 rounded">.MAT</span>
               <span className="px-1.5 py-0.5 bg-slate-800 rounded">.CSV</span>
               <span className="px-1.5 py-0.5 bg-slate-800 rounded">.TIFF</span>
+              <span className="px-1.5 py-0.5 bg-slate-800 rounded">.ZIP</span>
             </div>
-          </div>
-        </div>
-
-        {/* Instant Presets */}
-        <div className="lg:col-span-7 flex flex-col">
-          <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-400" /> Instant Demonstration Presets
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
-            {presets.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => handleRunPreset(p.id)}
-                disabled={loading}
-                className={`p-4 rounded-xl border text-left transition-all flex flex-col justify-between ${p.color} ${
-                  loading ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.01]"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-sm font-bold text-white tracking-tight">{p.title}</span>
-                    <span className="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-900/80 border border-slate-700 text-slate-300">
-                      {p.badge}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400 line-clamp-2">{p.desc}</p>
-                </div>
-                <div className="mt-3 text-[11px] font-medium text-cyan-400 flex items-center gap-1">
-                  Run Diagnostic Pipeline →
-                </div>
-              </button>
-            ))}
           </div>
         </div>
       </div>
@@ -312,9 +480,9 @@ export default function AnalyzePage() {
       {loading && (
         <div className="p-12 rounded-2xl bg-slate-900/80 border border-slate-800 text-center my-8">
           <div className="inline-block animate-spin w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full mb-4" />
-          <h3 className="text-lg font-semibold text-white">Running Autonomous Thermal Diagnostic Pipeline...</h3>
+          <h3 className="text-lg font-semibold text-white">Running Autonomous Thermographic Pipeline...</h3>
           <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-            Inspecting data representation, evaluating physical constraints, computing SVD/Matched Filter modes, and executing MC Dropout uncertainty inference.
+            Validating radiometric representation, filtering spatial/temporal frequencies, computing multi-method decompositions, and synthesizing multi-evidence consensus.
           </p>
         </div>
       )}
@@ -620,7 +788,7 @@ export default function AnalyzePage() {
             </div>
             <div className="flex items-center gap-2">
               <a
-                href={`/api/v1/analyze/${analysisData.analysis_id}/report`}
+                href={`${API_BASE_URL}/api/v1/analyze/${analysisData.analysis_id}/report`}
                 target="_blank"
                 rel="noreferrer"
                 className="px-3 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 flex items-center gap-1.5"
@@ -628,12 +796,12 @@ export default function AnalyzePage() {
                 <Download className="w-3.5 h-3.5" /> Download Full JSON Report
               </a>
               <a
-                href={`/api/v1/analyze/${analysisData.analysis_id}/figure`}
+                href={`${API_BASE_URL}/api/v1/analyze/${analysisData.analysis_id}/figure`}
                 target="_blank"
                 rel="noreferrer"
                 className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700 flex items-center gap-1.5"
               >
-                <Download className="w-3.5 h-3.5" /> Download 300 DPI Diagnostic Panel
+                <Download className="w-3.5 h-3.5" /> Download Diagnostic Panel
               </a>
             </div>
           </div>

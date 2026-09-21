@@ -94,60 +94,47 @@ async def analyze_preset_sample(
     smooth_sigma_px: float = Query(0.0)
 ):
     """
-    Run analyzer on pre-configured benchmark demonstration cases:
-    - `synthetic_lfmt_slag`: 3D FEM mild steel plate with subsurface slag inclusion + LFMT chirp.
-    - `polyu_pulsed_fbh`: PolyU measured pulsed thermography transfer example.
-    - `single_thermal_frame`: Single-frame spatial thermogram.
-    - `healthy_plate`: Homogeneous healthy mild steel plate without inclusions.
+    Run analyzer on verified benchmark demonstration cases via ExampleRegistry.
     """
-    repo_root = Path(__file__).resolve().parent.parent.parent
+    from lfmt.examples.registry import ExampleRegistry
+    registry = ExampleRegistry()
     
-    if preset_id == "synthetic_lfmt_slag":
-        sample_path = repo_root / "data" / "generated" / "case_0001"
-        if not sample_path.exists():
-            # Synthesize in-memory LFMT slag sequence
-            t_vec = np.linspace(0, 10.0, 100)
-            H, W = 64, 64
-            cube = np.zeros((100, H, W)) + 293.15
-            f0, f1, dur = 0.05, 0.50, 10.0
-            chirp_sig = np.sin(2 * np.pi * (f0 * t_vec + 0.5 * ((f1 - f0) / dur) * (t_vec ** 2)))
-            for k in range(100):
-                cube[k, :, :] += 0.05 * t_vec[k]
-                cube[k, 26:38, 26:38] += 1.5 * chirp_sig[k] + 2.0
-            source = cube
-            meta = {"fov_mm": (100.0, 70.0), "temp_units": "K", "frame_rate_hz": 10.0, "excitation": {"type": "lfmt", "f0_hz": 0.05, "f1_hz": 0.50, "duration_s": 10.0}}
-        else:
-            source = sample_path
-            meta = {"fov_mm": (97.5, 67.5), "temp_units": "K", "frame_rate_hz": 5.0, "excitation": {"type": "lfmt", "f0_hz": 0.05, "f1_hz": 0.50, "duration_s": 6.0}}
+    # Map legacy preset IDs to canonical example IDs
+    preset_map = {
+        "synthetic_lfmt_slag": "slag_shallow",
+        "slag_shallow": "slag_shallow",
+        "slag_deep": "slag_deep",
+        "multi_slag": "multi_slag",
+        "healthy_plate": "healthy_lfmt",
+        "healthy_lfmt": "healthy_lfmt",
+        "single_thermal_frame": "single_thermal_frame",
+        "polyu_pulsed_fbh": "measured_polyu_preview",
+        "measured_polyu_preview": "measured_polyu_preview"
+    }
+    
+    target_id = preset_map.get(preset_id)
+    if not target_id:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown preset ID '{preset_id}'. Valid options: {list(preset_map.keys())}"
+        )
 
-    elif preset_id == "polyu_pulsed_fbh":
-        zip_p = repo_root / "data" / "real_world_external" / "polyu_mild_steel_pulsed" / "raw" / "MS-facq-50Hz-air-cir-1_0-999.zip"
-        if not zip_p.exists():
-            raise HTTPException(status_code=404, detail="PolyU raw dataset archive not found.")
-        source = zip_p
-        meta = {"frame_rate_hz": 25.0, "subsample_step": 2, "temp_units": "C", "excitation_type": "pulsed", "fov_mm": (150.0, 150.0)}
+    try:
+        loaded = registry.load(target_id)
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=f"Integrity error: {e}")
 
-    elif preset_id == "single_thermal_frame":
-        # 2D frame with hot anomaly
-        H, W = 64, 64
-        img = np.random.RandomState(42).normal(294.0, 0.2, (H, W))
-        img[26:38, 26:38] += 2.5
-        source = img
-        meta = {"temp_units": "K", "fov_mm": (100.0, 70.0)}
-
-    elif preset_id == "healthy_plate":
-        # Completely homogeneous healthy plate
-        H, W = 64, 64
-        cube = np.random.RandomState(42).normal(293.5, 0.05, (100, H, W))
-        source = cube
-        meta = {"temp_units": "K", "frame_rate_hz": 10.0, "excitation": {"type": "lfmt", "f0_hz": 0.05, "f1_hz": 0.50, "duration_s": 10.0}}
-
-    else:
-        raise HTTPException(status_code=400, detail=f"Unknown preset ID '{preset_id}'. Options: synthetic_lfmt_slag, polyu_pulsed_fbh, single_thermal_frame, healthy_plate")
+    if not loaded.is_installed:
+        raise HTTPException(
+            status_code=404,
+            detail=f"External dataset for '{preset_id}' is not installed locally. Run 'python scripts/prepare_external_polyu_dataset.py'."
+        )
 
     result = ANALYZER_INSTANCE.analyze(
-        source=source,
-        metadata_override=meta,
+        source=loaded.data,
+        metadata_override=loaded.metadata,
         apply_baseline=apply_baseline,
         smooth_sigma_px=smooth_sigma_px
     )

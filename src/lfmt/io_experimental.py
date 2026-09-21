@@ -109,6 +109,91 @@ class ExperimentalDataLoader:
         )
 
     @staticmethod
+    def load_csv_zip_archive(
+        zip_path: str | os.PathLike,
+        frame_rate_hz: float = 50.0,
+        fov_mm: Tuple[float, float] = (150.0, 150.0),
+        temp_units: str = "C",
+        max_frames: Optional[int] = None,
+        subsample_step: int = 1
+    ) -> ExperimentalSequence:
+        """
+        Load 3D thermogram sequence from an archive of individual frame CSV files.
+        """
+        import zipfile
+        import re
+        from pathlib import Path
+
+        zip_p = Path(zip_path)
+        if not zip_p.exists():
+            raise FileNotFoundError(f"Archive not found at: {zip_p}")
+
+        def extract_frame_index(fname: str) -> int:
+            m = re.search(r'_(\d+)\.csv$', fname)
+            return int(m.group(1)) if m else -1
+
+        with zipfile.ZipFile(zip_p, "r") as z:
+            csv_files = [f for f in z.namelist() if f.endswith(".csv")]
+            sorted_files = sorted(csv_files, key=extract_frame_index)
+            if not sorted_files:
+                raise ValueError(f"No CSV files found in archive {zip_p}")
+
+            if max_frames is not None:
+                sorted_files = sorted_files[:max_frames]
+            if subsample_step > 1:
+                sorted_files = sorted_files[::subsample_step]
+
+            frames = []
+            try:
+                import pandas as pd
+                has_pandas = True
+            except ImportError:
+                has_pandas = False
+
+            for fname in sorted_files:
+                with z.open(fname) as f:
+                    if has_pandas:
+                        arr = pd.read_csv(f, header=None).values
+                    else:
+                        arr = np.genfromtxt(f, delimiter=",")
+                    frames.append(arr)
+
+        cube = np.stack(frames, axis=0).astype(np.float64)
+        N_frames, H, W = cube.shape
+
+        effective_fps = frame_rate_hz / float(subsample_step)
+        t_vec = np.arange(N_frames) / float(effective_fps)
+
+        raw_units = temp_units.upper()
+        if raw_units == "C":
+            cube_k = cube + 273.15
+            converted_units = "K"
+            conv_method = "T_K = T_C + 273.15 (standard Celsius to Kelvin offset)"
+        else:
+            cube_k = cube
+            converted_units = raw_units
+            conv_method = "identity (no conversion applied)"
+
+        meta = {
+            "source_file": str(zip_p),
+            "raw_units": raw_units,
+            "converted_units": converted_units,
+            "conversion_method": conv_method,
+            "subsample_step": subsample_step,
+            "verified_frame_rate_hz": float(effective_fps),
+            "total_frames": N_frames,
+            "loader": "csv_zip_archive"
+        }
+
+        return ExperimentalSequence(
+            surface_temperature=cube_k,
+            time_vector=t_vec,
+            frame_rate_hz=float(effective_fps),
+            fov_mm=fov_mm,
+            metadata=meta
+        )
+
+    @staticmethod
     def validate_sequence(seq: ExperimentalSequence) -> Dict[str, Any]:
         """Perform rigorous physical sanity check on loaded experimental thermogram."""
         cube = seq.surface_temperature
@@ -116,6 +201,7 @@ class ExperimentalDataLoader:
 
         if cube.ndim != 3:
             issues.append(f"Expected 3D array (N_frames, H, W), got {cube.ndim}D")
+            return {"is_valid": False, "issues": issues}
 
         N, H, W = cube.shape
         if N < 2:
@@ -128,6 +214,7 @@ class ExperimentalDataLoader:
             issues.append("Data contains Inf values")
 
         min_T, max_T = float(np.min(cube)), float(np.max(cube))
+        mean_T = float(np.mean(cube))
         if min_T < 200.0 or max_T > 600.0:
             issues.append(f"Physical temperature bounds warning: [{min_T:.1f} K, {max_T:.1f} K]")
 
@@ -135,13 +222,26 @@ class ExperimentalDataLoader:
         if np.any(time_diffs <= 0):
             issues.append("Time vector is not strictly monotonically increasing")
 
+        # Check for dead / zero-variance frames
+        spatial_stds = np.std(cube, axis=(1, 2))
+        dead_frames = int(np.sum(spatial_stds < 1e-6))
+        if dead_frames > 0:
+            issues.append(f"Detected {dead_frames} dead/flat frames with zero spatial variance")
+
         is_valid = (len(issues) == 0)
         return {
             "is_valid": is_valid,
             "shape": (N, H, W),
-            "min_temperature_k": min_T,
-            "max_temperature_k": max_T,
-            "total_duration_s": float(seq.time_vector[-1] - seq.time_vector[0]) if len(seq.time_vector) > 1 else 0.0,
+            "total_frames": N,
+            "height_px": H,
+            "width_px": W,
+            "min_temperature_k": round(min_T, 3),
+            "max_temperature_k": round(max_T, 3),
+            "mean_temperature_k": round(mean_T, 3),
+            "verified_frame_rate_hz": seq.frame_rate_hz,
+            "total_duration_s": round(float(seq.time_vector[-1] - seq.time_vector[0]), 3) if len(seq.time_vector) > 1 else 0.0,
+            "dead_frames_count": dead_frames,
             "issues": issues
         }
+
 

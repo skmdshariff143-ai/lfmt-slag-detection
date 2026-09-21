@@ -2,7 +2,6 @@
 Integration and unit tests for /api/v1/examples REST endpoints.
 """
 
-import pytest
 from fastapi.testclient import TestClient
 from api.main import app
 
@@ -80,3 +79,19 @@ def test_analyze_measured_polyu():
     assert resp.status_code == 200
     data = resp.json()
     assert data["status"] in ["SUCCESS", "EXTERNAL_DATA_NOT_INSTALLED"]
+
+
+def test_lfmt_anomaly_does_not_imply_slag_without_validated_model():
+    """
+    Scientific Non-Overclaiming Gate:
+    Verify that an LFMT anomaly (even with high Matched Filter SNR) strictly classifies
+    as GENERIC_SUBSURFACE_THERMAL_ANOMALY, never automatically as SLAG_INCLUSION,
+    when no validated neural/tabular classifier checkpoint is loaded.
+    """
+    for example_id in ["slag_shallow", "slag_deep", "multi_slag"]:
+        resp = client.post(f"/api/v1/examples/{example_id}/analyze")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["consensus_verdict"]["is_anomaly_detected"] is True
+        assert data["consensus_verdict"]["likely_defect_type"] == "GENERIC_SUBSURFACE_THERMAL_ANOMALY"
+        assert data["consensus_verdict"]["likely_defect_type"] != "SLAG_INCLUSION"

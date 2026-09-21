@@ -5,7 +5,7 @@ Deterministic SHA256 integrity verification for the verified example data librar
 from __future__ import annotations
 import hashlib
 from pathlib import Path
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple
 
 
 def compute_sha256(filepath: Path) -> str:

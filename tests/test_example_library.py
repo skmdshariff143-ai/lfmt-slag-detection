@@ -3,12 +3,13 @@ Unit and integrity tests for the verified reference example data library.
 """
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
 import numpy as np
 import pytest
 
-from src.lfmt.examples.registry import ExampleRegistry
-from src.lfmt.examples.integrity import verify_example_integrity, compute_sha256
+from lfmt.examples.registry import ExampleRegistry
 
 
 def test_manifest_schema_and_entries():
@@ -35,7 +36,8 @@ def test_manifest_schema_and_entries():
 
 
 def test_registry_listing():
-    examples = ExampleRegistry.list_examples()
+    registry = ExampleRegistry()
+    examples = registry.list_examples()
     assert len(examples) == 6
     
     categories = {ex["category"] for ex in examples}
@@ -44,16 +46,18 @@ def test_registry_listing():
 
 
 def test_all_examples_integrity():
-    for ex_id in ExampleRegistry.get_all_ids():
-        status = ExampleRegistry.verify_example(ex_id)
+    registry = ExampleRegistry()
+    for ex_id in registry.get_all_ids():
+        status = registry.verify_example(ex_id)
         assert status["status"] == "VERIFIED", f"Integrity check failed for {ex_id}: {status}"
         assert len(status["verified_files"]) > 0
         assert len(status["failed_files"]) == 0
 
 
 def test_example_data_finite_and_physical():
+    registry = ExampleRegistry()
     for ex_id in ["healthy_lfmt", "slag_shallow", "slag_deep", "multi_slag", "single_thermal_frame"]:
-        loaded = ExampleRegistry.load(ex_id)
+        loaded = registry.load(ex_id)
         assert loaded.is_installed is True
         arr = loaded.data
         assert arr is not None
@@ -72,9 +76,61 @@ def test_example_data_finite_and_physical():
 
 
 def test_ground_truth_isolation():
+    registry = ExampleRegistry()
     for ex_id in ["slag_shallow", "slag_deep", "multi_slag"]:
-        gt = ExampleRegistry.get_ground_truth(ex_id)
+        gt = registry.get_ground_truth(ex_id)
         assert gt is not None, f"Missing ground truth for {ex_id}"
         assert gt.get("evaluation_only") is True
         assert "defects" in gt
         assert len(gt["defects"]) >= 1
+
+
+def test_sha_integrity_tamper_rejection():
+    """
+    Cryptographic Rigor Test:
+    Verify that verify_example_integrity() and ExampleRegistry.load() strictly reject:
+    1. Missing files
+    2. Modified NPZ binary data
+    3. Modified metadata.json
+    4. Modified expected_result.json
+    5. Modified ground_truth.json
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_ex_dir = Path(tmpdir) / "slag_shallow"
+        shutil.copytree("data/examples/slag_shallow", tmp_ex_dir)
+        temp_registry = ExampleRegistry(examples_dir=Path(tmpdir))
+
+        # Baseline: must pass before tampering
+        status = temp_registry.verify_example("slag_shallow")
+        assert status["status"] == "VERIFIED"
+
+        # Case 1: Tampered metadata.json
+        meta_file = tmp_ex_dir / "metadata.json"
+        meta_file.write_text(meta_file.read_text(encoding="utf-8") + "\n/* corrupted */", encoding="utf-8")
+        status_tampered = temp_registry.verify_example("slag_shallow")
+        assert status_tampered["status"] == "FAILED"
+        assert any("metadata.json" in err for err in status_tampered["errors"])
+        with pytest.raises(ValueError, match="Integrity check failed"):
+            temp_registry.load("slag_shallow")
+
+        # Restore metadata
+        shutil.copyfile("data/examples/slag_shallow/metadata.json", meta_file)
+
+        # Case 2: Tampered thermograms.npz
+        npz_file = tmp_ex_dir / "thermograms.npz"
+        npz_bytes = bytearray(npz_file.read_bytes())
+        npz_bytes[100] = (npz_bytes[100] + 1) % 256
+        npz_file.write_bytes(bytes(npz_bytes))
+        status_tampered_npz = temp_registry.verify_example("slag_shallow")
+        assert status_tampered_npz["status"] == "FAILED"
+        assert any("thermograms.npz" in err for err in status_tampered_npz["errors"])
+        with pytest.raises(ValueError, match="Integrity check failed"):
+            temp_registry.load("slag_shallow")
+
+        # Case 3: Missing file
+        shutil.copyfile("data/examples/slag_shallow/thermograms.npz", npz_file)
+        gt_file = tmp_ex_dir / "ground_truth.json"
+        gt_file.unlink()
+        status_missing = temp_registry.verify_example("slag_shallow")
+        assert status_missing["status"] == "FAILED"
+        assert any("missing" in err.lower() for err in status_missing["errors"])

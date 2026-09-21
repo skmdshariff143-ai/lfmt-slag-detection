@@ -1,6 +1,6 @@
 {
   "example_id": "multi_slag",
-  "title": "Multiple Subsurface Slag Inclusions (Dual Disjoint Domains)",
+  "title": "Multi-Inclusion Challenge Case (Dual Slag \u2014 thermal responses merge)",
   "category": "A",
   "source_type": "NUMERICAL_FEM",
   "material": "mild_steel",
@@ -68,5 +68,6 @@
   "software_git_sha": "115fa00e6e8ce0cc7742c0659717e179e520bfe7",
   "generated_timestamp": "2026-09-21T01:05:22Z",
   "generator_script": "scripts/generate_verified_examples.py",
-  "scientific_status": "VERIFIED_FEM_MULTI_DEFECT"
+  "scientific_status": "VERIFIED_FEM_MULTI_DEFECT",
+  "short_description": "Two distinct subsurface slag inclusions testing spatial resolution; surface thermal fields merge due to lateral thermal diffusion."
 }

@@ -61,11 +61,13 @@ All reference cases include deterministic SHA-256 cryptographic manifests, separ
 ## 4. Quality Assurance & Automated Test Results
 
 ### Automated Test Suite Summary
-- `tests/test_example_library.py`: **5 / 5 PASSED** (100%)
-- `tests/test_examples_api.py`: **7 / 7 PASSED** (100%)
+- `tests/test_example_library.py`: **6 / 6 PASSED** (100% — includes cryptographic tamper-rejection suite)
+- `tests/test_examples_api.py`: **8 / 8 PASSED** (100% — includes scientific non-overclaiming gate)
+- `tests/test_no_gt_leakage.py`: **1 / 1 PASSED** (100% — proves zero ground truth leakage / inference invariance)
 - `tests/test_api_analyze.py`: **4 / 4 PASSED** (100%)
 - `tests/test_auto_analyzer.py`: **6 / 6 PASSED** (100%)
 - **Next.js TypeScript Typecheck (`npm run typecheck`):** **0 errors** (100% clean)
+- **Next.js ESLint (`npm run lint`):** **0 errors, 0 warnings**
 - **Next.js Production Build (`npm run build`):** **18 / 18 static/dynamic routes generated successfully**
 
 ---

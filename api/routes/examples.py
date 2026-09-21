@@ -1,14 +1,12 @@
 # FastAPI Routes for Discovering and Running Verified Example Thermographic Datasets
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 from lfmt.examples.registry import ExampleRegistry
-from lfmt.analysis.analyzer import AutoDefectAnalyzer
-from api.routes.analyze import ANALYSIS_CACHE, ARTIFACTS_CACHE, ANALYZER_INSTANCE
+from api.routes.analyze import ANALYSIS_CACHE, ANALYZER_INSTANCE
 from api.schemas.analysis import AnalysisResponseSchema
 
 router = APIRouter(prefix="/examples", tags=["Verified Example Library"])
@@ -80,6 +78,9 @@ async def analyze_verified_example(
                 "example_id": example_id,
                 "title": loaded.title,
                 "category": loaded.category,
+                "source": "PolyU Research Data Repository",
+                "doi": "10.60933/PRDR/HJYNZB",
+                "preparation_command": "python scripts/prepare_external_polyu_dataset.py",
                 "message": (
                     "External measured laboratory dataset is not currently downloaded on this server. "
                     "Run 'python scripts/prepare_external_polyu_dataset.py' to ingest the raw thermography sequence."

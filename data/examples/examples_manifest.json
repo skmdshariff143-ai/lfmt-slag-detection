@@ -114,13 +114,13 @@
     },
     {
       "id": "multi_slag",
-      "title": "Multiple Slag Inclusions",
-      "short_description": "Two spatially disjoint slag inclusions (D = 6.0 mm and 4.8 mm, d = 0.4 mm) in mild steel.",
+      "title": "Multi-Inclusion Challenge Case (Dual Slag)",
+      "short_description": "Two subsurface slag inclusions (D=6.0, 4.8 mm); responses merge laterally.",
       "category": "A",
       "source_type": "NUMERICAL_FEM",
       "material": "mild_steel",
       "excitation_type": "lfmt_chirp",
-      "defect_description": "Multiple slag inclusions (dual disjoint domain)",
+      "defect_description": "Dual slag inclusions \u2014 thermal responses merge (Challenge Case)",
       "frames": 101,
       "resolution": [
         28,

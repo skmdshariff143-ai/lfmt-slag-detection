@@ -2,7 +2,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional
 
 from lfmt.examples.loader import load_example, LoadedExample
 from lfmt.examples.integrity import verify_example_integrity
@@ -25,19 +25,39 @@ class ExampleRegistry:
             cls._default_instance = cls()
         return cls._default_instance
 
-    @classmethod
-    def get_all_ids(cls) -> List[str]:
-        return [ex["id"] for ex in cls.get_default().list_examples()]
-
-    @classmethod
-    def list_examples(cls) -> List[Dict[str, Any]]:
-        inst = cls.get_default() if cls is ExampleRegistry else cls
-        return inst._list_examples_impl()
-
-    def _list_examples_impl(self) -> List[Dict[str, Any]]:
+    def list_examples(self) -> List[Dict[str, Any]]:
         manifest_p = self.examples_dir / "examples_manifest.json"
         if not manifest_p.exists():
-            return []
+            # If manifest doesn't exist in custom dir, scan subdirectories
+            found = []
+            for sub in sorted(self.examples_dir.iterdir()):
+                if sub.is_dir():
+                    meta_p = sub / "metadata.json"
+                    if meta_p.exists():
+                        try:
+                            meta = json.loads(meta_p.read_text(encoding="utf-8"))
+                            found.append({
+                                "id": sub.name,
+                                "title": meta.get("title", sub.name),
+                                "category": meta.get("category", "A"),
+                                "source_type": meta.get("source_type", "NUMERICAL_FEM"),
+                                "material": meta.get("material", "mild_steel"),
+                                "excitation_type": meta.get("excitation", {}).get("type", "lfmt_chirp"),
+                                "defect_description": meta.get("defects", [{}])[0].get("defect_type", "None") if meta.get("defects") else "None",
+                                "frames": meta.get("time", {}).get("n_frames", 101),
+                                "resolution": meta.get("camera", {}).get("resolution", [28, 40]),
+                                "frame_rate_hz": meta.get("camera", {}).get("frame_rate_hz", 10.0),
+                                "duration_s": meta.get("time", {}).get("duration_s", 10.0),
+                                "temperature_unit_status": meta.get("temperature_unit_status", "SOURCE_VERIFIED"),
+                                "radiometric_status": meta.get("radiometric_status", "VERIFIED_NUMERICAL"),
+                                "fov_status": "VERIFIED_100x70_MM",
+                                "GT_available": (sub / "ground_truth.json").exists(),
+                                "example_available": (sub / "thermograms.npz").exists() or (sub / "thermal_frame.npy").exists(),
+                                "supported_methods": ["raw_contrast", "lfmt_matched_filter", "pct", "spct", "rpt"]
+                            })
+                        except Exception:
+                            pass
+            return found
 
         manifest = json.loads(manifest_p.read_text(encoding="utf-8"))
         examples_list = manifest.get("examples", [])
@@ -54,45 +74,28 @@ class ExampleRegistry:
 
         return examples_list
 
-    @classmethod
-    def get_example_metadata(cls, example_id: str) -> Optional[Dict[str, Any]]:
-        inst = cls.get_default() if isinstance(cls, type) else cls
-        return inst._get_example_metadata_impl(example_id)
+    def get_all_ids(self) -> List[str]:
+        return [ex["id"] for ex in self.list_examples()]
 
-    def _get_example_metadata_impl(self, example_id: str) -> Optional[Dict[str, Any]]:
+    def get_example_metadata(self, example_id: str) -> Optional[Dict[str, Any]]:
         meta_p = self.examples_dir / example_id / "metadata.json"
         if not meta_p.exists():
             return None
         return json.loads(meta_p.read_text(encoding="utf-8"))
 
-    @classmethod
-    def get_expected_result(cls, example_id: str) -> Optional[Dict[str, Any]]:
-        inst = cls.get_default() if isinstance(cls, type) else cls
-        return inst._get_expected_result_impl(example_id)
-
-    def _get_expected_result_impl(self, example_id: str) -> Optional[Dict[str, Any]]:
+    def get_expected_result(self, example_id: str) -> Optional[Dict[str, Any]]:
         exp_p = self.examples_dir / example_id / "expected_result.json"
         if not exp_p.exists():
             return None
         return json.loads(exp_p.read_text(encoding="utf-8"))
 
-    @classmethod
-    def get_ground_truth(cls, example_id: str) -> Optional[Dict[str, Any]]:
-        inst = cls.get_default() if isinstance(cls, type) else cls
-        return inst._get_ground_truth_impl(example_id)
-
-    def _get_ground_truth_impl(self, example_id: str) -> Optional[Dict[str, Any]]:
+    def get_ground_truth(self, example_id: str) -> Optional[Dict[str, Any]]:
         gt_p = self.examples_dir / example_id / "ground_truth.json"
         if not gt_p.exists():
             return None
         return json.loads(gt_p.read_text(encoding="utf-8"))
 
-    @classmethod
-    def verify_example(cls, example_id: str) -> Dict[str, Any]:
-        inst = cls.get_default() if isinstance(cls, type) else cls
-        return inst._verify_example_impl(example_id)
-
-    def _verify_example_impl(self, example_id: str) -> Dict[str, Any]:
+    def verify_example(self, example_id: str) -> Dict[str, Any]:
         ex_dir = self.examples_dir / example_id
         if not ex_dir.exists():
             return {
@@ -122,10 +125,25 @@ class ExampleRegistry:
             "failed_files": errors
         }
 
-    @classmethod
-    def load(cls, example_id: str) -> LoadedExample:
-        inst = cls.get_default() if isinstance(cls, type) else cls
-        return inst._load_impl(example_id)
-
-    def _load_impl(self, example_id: str) -> LoadedExample:
+    def load(self, example_id: str) -> LoadedExample:
         return load_example(example_id, base_dir=self.examples_dir)
+
+
+# Module-level convenience functions mirroring the singleton
+def list_examples() -> List[Dict[str, Any]]:
+    return ExampleRegistry.get_default().list_examples()
+
+def get_example_metadata(example_id: str) -> Optional[Dict[str, Any]]:
+    return ExampleRegistry.get_default().get_example_metadata(example_id)
+
+def get_expected_result(example_id: str) -> Optional[Dict[str, Any]]:
+    return ExampleRegistry.get_default().get_expected_result(example_id)
+
+def get_ground_truth(example_id: str) -> Optional[Dict[str, Any]]:
+    return ExampleRegistry.get_default().get_ground_truth(example_id)
+
+def verify_example(example_id: str) -> Dict[str, Any]:
+    return ExampleRegistry.get_default().verify_example(example_id)
+
+def load(example_id: str) -> LoadedExample:
+    return ExampleRegistry.get_default().load(example_id)

@@ -237,7 +237,7 @@ class AutoDefectAnalyzer:
                     "runtime_s": round(pct_res.runtime_seconds, 4)
                 }
                 primary_map = pct_res.selected_eof_image
-                primary_map_name = "PCT (Optimal EOF)"
+                primary_map_name = "PCT — Blind Kurtosis-Selected EOF"
             except Exception as e:
                 processing_outputs["pct"] = {"error": str(e)}
 

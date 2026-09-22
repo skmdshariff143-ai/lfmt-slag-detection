@@ -83,6 +83,10 @@ results/figures/*
 *.tif
 *.tiff
 
+# Allow verified small example data
+!data/examples/**/*.npz
+!data/examples/**/*.npy
+
 # External real-world raw datasets
 data/real_world_external/**/raw/
 data/real_world_external/**/*.zip

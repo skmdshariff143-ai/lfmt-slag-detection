@@ -59,6 +59,7 @@ ml = [
 onnx = [
     "onnx>=1.14.0",
     "onnxruntime>=1.15.0",
+    "onnxscript>=0.1.0",
 ]
 ci = [
     "pytest>=7.0.0",
@@ -75,6 +76,7 @@ ci = [
     "torchvision>=0.15.0",
     "onnx>=1.14.0",
     "onnxruntime>=1.15.0",
+    "onnxscript>=0.1.0",
 ]
 all = [
     "pytest>=7.0.0",
@@ -91,6 +93,7 @@ all = [
     "torchvision>=0.15.0",
     "onnx>=1.14.0",
     "onnxruntime>=1.15.0",
+    "onnxscript>=0.1.0",
 ]
 
 [tool.setuptools.packages.find]

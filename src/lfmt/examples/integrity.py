@@ -9,9 +9,15 @@ from typing import List, Tuple
 
 
 def compute_sha256(filepath: Path) -> str:
-    """Compute deterministic SHA256 hex digest for a file."""
+    """Compute deterministic SHA256 hex digest for a file (LF-normalized for text files)."""
+    p = Path(filepath)
+    suffix = p.suffix.lower()
+    if suffix in {".json", ".txt", ".md", ".yaml", ".yml", ".py", ".toml", ".csv"}:
+        content = p.read_bytes().replace(b"\r\n", b"\n")
+        return hashlib.sha256(content).hexdigest()
+
     h = hashlib.sha256()
-    with open(filepath, "rb") as f:
+    with open(p, "rb") as f:
         while chunk := f.read(65536):
             h.update(chunk)
     return h.hexdigest()

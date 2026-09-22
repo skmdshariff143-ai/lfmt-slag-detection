@@ -56,15 +56,11 @@ def test_no_gt_leakage_on_shallow_slag():
         gt_path.write_text(json.dumps(mutated_gt, indent=2), encoding="utf-8")
         
         # Recompute sha256 so load succeeds in temp directory with mutated GT
+        from lfmt.examples.integrity import compute_sha256
         lines = []
-        import hashlib
         for p in sorted(tmp_ex_dir.iterdir()):
             if p.is_file() and p.name != "sha256.txt":
-                h = hashlib.sha256()
-                with open(p, "rb") as f:
-                    while chunk := f.read(65536):
-                        h.update(chunk)
-                lines.append(f"{h.hexdigest()}  {p.name}")
+                lines.append(f"{compute_sha256(p)}  {p.name}")
         (tmp_ex_dir / "sha256.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
         
         # Load from mutated temporary registry

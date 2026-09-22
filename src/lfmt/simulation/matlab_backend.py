@@ -57,6 +57,23 @@ class MATLABFDMBackend(ThermalSimulationBackend):
     def engine_name(self) -> str:
         return f"MATLAB_FDM ({self.env_info.get('release', 'R2026a')} 3-D Conservative FDM)"
 
+    @classmethod
+    def detect(cls) -> Dict[str, Any]:
+        """Detect local MATLAB installation and runtime capabilities."""
+        return detect_matlab_environment()
+
+    def health_check(self) -> bool:
+        """Verify MATLAB backend is responsive and operational."""
+        try:
+            if self.mode == "engine" and MATLAB_ENGINE_INSTALLED:
+                self.start_engine()
+                if self._engine is not None:
+                    res = self._engine.eval("1+1", nargout=1)
+                    return int(res) == 2
+            return bool(self.env_info.get("matlab_available", False))
+        except Exception:
+            return False
+
     def start_engine(self):
         """Initialize persistent MATLAB Engine session if not already running."""
         if self.mode == "engine" and MATLAB_ENGINE_INSTALLED and self._engine is None:

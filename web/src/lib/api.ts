@@ -119,3 +119,14 @@ export async function compareSimulationBackends(preset: string = "shallow_slag")
   return res.json();
 }
 
+export async function fetchPrecomputedSimulation(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/precomputed`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch precomputed simulation: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+

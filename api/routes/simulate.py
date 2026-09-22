@@ -54,8 +54,8 @@ class SimulationRequest(BaseModel):
 def _run_simulation_task(run_id: str, req: SimulationRequest):
     """Execute simulation in background and populate cache."""
     try:
-        SIMULATION_CACHE[run_id]["status"] = "STARTING_SIMULATION"
-        SIMULATION_CACHE[run_id]["stage"] = "Validating Physical Inputs..."
+        SIMULATION_CACHE[run_id]["status"] = "VALIDATING_INPUT"
+        SIMULATION_CACHE[run_id]["stage"] = "VALIDATING INPUT"
 
         # 1. Physical Geometry Validation
         if req.length_mm <= 0 or req.width_mm <= 0 or req.thickness_mm <= 0:
@@ -369,4 +369,19 @@ async def compare_simulation_backends(preset: str = "shallow_slag"):
             "is_cross_validated": bool(rel_l2_pct <= 5.0)
         }
     }
+
+
+@router.get("/precomputed")
+async def get_precomputed_matlab_result():
+    """Return precomputed verified MATLAB numerical simulation result for shallow_slag."""
+    import json
+    from pathlib import Path
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    pre_path = repo_root / "data" / "precomputed" / "matlab_shallow_slag.json"
+    if not pre_path.exists():
+        raise HTTPException(status_code=404, detail="Precomputed MATLAB simulation file not found.")
+    with open(pre_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
 

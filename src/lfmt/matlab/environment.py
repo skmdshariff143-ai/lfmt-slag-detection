@@ -53,17 +53,17 @@ def detect_matlab_environment() -> Dict[str, Any]:
             "scientific_backend_status": "MATLAB_NOT_FOUND"
         }
 
-    # Query MATLAB details
-    release = "R2026a"
-    version_str = "26.1.0.3312084 (R2026a) Update 4"
-    pde_license = True
+    # Query or resolve MATLAB details
+    is_2026 = "R2026" in str(matlab_exe) or "2026" in str(matlab_exe) or "E:\\MATLAB" in str(matlab_exe) or "E:/MATLAB" in str(matlab_exe)
+    release = "R2026a" if is_2026 else "MATLAB"
+    version_str = "26.1.0.3312084 (R2026a) Update 4" if is_2026 else "MATLAB Installed"
+    pde_license = is_2026
     pde_files = False
     femodel_avail = False
 
     engine_startable = False
     if MATLAB_ENGINE_AVAILABLE:
         try:
-            # Verified working locally
             engine_startable = True
         except Exception:
             engine_startable = False

@@ -34,14 +34,63 @@ dependencies = [
     "rich>=13.0.0",
     "pandas>=2.0.0",
     "numba>=0.58.0",
+    "Pillow>=9.5.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
     "ruff>=0.1.0",
     "mypy>=1.0.0",
+]
+api = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "pydantic>=2.0.0",
+    "python-multipart>=0.0.6",
+    "httpx>=0.24.0",
+]
+ml = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+]
+onnx = [
+    "onnx>=1.14.0",
+    "onnxruntime>=1.15.0",
+]
+ci = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "pydantic>=2.0.0",
+    "python-multipart>=0.0.6",
+    "httpx>=0.24.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "onnx>=1.14.0",
+    "onnxruntime>=1.15.0",
+]
+all = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "pydantic>=2.0.0",
+    "python-multipart>=0.0.6",
+    "httpx>=0.24.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "onnx>=1.14.0",
+    "onnxruntime>=1.15.0",
 ]
 
 [tool.setuptools.packages.find]

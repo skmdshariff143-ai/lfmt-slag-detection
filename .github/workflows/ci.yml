@@ -11,6 +11,7 @@ jobs:
     name: Python Scientific Suite (${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
@@ -26,11 +27,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[dev]"
+        pip install -e ".[ci]"
 
-    - name: Run unit test suite
+    - name: Run unit test suite (Portable non-MATLAB)
       run: |
-        pytest -v
+        pytest -m "not matlab" -v
 
     - name: Run minimal smoke simulation test
       run: |

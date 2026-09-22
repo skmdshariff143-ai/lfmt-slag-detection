@@ -201,7 +201,19 @@ export default function SimulatePage() {
     setComparisonResult(null);
     setStageMessage("Loading verified precomputed MATLAB simulation...");
     try {
-      const data = await fetchPrecomputedSimulation();
+      let data: any = null;
+      try {
+        data = await fetchPrecomputedSimulation();
+      } catch {
+        // Fallback to static bundled asset for hosted Vercel preview
+        const res = await fetch("/demo/matlab_shallow_slag.json");
+        if (res.ok) {
+          data = await res.json();
+        }
+      }
+      if (!data) {
+        throw new Error("Could not load precomputed MATLAB result from server or static cache.");
+      }
       setSimulationResult(data);
       setSelectedPreset("shallow_slag");
       setSelectedBackend("matlab_fdm");

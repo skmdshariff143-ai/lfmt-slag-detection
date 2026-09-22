@@ -270,6 +270,20 @@ async def start_simulation(req: SimulationRequest, background_tasks: BackgroundT
     }
 
 
+@router.get("/precomputed")
+async def get_precomputed_matlab_result():
+    """Return precomputed verified MATLAB numerical simulation result for shallow_slag."""
+    import json
+    from pathlib import Path
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    pre_path = repo_root / "data" / "precomputed" / "matlab_shallow_slag.json"
+    if not pre_path.exists():
+        raise HTTPException(status_code=404, detail="Precomputed MATLAB simulation file not found.")
+    with open(pre_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+
 @router.get("/{run_id}")
 async def get_simulation_status(run_id: str):
     """Get status of a simulation job."""
@@ -370,18 +384,5 @@ async def compare_simulation_backends(preset: str = "shallow_slag"):
         }
     }
 
-
-@router.get("/precomputed")
-async def get_precomputed_matlab_result():
-    """Return precomputed verified MATLAB numerical simulation result for shallow_slag."""
-    import json
-    from pathlib import Path
-    repo_root = Path(__file__).resolve().parent.parent.parent
-    pre_path = repo_root / "data" / "precomputed" / "matlab_shallow_slag.json"
-    if not pre_path.exists():
-        raise HTTPException(status_code=404, detail="Precomputed MATLAB simulation file not found.")
-    with open(pre_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return JSONResponse(content=data)
 
 

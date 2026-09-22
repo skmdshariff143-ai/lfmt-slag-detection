@@ -17,7 +17,25 @@ def test_get_simulation_backends():
     assert "python_fem" in data
     assert "matlab_fdm" in data
     assert data["python_fem"]["status"] == "AVAILABLE"
-    assert data["matlab_fdm"]["status"] == "AVAILABLE"
+    
+    matlab_status = data["matlab_fdm"]["status"]
+    assert matlab_status in {"AVAILABLE", "UNAVAILABLE"}
+    
+    details = data["matlab_fdm"].get("details", {})
+    if matlab_status == "AVAILABLE":
+        assert details.get("matlab_available") is True
+    else:
+        assert details.get("matlab_available") is False
+
+
+def test_get_precomputed_simulation():
+    resp = client.get("/api/v1/simulate/precomputed")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["is_precomputed"] is True
+    assert data["solver_name"] == "MATLAB_FDM"
+    assert "animation" in data
+    assert "temperature_curves" in data
 
 
 @pytest.mark.matlab

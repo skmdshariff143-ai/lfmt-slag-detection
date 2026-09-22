@@ -14,7 +14,7 @@ sys.path.insert(0, str(repo_root))
 sys.path.insert(0, str(repo_root / "src"))
 
 import os
-from api.routes import analyze, examples
+from api.routes import analyze, examples, simulate
 
 app = FastAPI(
     title="LFMT Intelligent Thermographic Defect Analyzer API",
@@ -43,6 +43,7 @@ app.add_middleware(
 # Register API routers
 app.include_router(analyze.router, prefix="/api/v1")
 app.include_router(examples.router, prefix="/api/v1")
+app.include_router(simulate.router, prefix="/api/v1")
 
 
 @app.get("/")

@@ -65,3 +65,57 @@ export async function uploadAndAnalyzeFile(formData: FormData): Promise<any> {
   }
   return res.json();
 }
+
+export async function fetchSimulationBackends(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/backends`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch backends: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function startSimulationRun(payload: any): Promise<{ run_id: string; status: string }> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/simulate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || `Simulation dispatch failed with status ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function getSimulationStatus(runId: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/${encodeURIComponent(runId)}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch simulation status: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function getSimulationResult(runId: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/${encodeURIComponent(runId)}/result`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch simulation result: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function compareSimulationBackends(preset: string = "shallow_slag"): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/compare?preset=${encodeURIComponent(preset)}`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to run backend comparison: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+

@@ -52,6 +52,10 @@ minversion = "7.0"
 addopts = "-ra -q --strict-markers"
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+    "matlab: marks tests that require MATLAB installation",
+]
+
 
 [tool.ruff]
 line-length = 100

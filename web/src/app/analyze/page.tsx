@@ -273,7 +273,11 @@ export default function AnalyzePage() {
       const data = await runExampleAnalysis(exampleId, true, 0.0);
       setAnalysisData(data);
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to execute verified example analysis.");
+      setErrorMsg(
+        err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError")
+          ? "LIVE ANALYSIS BACKEND OFFLINE: The Python analysis API is offline in this hosted preview. Run 'scripts/demo/start_local_demo.ps1' to test live analysis locally."
+          : err.message || "Failed to execute verified example analysis."
+      );
     } finally {
       setLoading(false);
     }
@@ -293,7 +297,11 @@ export default function AnalyzePage() {
       const data = await uploadAndAnalyzeFile(formData);
       setAnalysisData(data);
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to analyze uploaded file.");
+      setErrorMsg(
+        err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError")
+          ? "LIVE ANALYSIS BACKEND OFFLINE: The Python analysis API is offline in this hosted preview. Run 'scripts/demo/start_local_demo.ps1' to test live upload analysis locally."
+          : err.message || "Failed to analyze uploaded file."
+      );
     } finally {
       setLoading(false);
     }

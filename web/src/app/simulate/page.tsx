@@ -132,7 +132,9 @@ export default function SimulatePage() {
         setComparisonResult(comp);
         setIsSimulating(false);
       } catch (err: any) {
-        setErrorMsg(err.message || "Comparison failed.");
+        setErrorMsg(
+          "LIVE BACKEND OFFLINE: Python FEM & MATLAB FDM backends are unreachable in this hosted preview. Click 'PRECOMPUTED MATLAB NUMERICAL SIMULATION' above to explore precomputed results."
+        );
         setIsSimulating(false);
       }
       return;
@@ -189,7 +191,9 @@ export default function SimulatePage() {
         }
       }, 800);
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed starting simulation.");
+      setErrorMsg(
+        "LIVE MATLAB BACKEND OFFLINE: Simulation backend is unreachable in this hosted preview. Click 'PRECOMPUTED MATLAB NUMERICAL SIMULATION' to explore full 3-D transient thermograms and autonomous NDT analysis."
+      );
       setIsSimulating(false);
     }
   };
@@ -342,7 +346,7 @@ export default function SimulatePage() {
             ) : (
               <span className="px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700 text-slate-400 font-mono flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-slate-500"></span>
-                MATLAB: Unavailable
+                LIVE MATLAB BACKEND OFFLINE
               </span>
             )}
             <span className="px-3 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 font-mono">
@@ -383,7 +387,7 @@ export default function SimulatePage() {
               className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 font-semibold text-xs hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              <span>LOAD PRECOMPUTED MATLAB RESULT</span>
+              <span>PRECOMPUTED MATLAB NUMERICAL SIMULATION</span>
             </button>
           </div>
         </div>

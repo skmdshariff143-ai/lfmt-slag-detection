@@ -44,6 +44,7 @@ class SimulationRequest(BaseModel):
     f1_hz: float = 0.50
     duration_s: float = 10.0
     q0_w_m2: float = 5000.0
+    camera_sampling_rate_hz: float = 10.0
     defects: Optional[List[DefectParam]] = None
     spatial_resolution: Optional[Dict[str, int]] = None
     timestep_s: float = 0.04
@@ -54,7 +55,11 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
     """Execute simulation in background and populate cache."""
     try:
         SIMULATION_CACHE[run_id]["status"] = "STARTING_SIMULATION"
-        SIMULATION_CACHE[run_id]["stage"] = "Initializing Backend..."
+        SIMULATION_CACHE[run_id]["stage"] = "Validating Physical Inputs..."
+
+        # 1. Physical Geometry Validation
+        if req.length_mm <= 0 or req.width_mm <= 0 or req.thickness_mm <= 0:
+            raise ValueError("INVALID_GEOMETRY: Plate dimensions must be strictly positive.")
 
         cfg = load_config("configs/research_v3_high_fidelity.yaml")
         cfg.geometry.plate.length_mm = req.length_mm
@@ -66,11 +71,13 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
         cfg.excitation.q0_w_m2 = req.q0_w_m2
         cfg.simulation.timestep_s = req.timestep_s
         cfg.simulation.total_time_s = req.duration_s
+        cfg.camera.sampling_rate_hz = req.camera_sampling_rate_hz
 
-        # Handle Presets
+        # 2. Defect Configuration (Presets vs Custom)
         if req.preset == "healthy":
             cfg.geometry.inclusion.diameter_mm = 0.0
             cfg.geometry.inclusion.thickness_mm = 0.0
+            cfg.geometry.inclusion.inclusions_list = []
             defects_list = []
         elif req.preset == "shallow_slag":
             cfg.geometry.inclusion.diameter_mm = 8.0
@@ -79,6 +86,7 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
             cfg.geometry.inclusion.center_x_mm = 50.0
             cfg.geometry.inclusion.center_y_mm = 35.0
             defects_list = [{"diameter_mm": 8.0, "depth_mm": 0.4, "thickness_mm": 0.40, "center_x_mm": 50.0, "center_y_mm": 35.0, "material": "slag"}]
+            cfg.geometry.inclusion.inclusions_list = defects_list
         elif req.preset == "deep_slag":
             cfg.geometry.inclusion.diameter_mm = 8.0
             cfg.geometry.inclusion.depth_mm = 0.8
@@ -86,26 +94,42 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
             cfg.geometry.inclusion.center_x_mm = 50.0
             cfg.geometry.inclusion.center_y_mm = 35.0
             defects_list = [{"diameter_mm": 8.0, "depth_mm": 0.8, "thickness_mm": 0.40, "center_x_mm": 50.0, "center_y_mm": 35.0, "material": "slag"}]
+            cfg.geometry.inclusion.inclusions_list = defects_list
         elif req.preset == "multi_slag":
+            defects_list = [
+                {"diameter_mm": 6.0, "depth_mm": 0.4, "thickness_mm": 0.40, "center_x_mm": 42.5, "center_y_mm": 35.0, "material": "slag"},
+                {"diameter_mm": 4.8, "depth_mm": 0.4, "thickness_mm": 0.40, "center_x_mm": 57.5, "center_y_mm": 35.0, "material": "slag"}
+            ]
             cfg.geometry.inclusion.diameter_mm = 6.0
             cfg.geometry.inclusion.depth_mm = 0.4
             cfg.geometry.inclusion.thickness_mm = 0.40
             cfg.geometry.inclusion.center_x_mm = 42.5
             cfg.geometry.inclusion.center_y_mm = 35.0
-            defects_list = [
-                {"diameter_mm": 6.0, "depth_mm": 0.4, "thickness_mm": 0.40, "center_x_mm": 42.5, "center_y_mm": 35.0, "material": "slag"},
-                {"diameter_mm": 4.8, "depth_mm": 0.4, "thickness_mm": 0.40, "center_x_mm": 57.5, "center_y_mm": 35.0, "material": "slag"}
-            ]
-        elif req.defects:
-            d0 = req.defects[0]
-            cfg.geometry.inclusion.diameter_mm = d0.diameter_mm
-            cfg.geometry.inclusion.depth_mm = d0.depth_mm
-            cfg.geometry.inclusion.thickness_mm = d0.thickness_mm
-            cfg.geometry.inclusion.center_x_mm = d0.center_x_mm
-            cfg.geometry.inclusion.center_y_mm = d0.center_y_mm
-            defects_list = [d.dict() for d in req.defects]
+            cfg.geometry.inclusion.inclusions_list = defects_list
         else:
-            defects_list = []
+            # Custom Mode: req.defects is strictly authoritative
+            if req.defects and len(req.defects) > 0:
+                defects_list = [d.model_dump() if hasattr(d, "model_dump") else d.dict() for d in req.defects]
+                d0 = req.defects[0]
+                cfg.geometry.inclusion.diameter_mm = d0.diameter_mm
+                cfg.geometry.inclusion.depth_mm = d0.depth_mm
+                cfg.geometry.inclusion.thickness_mm = d0.thickness_mm
+                cfg.geometry.inclusion.center_x_mm = d0.center_x_mm
+                cfg.geometry.inclusion.center_y_mm = d0.center_y_mm
+                cfg.geometry.inclusion.inclusions_list = defects_list
+            else:
+                cfg.geometry.inclusion.diameter_mm = 0.0
+                cfg.geometry.inclusion.thickness_mm = 0.0
+                cfg.geometry.inclusion.inclusions_list = []
+                defects_list = []
+
+        # Validate defect depth
+        for d in defects_list:
+            if d["depth_mm"] < 0 or (d["depth_mm"] + d["thickness_mm"]) > req.thickness_mm:
+                raise ValueError(
+                    f"INVALID_DEFECT_DEPTH: Defect depth ({d['depth_mm']} mm) + thickness "
+                    f"({d['thickness_mm']} mm) exceeds plate thickness ({req.thickness_mm} mm)."
+                )
 
         if req.spatial_resolution:
             cfg.simulation.spatial_resolution = req.spatial_resolution
@@ -113,43 +137,54 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
         SIMULATION_CACHE[run_id]["status"] = "SOLVING"
         SIMULATION_CACHE[run_id]["stage"] = "Solving 3-D Heat Equation..."
 
-        # Instantiate requested backend
-        backend = SimulationBackendFactory.create(req.backend)
-        sim_res = backend.run(cfg)
+        # 3. Instantiate requested backend
+        try:
+            backend = SimulationBackendFactory.create(req.backend)
+            sim_res = backend.run(cfg)
+        except RuntimeError as re:
+            err_str = str(re)
+            if "MATLAB_ENGINE_UNAVAILABLE" in err_str:
+                raise RuntimeError(err_str)
+            elif "MATLAB_SIMULATION_FAILED" in err_str:
+                raise RuntimeError(err_str)
+            else:
+                raise RuntimeError(f"SIMULATION_FAILED: {err_str}")
 
         SIMULATION_CACHE[run_id]["status"] = "ANALYZING"
         SIMULATION_CACHE[run_id]["stage"] = "Running Thermographic NDT Analysis..."
 
-        # Extract temperature arrays
-        surf_temp = sim_res.surface_temperature  # (n_frames, 28, 40)
+        # 4. Extract temperature arrays
+        surf_temp = sim_res.surface_temperature  # (n_cam_frames, 28, 40)
         time_vec = sim_res.time_vector
         Tamb = cfg.excitation.ambient_temp_k
         delta_T = surf_temp - Tamb
 
-        # Compute curves: Center (14, 20), Sound Corner (4, 4), Plate Mean
+        # Probe points: Defect center (14, 20), Reference corner (4, 4), Plate Mean
         center_curve = [float(val) for val in delta_T[:, 14, 20]]
-        sound_curve = [float(val) for val in delta_T[:, 4, 4]]
+        reference_curve = [float(val) for val in delta_T[:, 4, 4]]
         mean_curve = [float(val) for val in np.mean(delta_T, axis=(1, 2))]
 
         # Downsample animation frames for lightweight web transmission if needed
-        # Send all or every 2nd frame depending on length
         step = 1 if len(time_vec) <= 120 else 2
         anim_frames = surf_temp[::step].round(3).tolist()
         anim_delta_t = delta_T[::step].round(3).tolist()
         anim_times = [float(t) for t in time_vec[::step]]
 
-        # Run AutoDefectAnalyzer if requested
+        # 5. Run AutoDefectAnalyzer if requested
         analysis_data = None
         if req.run_analyzer:
-            ana_res = ANALYZER_INSTANCE.analyze(
-                source=surf_temp,
-                metadata_override={
-                    "source_type": backend.backend_type.upper(),
-                    "frame_rate_hz": float(1.0 / cfg.simulation.timestep_s),
-                    "excitation_type": "LFMT_CHIRP"
-                }
-            )
-            analysis_data = ana_res.to_dict()
+            try:
+                ana_res = ANALYZER_INSTANCE.analyze(
+                    source=surf_temp,
+                    metadata_override={
+                        "source_type": backend.backend_type.upper(),
+                        "frame_rate_hz": float(req.camera_sampling_rate_hz),
+                        "excitation_type": "LFMT_CHIRP"
+                    }
+                )
+                analysis_data = ana_res.to_dict()
+            except Exception as ae:
+                raise RuntimeError(f"ANALYZER_FAILED: Autonomous defect analyzer error - {str(ae)}")
 
         SIMULATION_CACHE[run_id]["status"] = "COMPLETED"
         SIMULATION_CACHE[run_id]["stage"] = "Simulation and Analysis Complete"
@@ -159,6 +194,8 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
             "solver_name": sim_res.metadata.get("solver_name", sim_res.backend_name),
             "discretization_method": sim_res.metadata.get("discretization_method", "Finite Element / Difference"),
             "execution_time_s": float(sim_res.metadata.get("execution_time_s", 0.0)),
+            "solver_dt_s": float(sim_res.metadata.get("solver_dt_s", req.timestep_s)),
+            "camera_frame_rate_hz": float(sim_res.metadata.get("camera_frame_rate_hz", req.camera_sampling_rate_hz)),
             "ambient_temp_k": float(Tamb),
             "peak_delta_t_k": float(np.max(delta_T)),
             "max_temp_k": float(np.max(surf_temp)),
@@ -174,8 +211,10 @@ def _run_simulation_task(run_id: str, req: SimulationRequest):
             },
             "temperature_curves": {
                 "time_s": [float(t) for t in time_vec],
+                "probe_roi_dT": center_curve,
                 "defect_center_roi_dT": center_curve,
-                "sound_plate_roi_dT": sound_curve,
+                "reference_roi_dT": reference_curve,
+                "sound_plate_roi_dT": reference_curve,
                 "plate_mean_dT": mean_curve
             },
             "ground_truth": {
@@ -263,15 +302,23 @@ async def get_simulation_result(run_id: str):
 async def compare_simulation_backends(preset: str = "shallow_slag"):
     """Run Python FEM and MATLAB FDM side-by-side on identical configuration."""
     cfg = load_config("configs/research_v3_high_fidelity.yaml")
+    cfg.camera.sampling_rate_hz = 10.0
+    cfg.simulation.timestep_s = 0.04
+
     if preset == "healthy":
         cfg.geometry.inclusion.diameter_mm = 0.0
         cfg.geometry.inclusion.depth_mm = 0.0
+        cfg.geometry.inclusion.inclusions_list = []
     elif preset == "shallow_slag":
         cfg.geometry.inclusion.diameter_mm = 8.0
         cfg.geometry.inclusion.depth_mm = 0.4
+        cfg.geometry.inclusion.thickness_mm = 0.40
+        cfg.geometry.inclusion.inclusions_list = [{"diameter_mm": 8.0, "depth_mm": 0.4, "thickness_mm": 0.40, "center_x_mm": 50.0, "center_y_mm": 35.0, "material": "slag"}]
     elif preset == "deep_slag":
         cfg.geometry.inclusion.diameter_mm = 8.0
         cfg.geometry.inclusion.depth_mm = 0.8
+        cfg.geometry.inclusion.thickness_mm = 0.40
+        cfg.geometry.inclusion.inclusions_list = [{"diameter_mm": 8.0, "depth_mm": 0.8, "thickness_mm": 0.40, "center_x_mm": 50.0, "center_y_mm": 35.0, "material": "slag"}]
 
     fem_b = FEMBackend()
     matlab_b = MATLABFDMBackend(mode="engine")
@@ -297,8 +344,10 @@ async def compare_simulation_backends(preset: str = "shallow_slag"):
     peak_diff = abs(peak_fdm - peak_fem)
 
     import scipy.stats
-    r_spatial, _ = scipy.stats.pearsonr(dT_fem[int(0.8 * len(fem_res.time_vector))].flatten(),
-                                        dT_fdm[int(0.8 * len(matlab_res.time_vector))].flatten())
+    r_spatial, _ = scipy.stats.pearsonr(
+        dT_fem[int(0.8 * len(fem_res.time_vector))].flatten(),
+        dT_fdm[int(0.8 * len(matlab_res.time_vector))].flatten()
+    )
 
     return {
         "preset": preset,
@@ -320,3 +369,4 @@ async def compare_simulation_backends(preset: str = "shallow_slag"):
             "is_cross_validated": bool(rel_l2_pct <= 5.0)
         }
     }
+

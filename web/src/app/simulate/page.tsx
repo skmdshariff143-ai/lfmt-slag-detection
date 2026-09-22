@@ -245,15 +245,25 @@ export default function SimulatePage() {
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 font-mono flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              MATLAB Engine R2026a Active
-            </span>
+            {backendsInfo?.matlab_fdm?.status === "AVAILABLE" ? (
+              <span className="px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 font-mono flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                {backendsInfo.matlab_fdm.connection_mode === "engine"
+                  ? `MATLAB Engine: Connected (${backendsInfo.matlab_fdm.engine || "R2026a"})`
+                  : `MATLAB Batch: Available (${backendsInfo.matlab_fdm.engine || "R2026a"})`}
+              </span>
+            ) : (
+              <span className="px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700 text-slate-400 font-mono flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+                MATLAB: Unavailable
+              </span>
+            )}
             <span className="px-3 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 font-mono">
               3-D Conservative FDM
             </span>
           </div>
         </div>
+
 
         {/* Engine & Preset Control Bar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -407,7 +417,10 @@ export default function SimulatePage() {
                 type="number"
                 step="0.5"
                 value={diameterMm}
-                onChange={(e) => setDiameterMm(parseFloat(e.target.value) || 0)}
+                onChange={(e) => {
+                  setSelectedPreset("custom");
+                  setDiameterMm(parseFloat(e.target.value) || 0);
+                }}
                 className="w-full mt-1.5 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200"
               />
             </div>
@@ -417,7 +430,10 @@ export default function SimulatePage() {
                 type="number"
                 step="0.1"
                 value={depthMm}
-                onChange={(e) => setDepthMm(parseFloat(e.target.value) || 0)}
+                onChange={(e) => {
+                  setSelectedPreset("custom");
+                  setDepthMm(parseFloat(e.target.value) || 0);
+                }}
                 className="w-full mt-1.5 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200"
               />
             </div>
@@ -427,7 +443,10 @@ export default function SimulatePage() {
                 type="number"
                 step="0.01"
                 value={f0Hz}
-                onChange={(e) => setF0Hz(parseFloat(e.target.value) || 0.05)}
+                onChange={(e) => {
+                  setSelectedPreset("custom");
+                  setF0Hz(parseFloat(e.target.value) || 0.05);
+                }}
                 className="w-full mt-1.5 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200"
               />
             </div>
@@ -437,7 +456,10 @@ export default function SimulatePage() {
                 type="number"
                 step="0.05"
                 value={f1Hz}
-                onChange={(e) => setF1Hz(parseFloat(e.target.value) || 0.50)}
+                onChange={(e) => {
+                  setSelectedPreset("custom");
+                  setF1Hz(parseFloat(e.target.value) || 0.50);
+                }}
                 className="w-full mt-1.5 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200"
               />
             </div>
@@ -539,7 +561,9 @@ export default function SimulatePage() {
                 <div className="text-base font-semibold text-slate-100 mt-1 font-mono">
                   {animData?.n_frames || 0} frames
                 </div>
-                <div className="text-[11px] text-slate-500 font-mono">40 × 28 surface FOV</div>
+                <div className="text-[11px] text-slate-500 font-mono">
+                  {simulationResult?.camera_frame_rate_hz ? `${simulationResult.camera_frame_rate_hz} Hz IR Camera` : "40 × 28 surface FOV"}
+                </div>
               </div>
             </div>
 
@@ -591,16 +615,20 @@ export default function SimulatePage() {
                       }}
                     >
                       {current2DMatrix.map((row: number[], rIdx: number) =>
-                        row.map((val: number, cIdx: number) => (
-                          <div
-                            key={`${rIdx}-${cIdx}`}
-                            className="w-full h-full"
-                            style={{
-                              backgroundColor: renderThermalColor(val, minValDisplay, maxValDisplay)
-                            }}
-                            title={`(${cIdx * 2.5} mm, ${rIdx * 2.5} mm): ${val.toFixed(3)} K`}
-                          />
-                        ))
+                        row.map((val: number, cIdx: number) => {
+                          const xMm = animData?.x_coords_mm?.[cIdx] !== undefined ? animData.x_coords_mm[cIdx].toFixed(1) : (cIdx * 2.5).toFixed(1);
+                          const yMm = animData?.y_coords_mm?.[rIdx] !== undefined ? animData.y_coords_mm[rIdx].toFixed(1) : (rIdx * 2.5).toFixed(1);
+                          return (
+                            <div
+                              key={`${rIdx}-${cIdx}`}
+                              className="w-full h-full"
+                              style={{
+                                backgroundColor: renderThermalColor(val, minValDisplay, maxValDisplay)
+                              }}
+                              title={`(${xMm} mm, ${yMm} mm): ${val.toFixed(3)} K`}
+                            />
+                          );
+                        })
                       )}
                     </div>
                   )}
@@ -687,7 +715,7 @@ export default function SimulatePage() {
                         Thermal Transient Response ΔT(t)
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400">Peak heating @ 8.0 s</span>
+                    <span className="text-[10px] font-mono text-slate-400">LFMT Excitation Response</span>
                   </div>
 
                   {/* Simplified SVG Temperature Curve */}
@@ -698,15 +726,15 @@ export default function SimulatePage() {
                       <line x1="0" y1="25" x2="100" y2="25" stroke="#334155" strokeWidth="0.5" strokeDasharray="2,2" />
                       <line x1="0" y1="40" x2="100" y2="40" stroke="#334155" strokeWidth="0.5" strokeDasharray="2,2" />
 
-                      {/* Defect Center Curve */}
-                      {simulationResult?.temperature_curves?.defect_center_roi_dT && (
+                      {/* Configured Defect Probe Curve */}
+                      {(simulationResult?.temperature_curves?.probe_roi_dT || simulationResult?.temperature_curves?.defect_center_roi_dT) && (
                         <polyline
                           fill="none"
                           stroke="#f59e0b"
                           strokeWidth="2"
-                          points={simulationResult.temperature_curves.defect_center_roi_dT
+                          points={(simulationResult.temperature_curves.probe_roi_dT || simulationResult.temperature_curves.defect_center_roi_dT)
                             .map((val: number, idx: number, arr: number[]) => {
-                              const x = (idx / (arr.length - 1)) * 100;
+                              const x = (idx / Math.max(1, arr.length - 1)) * 100;
                               const y = 48 - (val / Math.max(1e-4, simulationResult.peak_delta_t_k)) * 44;
                               return `${x},${y}`;
                             })
@@ -714,16 +742,16 @@ export default function SimulatePage() {
                         />
                       )}
 
-                      {/* Sound Reference Curve */}
-                      {simulationResult?.temperature_curves?.sound_plate_roi_dT && (
+                      {/* Reference ROI Curve */}
+                      {(simulationResult?.temperature_curves?.reference_roi_dT || simulationResult?.temperature_curves?.sound_plate_roi_dT) && (
                         <polyline
                           fill="none"
                           stroke="#06b6d4"
                           strokeWidth="1.5"
                           strokeDasharray="1,1"
-                          points={simulationResult.temperature_curves.sound_plate_roi_dT
+                          points={(simulationResult.temperature_curves.reference_roi_dT || simulationResult.temperature_curves.sound_plate_roi_dT)
                             .map((val: number, idx: number, arr: number[]) => {
-                              const x = (idx / (arr.length - 1)) * 100;
+                              const x = (idx / Math.max(1, arr.length - 1)) * 100;
                               const y = 48 - (val / Math.max(1e-4, simulationResult.peak_delta_t_k)) * 44;
                               return `${x},${y}`;
                             })
@@ -736,11 +764,11 @@ export default function SimulatePage() {
                   <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
                     <div className="flex items-center gap-1.5">
                       <span className="w-2.5 h-0.5 bg-amber-400"></span>
-                      <span>Defect ROI (Center)</span>
+                      <span>Configured Defect-Center Probe</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="w-2.5 h-0.5 bg-cyan-400"></span>
-                      <span>Sound Specimen</span>
+                      <span>Reference ROI</span>
                     </div>
                   </div>
                 </div>
@@ -752,46 +780,59 @@ export default function SimulatePage() {
                     <span>Configured Virtual Defect vs NDT Prediction</span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5">
-                      <div className="text-slate-400 font-semibold">Configured GT</div>
-                      <div className="font-mono text-slate-200">
-                        {gt?.has_defect ? "Slag Inclusion" : "Sound Control"}
-                      </div>
-                      <div className="text-[11px] text-slate-400 font-mono">
-                        {gt?.has_defect && gt.defects && gt.defects[0]
-                          ? `D=${gt.defects[0].diameter_mm} mm, d=${gt.defects[0].depth_mm} mm`
-                          : "No Defects"}
-                      </div>
-                    </div>
+                  {(() => {
+                    const detectedDefects = simulationResult?.analysis_result?.defects;
+                    const firstDefect = detectedDefects && detectedDefects.length > 0 ? detectedDefects[0] : null;
+                    const detectedLocation = firstDefect?.centroid_mm
+                      ? `Localized at (${firstDefect.centroid_mm[0].toFixed(1)}, ${firstDefect.centroid_mm[1].toFixed(1)}) mm`
+                      : analysisVerdict?.is_anomaly_detected
+                      ? "Localization unavailable"
+                      : "Zero False Alarms";
 
-                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5">
-                      <div className="text-slate-400 font-semibold">NDT Detected</div>
-                      <div className="font-mono text-cyan-300 truncate">
-                        {analysisVerdict?.is_anomaly_detected ? "Thermal Anomaly" : "Sound Control"}
+                    return (
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5">
+                          <div className="text-slate-400 font-semibold">Configured GT</div>
+                          <div className="font-mono text-slate-200">
+                            {gt?.has_defect ? "Slag Inclusion" : "Sound Control"}
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-mono">
+                            {gt?.has_defect && gt.defects && gt.defects[0]
+                              ? `D=${gt.defects[0].diameter_mm} mm, d=${gt.defects[0].depth_mm} mm`
+                              : "No Defects"}
+                          </div>
+                        </div>
+
+                        <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5">
+                          <div className="text-slate-400 font-semibold">NDT Detected</div>
+                          <div className="font-mono text-cyan-300 truncate">
+                            {analysisVerdict?.is_anomaly_detected ? "Thermal Anomaly" : "Sound Control"}
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-mono">
+                            {detectedLocation}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-[11px] text-slate-400 font-mono">
-                        {analysisVerdict?.is_anomaly_detected ? "Localized at (50, 35) mm" : "Zero False Alarms"}
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
 
-            {/* Bottom Section: NDT Signal Processing Maps */}
+            {/* Bottom Section: NDT Signal Processing Maps (Real 2-D Rendering) */}
             {processingMaps && (
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-amber-400" />
                     <h3 className="text-sm font-semibold text-slate-200">
-                      Thermographic Signal Processing Methods
+                      Thermographic Signal Processing 2-D Feature Maps
                     </h3>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {[
+                      { id: "raw", label: "Raw Contrast" },
                       { id: "mf", label: "Matched Filter (MF)" },
                       { id: "pct", label: "PCT Blind EOF" },
                       { id: "spct", label: "SPCT" },
@@ -803,7 +844,7 @@ export default function SimulatePage() {
                         onClick={() => setActiveMethodTab(m.id)}
                         className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
                           activeMethodTab === m.id
-                            ? "bg-amber-500 text-slate-950 font-bold"
+                            ? "bg-amber-500 text-slate-950 font-bold shadow"
                             : "bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800"
                         }`}
                       >
@@ -813,16 +854,85 @@ export default function SimulatePage() {
                   </div>
                 </div>
 
-                <div className="text-xs text-slate-400">
-                  {activeMethodTab === "mf" &&
-                    "Matched Filter cross-correlates each pixel's transient thermal history with the reference LFMT chirp template, maximizing defect-to-sound SNR."}
-                  {activeMethodTab === "pct" &&
-                    "Principal Component Thermography (PCT) decomposes thermal diffusion into orthogonal EOF basis images, blind kurtosis-selected for optimal defect contrast."}
-                  {activeMethodTab === "spct" &&
-                    "Sparse Principal Component Thermography (SPCT) enforces spatial sparsity, isolating localized subsurface anomalies with minimal background clutter."}
-                  {activeMethodTab === "rpt" &&
-                    "Robust Principal Component Thermography (RPT) decomposes data into low-rank background matrix and sparse defect matrix via inexact ALM."}
-                </div>
+                {/* Active Map Detail & 2-D Matrix Heatmap */}
+                {(() => {
+                  const activeMapObj = processingMaps[activeMethodTab];
+                  if (!activeMapObj || !activeMapObj.map) {
+                    return (
+                      <div className="p-8 text-center text-xs text-slate-500 font-mono bg-slate-950 rounded-xl border border-slate-800">
+                        Feature map data not computed for this modality.
+                      </div>
+                    );
+                  }
+
+                  const mapData: number[][] = activeMapObj.map;
+                  const flatVals = mapData.flat();
+                  const mapMin = Math.min(...flatVals);
+                  const mapMax = Math.max(...flatVals);
+
+                  return (
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                      {/* 2D Processing Map Visualizer */}
+                      <div className="lg:col-span-6 aspect-[40/28] bg-slate-950 rounded-xl border border-slate-800 p-2 relative overflow-hidden flex items-center justify-center">
+                        <div
+                          className="w-full h-full grid"
+                          style={{
+                            gridTemplateColumns: `repeat(${mapData[0]?.length || 40}, minmax(0, 1fr))`,
+                            gridTemplateRows: `repeat(${mapData.length || 28}, minmax(0, 1fr))`
+                          }}
+                        >
+                          {mapData.map((row: number[], rIdx: number) =>
+                            row.map((val: number, cIdx: number) => (
+                              <div
+                                key={`${rIdx}-${cIdx}`}
+                                className="w-full h-full"
+                                style={{
+                                  backgroundColor: renderThermalColor(val, mapMin, mapMax)
+                                }}
+                                title={`[${rIdx}, ${cIdx}]: ${val.toFixed(4)}`}
+                              />
+                            ))
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Map Telemetry & Explanation */}
+                      <div className="lg:col-span-6 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-base font-bold text-slate-100">{activeMapObj.name}</h4>
+                          <span
+                            className={`px-2.5 py-1 rounded text-xs font-mono font-semibold ${
+                              activeMapObj.is_detected
+                                ? "bg-emerald-950 text-emerald-400 border border-emerald-500/30"
+                                : "bg-slate-800 text-slate-400 border border-slate-700"
+                            }`}
+                          >
+                            {activeMapObj.is_detected ? "Anomaly Detected" : "No Anomaly"}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 font-mono text-xs">
+                          <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <div className="text-slate-400 text-[11px]">{activeMapObj.score_label || "Score"}</div>
+                            <div className="text-amber-400 font-bold text-base mt-0.5">
+                              {typeof activeMapObj.score === "number" ? activeMapObj.score.toFixed(3) : activeMapObj.score}
+                            </div>
+                          </div>
+                          <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <div className="text-slate-400 text-[11px]">Execution Time</div>
+                            <div className="text-cyan-300 font-bold text-base mt-0.5">
+                              {activeMapObj.runtime_s ? `${(activeMapObj.runtime_s * 1000).toFixed(1)} ms` : "N/A"}
+                            </div>
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-400 leading-relaxed bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+                          {activeMapObj.explanation}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -831,3 +941,4 @@ export default function SimulatePage() {
     </div>
   );
 }
+

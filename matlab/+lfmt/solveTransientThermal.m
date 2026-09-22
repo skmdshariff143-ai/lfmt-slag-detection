@@ -5,29 +5,42 @@ function sim_result = solveTransientThermal(config)
 %   rho(x)*Cp(x)*dT/dt = div(k(x)*grad(T))
 %
 % Time integration: Implicit Backward Euler (unconditionally stable)
+% Camera acquisition: Explicitly decoupled from solver timestep via temporal sampling
+
+if ischar(config) || isstring(config)
+    config = lfmt.loadConfig(config);
+end
 
 t_start = tic;
 
 % 1. Parse configuration parameters
-Lx_mm = config.plate.length_mm;
-Ly_mm = config.plate.width_mm;
-Lz_mm = config.plate.thickness_mm;
+Lx_mm = double(config.plate.length_mm);
+Ly_mm = double(config.plate.width_mm);
+Lz_mm = double(config.plate.thickness_mm);
 
-Nx = config.simulation.Nx;
-Ny = config.simulation.Ny;
-Nz = config.simulation.Nz;
-dt = config.simulation.dt_s;
-total_time = config.simulation.total_time_s;
+Nx = int32(config.simulation.Nx);
+Ny = int32(config.simulation.Ny);
+Nz = int32(config.simulation.Nz);
+dt_solver = double(config.simulation.dt_s);
+total_time = double(config.simulation.total_time_s);
 
-f0 = config.excitation.f0_hz;
-f1 = config.excitation.f1_hz;
-q0 = config.excitation.q0_w_m2;
-duration = config.excitation.duration_s;
-h_conv = config.excitation.h_conv_w_m2k;
-Tamb = config.excitation.ambient_temp_k;
+f0 = double(config.excitation.f0_hz);
+f1 = double(config.excitation.f1_hz);
+q0 = double(config.excitation.q0_w_m2);
+duration = double(config.excitation.duration_s);
+h_conv = double(config.excitation.h_conv_w_m2k);
+Tamb = double(config.excitation.ambient_temp_k);
 
-cam_nx = config.camera.cam_nx;
-cam_ny = config.camera.cam_ny;
+cam_nx = int32(config.camera.cam_nx);
+cam_ny = int32(config.camera.cam_ny);
+
+if isfield(config.camera, 'frame_rate_hz')
+    cam_fps = double(config.camera.frame_rate_hz);
+elseif isfield(config.camera, 'sampling_rate_hz')
+    cam_fps = double(config.camera.sampling_rate_hz);
+else
+    cam_fps = 10.0;
+end
 
 defects = [];
 if isfield(config, 'defects')
@@ -46,7 +59,7 @@ q_unit_vec = lfmt.buildFrontFluxVector(grid);
 
 % Volumetric heat capacity vector
 C_vec = reshape(rhoCp_field .* grid.dV, [], 1);
-C_over_dt = C_vec / dt;
+C_over_dt = C_vec / dt_solver;
 
 % 4. System Matrix for Backward Euler: A = diag(C/dt + H_diag) + L
 N = grid.total_cells;
@@ -55,10 +68,13 @@ A = spdiags(C_over_dt + H_diag, 0, N, N) + L;
 % Pre-factorize sparse system (Cholesky decomposition once)
 dA = decomposition(A, 'chol');
 
-% 5. LFMT Excitation Setup
-exc = lfmt.createLFMTExcitation(f0, f1, duration, q0, dt);
-time_vector = (0:dt:total_time)';
-n_frames = length(time_vector);
+% 5. Solver & Camera Time Vectors
+solver_time_vector = (0:dt_solver:total_time)';
+n_solver_steps = length(solver_time_vector);
+
+cam_dt = 1.0 / cam_fps;
+cam_time_vector = (0:cam_dt:total_time)';
+n_cam_frames = length(cam_time_vector);
 
 % Camera sampling coordinates
 cam_x_mm = linspace(0, Lx_mm, cam_nx);
@@ -68,17 +84,20 @@ cam_y_mm = linspace(0, Ly_mm, cam_ny);
 grid_xc_mm = grid.xc * 1e3;
 grid_yc_mm = grid.yc * 1e3;
 
-% 6. Transient Time Stepping
-T_current = full(Tamb * ones(N, 1));
-surface_frames = zeros(n_frames, cam_ny, cam_nx);
+% 6. Transient Time Stepping with Decoupled Camera Interpolation
+T_prev = full(Tamb * ones(N, 1));
+T_current = T_prev;
+surface_frames = zeros(n_cam_frames, cam_ny, cam_nx);
 
-% Frame 0 represents strictly initial ambient equilibrium
+% Frame 1 represents strictly initial ambient equilibrium at t=0
 surface_frames(1, :, :) = Tamb;
+next_cam_idx = 2;
 
-for k = 2:n_frames
-    t_curr = time_vector(k);
+for n = 2:n_solver_steps
+    t_prev = solver_time_vector(n-1);
+    t_curr = solver_time_vector(n);
     
-    % Instantaneous heat flux
+    % Instantaneous heat flux for solver step
     if t_curr <= duration
         beta = (f1 - f0) / duration;
         phase = 2 * pi * (f0 * t_curr + 0.5 * beta * t_curr^2);
@@ -87,30 +106,52 @@ for k = 2:n_frames
         q_curr = 0.0; % Cooling period
     end
     
-    % Right hand side: (C/dt)*T_n + q_curr*q_unit + h_amb
-    rhs = C_over_dt .* T_current + q_curr * q_unit_vec + h_amb_vec;
+    % Right hand side: (C/dt)*T_{n-1} + q_curr*q_unit + h_amb
+    rhs = C_over_dt .* T_prev + q_curr * q_unit_vec + h_amb_vec;
     
     % Solve implicit step
     T_current = dA \ rhs;
     
-    % Extract z=0 front layer temperature (k=1)
+    % Check if any camera acquisition times fall in (t_prev, t_curr]
+    while next_cam_idx <= n_cam_frames && cam_time_vector(next_cam_idx) <= t_curr + 1e-9
+        t_cam = cam_time_vector(next_cam_idx);
+        alpha = (t_cam - t_prev) / (t_curr - t_prev);
+        alpha = max(0.0, min(1.0, alpha));
+        
+        % Interpolate front-surface solution in time
+        T_interp_vec = (1.0 - alpha) * T_prev(1:(Nx*Ny)) + alpha * T_current(1:(Nx*Ny));
+        T_front_2d = reshape(T_interp_vec, [Nx, Ny]);
+        
+        % Spatial interpolation onto camera resolution
+        F_interp = griddedInterpolant({grid_xc_mm, grid_yc_mm}, T_front_2d, 'linear', 'nearest');
+        surf_sampled = F_interp(mesh_X_cam, mesh_Y_cam);
+        
+        % Store in Python canonical shape [n_frames, cam_ny, cam_nx]
+        surface_frames(next_cam_idx, :, :) = surf_sampled';
+        next_cam_idx = next_cam_idx + 1;
+    end
+    
+    T_prev = T_current;
+end
+
+% Handle edge case if last camera frame was slightly beyond final solver step
+while next_cam_idx <= n_cam_frames
     T_front_2d = reshape(T_current(1:(Nx*Ny)), [Nx, Ny]);
-    
-    % Robust interpolation onto regular camera grid with nearest boundary extrapolation
     F_interp = griddedInterpolant({grid_xc_mm, grid_yc_mm}, T_front_2d, 'linear', 'nearest');
-    surf_sampled = F_interp(mesh_X_cam, mesh_Y_cam); % Nx_cam x Ny_cam (40 x 28)
-    
-    % Store in Python canonical shape [n_frames, cam_ny, cam_nx] = (101, 28, 40)
-    surface_frames(k, :, :) = surf_sampled';
+    surf_sampled = F_interp(mesh_X_cam, mesh_Y_cam);
+    surface_frames(next_cam_idx, :, :) = surf_sampled';
+    next_cam_idx = next_cam_idx + 1;
 end
 
 runtime_s = toc(t_start);
 
 sim_result = struct(...
     'surface_temperature', surface_frames, ...
-    'time_vector', time_vector, ...
+    'time_vector', cam_time_vector, ...
     'camera_x_mm', cam_x_mm, ...
     'camera_y_mm', cam_y_mm, ...
+    'solver_dt_s', dt_solver, ...
+    'camera_frame_rate_hz', cam_fps, ...
     'grid', grid, ...
     'k_field', k_field, ...
     'rhoCp_field', rhoCp_field, ...
@@ -121,3 +162,4 @@ sim_result = struct(...
     'time_integration', 'Implicit Backward Euler' ...
 );
 end
+

@@ -98,6 +98,7 @@ class AnalysisResult:
     primary_map_type: str
     primary_feature_map: Optional[np.ndarray] = None
     segmentation_mask: Optional[np.ndarray] = None
+    processing_maps: Dict[str, Any] = field(default_factory=dict)
     runtime_seconds: float = 0.0
 
     def to_dict(self) -> Dict[str, Any]:
@@ -118,8 +119,10 @@ class AnalysisResult:
             "defects": self.defects,
             "total_defects_found": self.total_defects_found,
             "primary_map_type": self.primary_map_type,
+            "processing_maps": self.processing_maps,
             "runtime_seconds": round(self.runtime_seconds, 4)
         }
+
 
 
 class AutoDefectAnalyzer:
@@ -168,6 +171,14 @@ class AutoDefectAnalyzer:
         processing_outputs: Dict[str, Any] = {}
         primary_map = np.zeros((H, W), dtype=float)
         primary_map_name = "none"
+
+        raw_res = None
+        mf_res = None
+        pct_res = None
+        spct_res = None
+        rpt_res = None
+        seof_z = 0.0
+        proj_z = 0.0
 
         # A. Raw Contrast
         max_contrast_k = 0.0
@@ -247,7 +258,14 @@ class AutoDefectAnalyzer:
                 # Use downsampled grid for fast L1 solver
                 sub_stride = 2 if H >= 120 else 1
                 cube_spct = cube_proc[:, ::sub_stride, ::sub_stride] if sub_stride > 1 else cube_proc
-                spct_eng = SparsePrincipalComponentThermography(n_components=min(4, N_frames), alpha=0.05, max_iter=20, mode="blind", use_minibatch=True)
+                spct_eng = SparsePrincipalComponentThermography(
+                    n_components=min(4, N_frames),
+                    alpha=0.05,
+                    max_iter=20,
+                    mode="blind",
+                    use_minibatch=True,
+                    random_state=42
+                )
                 spct_res = spct_eng.process(cube_spct)
                 seof = spct_res.selected_sparse_image
                 seof_z = float(np.max(np.abs(seof - np.median(seof)))) / (float(np.std(seof)) + 1e-6)
@@ -356,31 +374,88 @@ class AutoDefectAnalyzer:
                 d_id = f"DEFECT-{i+1:02d}"
                 d_type = consensus.likely_defect_type
             
-            # Sizing & Depth estimation
-            diam_mm = cand.equivalent_diameter_mm if inspection.fov_mm else None
-            area_mm2 = cand.area_mm2 if inspection.fov_mm else None
-            
-            depth_est = None
-            unc_range = None
-            if consensus.is_anomaly_detected and multitask_pred and multitask_pred.estimated_depth_mm:
-                depth_est = multitask_pred.estimated_depth_mm
-                unc_range = (max(0.1, depth_est - 0.25), depth_est + 0.35)
+                # Sizing & Depth estimation
+                diam_mm = cand.equivalent_diameter_mm if inspection.fov_mm else None
+                area_mm2 = cand.area_mm2 if inspection.fov_mm else None
+                
+                depth_est = None
+                unc_range = None
+                if consensus.is_anomaly_detected and multitask_pred and multitask_pred.estimated_depth_mm:
+                    depth_est = multitask_pred.estimated_depth_mm
+                    unc_range = (max(0.1, depth_est - 0.25), depth_est + 0.35)
 
-            notes = f"Centroid at px ({cand.centroid_px[0]:.1f}, {cand.centroid_px[1]:.1f}), area {cand.area_px} px."
-            defect_instances.append(DefectInstance(
-                defect_id=d_id,
-                defect_type=d_type,
-                confidence_score=cand.confidence_score,
-                centroid_px=cand.centroid_px,
-                centroid_mm=cand.centroid_mm if inspection.fov_mm else None,
-                bounding_box_px=cand.bounding_box_px,
-                area_px=cand.area_px,
-                area_mm2=area_mm2,
-                equivalent_diameter_mm=diam_mm,
-                depth_estimate_mm=depth_est,
-                uncertainty_depth_range_mm=unc_range,
-                evidence_notes=notes
-            ))
+                notes = f"Centroid at px ({cand.centroid_px[0]:.1f}, {cand.centroid_px[1]:.1f}), area {cand.area_px} px."
+                defect_instances.append(DefectInstance(
+                    defect_id=d_id,
+                    defect_type=d_type,
+                    confidence_score=cand.confidence_score,
+                    centroid_px=cand.centroid_px,
+                    centroid_mm=cand.centroid_mm if inspection.fov_mm else None,
+                    bounding_box_px=cand.bounding_box_px,
+                    area_px=cand.area_px,
+                    area_mm2=area_mm2,
+                    equivalent_diameter_mm=diam_mm,
+                    depth_estimate_mm=depth_est,
+                    uncertainty_depth_range_mm=unc_range,
+                    evidence_notes=notes
+                ))
+
+        # Build Serializable 2-D Processing Maps for Web Visualizer
+        proc_maps_dict: Dict[str, Any] = {}
+        if raw_res is not None and hasattr(raw_res, "contrast_map"):
+            proc_maps_dict["raw"] = {
+                "name": "Raw Thermal Contrast",
+                "map": raw_res.contrast_map.round(4).tolist(),
+                "score": processing_outputs.get("raw_contrast", {}).get("max_contrast_val", 0.0),
+                "score_label": "Max Contrast ΔT (K)",
+                "runtime_s": processing_outputs.get("raw_contrast", {}).get("runtime_s", 0.0),
+                "is_detected": processing_outputs.get("raw_contrast", {}).get("is_detected", False),
+                "explanation": "Evaluates maximum temporal differential surface temperature rise ΔT relative to initial ambient baseline."
+            }
+        if mf_res is not None and hasattr(mf_res, "peak_correlation_map"):
+            proc_maps_dict["mf"] = {
+                "name": "Matched Filter (Pulse Compression)",
+                "map": mf_res.peak_correlation_map.round(4).tolist(),
+                "score": processing_outputs.get("lfmt_matched_filter", {}).get("snr_db", 0.0),
+                "score_label": "Prominence SNR",
+                "peak_amplitude": processing_outputs.get("lfmt_matched_filter", {}).get("peak_amplitude", 0.0),
+                "runtime_s": processing_outputs.get("lfmt_matched_filter", {}).get("runtime_s", 0.0),
+                "is_detected": processing_outputs.get("lfmt_matched_filter", {}).get("is_detected", False),
+                "explanation": "Cross-correlates each pixel's transient temperature history with the LFMT chirp reference template to concentrate acoustic/thermal energy into peak correlation amplitude."
+            }
+        if pct_res is not None and hasattr(pct_res, "selected_eof_image"):
+            proc_maps_dict["pct"] = {
+                "name": "Principal Component Thermography (PCT)",
+                "map": pct_res.selected_eof_image.round(4).tolist(),
+                "score": processing_outputs.get("pct", {}).get("kurtosis_score", 0.0),
+                "score_label": "Blind Kurtosis Z-Score",
+                "selected_component_idx": processing_outputs.get("pct", {}).get("selected_component_idx", 0),
+                "runtime_s": processing_outputs.get("pct", {}).get("runtime_s", 0.0),
+                "is_detected": processing_outputs.get("pct", {}).get("is_detected", False),
+                "explanation": "Orthogonal SVD projection of centered temporal thermograms into spatial Empirical Orthogonal Functions (EOFs), selected via blind kurtosis."
+            }
+        if spct_res is not None and hasattr(spct_res, "selected_sparse_image"):
+            proc_maps_dict["spct"] = {
+                "name": "Sparse Principal Component Thermography (SPCT)",
+                "map": spct_res.selected_sparse_image.round(4).tolist(),
+                "score": round(seof_z, 2),
+                "score_label": "Sparsity Contrast Z-Score",
+                "selected_component_idx": processing_outputs.get("spct", {}).get("selected_component_idx", 0),
+                "runtime_s": processing_outputs.get("spct", {}).get("runtime_s", 0.0),
+                "is_detected": processing_outputs.get("spct", {}).get("is_detected", False),
+                "explanation": "L1-regularized sparse dictionary learning enforcing spatial sparsity on basis images to isolate subsurface defect boundaries with minimal background clutter."
+            }
+        if rpt_res is not None and hasattr(rpt_res, "selected_rpt_image"):
+            proc_maps_dict["rpt"] = {
+                "name": "Random Projection Technique (RPT)",
+                "map": rpt_res.selected_rpt_image.round(4).tolist(),
+                "score": round(proj_z, 2),
+                "score_label": "Random Projection Z-Score",
+                "selected_component_idx": processing_outputs.get("rpt", {}).get("selected_component_idx", 0),
+                "runtime_s": processing_outputs.get("rpt", {}).get("runtime_s", 0.0),
+                "is_detected": processing_outputs.get("rpt", {}).get("is_detected", False),
+                "explanation": "Johnson-Lindenstrauss random projection preserving pairwise metric distances in reduced dimensional subspace for efficient anomaly detection."
+            }
 
         elapsed_total = time.perf_counter() - t_start
 
@@ -418,5 +493,7 @@ class AutoDefectAnalyzer:
             primary_map_type=primary_map_name,
             primary_feature_map=primary_map,
             segmentation_mask=det_all.combined_mask,
+            processing_maps=proc_maps_dict,
             runtime_seconds=round(elapsed_total, 4)
         )
+

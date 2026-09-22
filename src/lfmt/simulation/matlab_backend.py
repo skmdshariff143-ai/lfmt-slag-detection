@@ -10,9 +10,10 @@ Time Integration: Implicit Backward Euler
 from __future__ import annotations
 import json
 import math
+import os
 import tempfile
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 import numpy as np
 
 try:
@@ -25,6 +26,8 @@ except ImportError:
 from lfmt.config import LFMTConfig
 from lfmt.simulation.base import ThermalSimulationBackend, SimulationResult, GroundTruth
 from lfmt.matlab.environment import detect_matlab_environment
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 
 class MATLABFDMBackend(ThermalSimulationBackend):
@@ -58,7 +61,7 @@ class MATLABFDMBackend(ThermalSimulationBackend):
         """Initialize persistent MATLAB Engine session if not already running."""
         if self.mode == "engine" and MATLAB_ENGINE_INSTALLED and self._engine is None:
             self._engine = matlab.engine.start_matlab()
-            repo_matlab = str(Path("E:/lfmt-slag-detection/matlab").resolve())
+            repo_matlab = str((REPO_ROOT / "matlab").resolve())
             self._engine.addpath(repo_matlab, nargout=0)
 
     def stop_engine(self):
@@ -79,7 +82,7 @@ class MATLABFDMBackend(ThermalSimulationBackend):
         """
         if not self.env_info.get("matlab_available", False):
             raise RuntimeError(
-                "MATLAB backend requested, but MATLAB executable is not found on this system."
+                "MATLAB_ENGINE_UNAVAILABLE: MATLAB executable or engine is not found on this system."
             )
 
         # 1. Build standardized dictionary for MATLAB config
@@ -92,6 +95,7 @@ class MATLABFDMBackend(ThermalSimulationBackend):
         nz = int(config.simulation.spatial_resolution.get("nz", 12))
         dt = float(config.simulation.timestep_s)
         total_time = float(config.simulation.total_time_s)
+        cam_fps = float(getattr(config.camera, "sampling_rate_hz", 10.0))
 
         f0 = float(config.excitation.f0_hz)
         f1 = float(config.excitation.f1_hz)
@@ -101,9 +105,19 @@ class MATLABFDMBackend(ThermalSimulationBackend):
         Tamb = float(config.excitation.ambient_temp_k)
 
         inc = config.geometry.inclusion
-        has_defect = bool(inc.diameter_mm > 0 and inc.thickness_mm > 0)
-        defects_list = []
-        if has_defect:
+        defects_list: List[Dict[str, Any]] = []
+
+        if inc.inclusions_list and len(inc.inclusions_list) > 0:
+            for d in inc.inclusions_list:
+                defects_list.append({
+                    "diameter_mm": float(d.get("diameter_mm", 0.0)),
+                    "depth_mm": float(d.get("depth_mm", 0.0)),
+                    "thickness_mm": float(d.get("thickness_mm", 0.0)),
+                    "center_x_mm": float(d.get("center_x_mm", 50.0)),
+                    "center_y_mm": float(d.get("center_y_mm", 35.0)),
+                    "material": str(d.get("material", "slag"))
+                })
+        elif inc.diameter_mm > 0 and inc.thickness_mm > 0:
             defects_list.append({
                 "diameter_mm": float(inc.diameter_mm),
                 "depth_mm": float(inc.depth_mm),
@@ -113,6 +127,8 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 "material": str(inc.material)
             })
 
+        has_defect = len(defects_list) > 0
+
         matlab_cfg_dict = {
             "plate": {"length_mm": Lx_mm, "width_mm": Ly_mm, "thickness_mm": Lz_mm},
             "simulation": {"Nx": nx, "Ny": ny, "Nz": nz, "dt_s": dt, "total_time_s": total_time},
@@ -120,21 +136,23 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 "f0_hz": f0, "f1_hz": f1, "q0_w_m2": q0,
                 "duration_s": duration, "h_conv_w_m2k": h_conv, "ambient_temp_k": Tamb
             },
-            "camera": {"cam_nx": 40, "cam_ny": 28},
+            "camera": {
+                "cam_nx": int(getattr(config.camera, "resolution_x", 40)),
+                "cam_ny": int(getattr(config.camera, "resolution_y", 28)),
+                "frame_rate_hz": cam_fps
+            },
             "defects": defects_list
         }
 
         # 2. Execution via MATLAB Engine (Mode A) or Batch Process (Mode B)
         if self.mode == "engine" and MATLAB_ENGINE_INSTALLED:
             self.start_engine()
-            # Pass via temporary JSON file or direct call
             with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w", encoding="utf-8") as f_json:
                 json.dump(matlab_cfg_dict, f_json)
                 json_path = f_json.name
 
             try:
-                cfg_struct = self._engine.lfmt.loadConfig(json_path)
-                res_struct = self._engine.lfmt.solveTransientThermal(cfg_struct)
+                res_struct = self._engine.lfmt.solveTransientThermal(json_path)
                 
                 # Extract surface temperature array: MATLAB [N_frames, 28, 40]
                 surf_mat = res_struct["surface_temperature"]
@@ -146,6 +164,8 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 cam_x = np.array(res_struct["camera_x_mm"], dtype=np.float64).flatten()
                 cam_y = np.array(res_struct["camera_y_mm"], dtype=np.float64).flatten()
                 runtime_s = float(res_struct["runtime_s"])
+            except Exception as e:
+                raise RuntimeError(f"MATLAB_SIMULATION_FAILED: {str(e)}") from e
             finally:
                 Path(json_path).unlink(missing_ok=True)
         else:
@@ -157,13 +177,19 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 with open(json_path, "w", encoding="utf-8") as f:
                     json.dump(matlab_cfg_dict, f)
                 
-                matlab_exe = self.env_info["matlab_path"]
+                matlab_exe = os.environ.get("LFMT_MATLAB_EXECUTABLE") or self.env_info.get("matlab_path")
+                if not matlab_exe:
+                    raise RuntimeError("MATLAB_ENGINE_UNAVAILABLE: No MATLAB executable detected.")
+                
                 cmd = [
                     matlab_exe, "-batch",
                     f"addpath('matlab'); run_lfmt_from_json('{json_path}', '{mat_out_path}'); exit;"
                 ]
                 import subprocess
-                subprocess.run(cmd, check=True, cwd=str(Path("E:/lfmt-slag-detection").resolve()))
+                try:
+                    subprocess.run(cmd, check=True, cwd=str(REPO_ROOT))
+                except Exception as e:
+                    raise RuntimeError(f"MATLAB_SIMULATION_FAILED: Batch solver error - {str(e)}") from e
                 
                 import scipy.io
                 mat_data = scipy.io.loadmat(mat_out_path)
@@ -173,16 +199,25 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 cam_y = np.array(mat_data["camera_y_mm"], dtype=np.float64).flatten()
                 runtime_s = float(mat_data["runtime_s"][0, 0])
 
-        gt_area = math.pi * (inc.diameter_mm / 2.0)**2 if has_defect else 0.0
-        gt_vol = gt_area * inc.thickness_mm if has_defect else 0.0
+        # Sizing / Volume for primary defect
+        primary_d = defects_list[0] if has_defect else {}
+        d_diam = float(primary_d.get("diameter_mm", 0.0))
+        d_thick = float(primary_d.get("thickness_mm", 0.0))
+        d_depth = float(primary_d.get("depth_mm", 0.0))
+        d_cx = float(primary_d.get("center_x_mm", 50.0))
+        d_cy = float(primary_d.get("center_y_mm", 35.0))
+        d_mat = str(primary_d.get("material", "slag"))
+
+        gt_area = math.pi * (d_diam / 2.0)**2 if has_defect else 0.0
+        gt_vol = gt_area * d_thick if has_defect else 0.0
 
         gt = GroundTruth(
-            center_x_mm=float(inc.center_x_mm),
-            center_y_mm=float(inc.center_y_mm),
-            depth_mm=float(inc.depth_mm),
-            diameter_mm=float(inc.diameter_mm),
-            thickness_mm=float(inc.thickness_mm),
-            material_name=str(inc.material),
+            center_x_mm=d_cx,
+            center_y_mm=d_cy,
+            depth_mm=d_depth,
+            diameter_mm=d_diam,
+            thickness_mm=d_thick,
+            material_name=d_mat,
             area_mm2=float(gt_area),
             volume_mm3=float(gt_vol),
             has_defect=has_defect
@@ -203,6 +238,10 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 "execution_time_s": runtime_s,
                 "matlab_release": self.env_info.get("release", "R2026a"),
                 "time_integration": "Implicit Backward Euler",
-                "grid_cells": [nx, ny, nz]
+                "solver_dt_s": dt,
+                "camera_frame_rate_hz": cam_fps,
+                "grid_cells": [nx, ny, nz],
+                "defects_simulated": len(defects_list)
             }
         )
+

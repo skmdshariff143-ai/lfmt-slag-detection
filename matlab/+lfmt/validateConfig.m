@@ -17,7 +17,27 @@ end
 if ~isfield(config, 'simulation')
     config.simulation = struct('Nx', 40, 'Ny', 28, 'Nz', 12, 'dt_s', 0.04, 'total_time_s', 10.0);
 end
+if ~isfield(config.simulation, 'dt_s')
+    config.simulation.dt_s = 0.04;
+end
+if ~isfield(config.simulation, 'total_time_s')
+    config.simulation.total_time_s = 10.0;
+end
 if ~isfield(config, 'camera')
-    config.camera = struct('cam_nx', 40, 'cam_ny', 28);
+    config.camera = struct('cam_nx', 40, 'cam_ny', 28, 'frame_rate_hz', 10.0);
+end
+if ~isfield(config.camera, 'cam_nx')
+    config.camera.cam_nx = 40;
+end
+if ~isfield(config.camera, 'cam_ny')
+    config.camera.cam_ny = 28;
+end
+if ~isfield(config.camera, 'frame_rate_hz')
+    if isfield(config.camera, 'sampling_rate_hz')
+        config.camera.frame_rate_hz = config.camera.sampling_rate_hz;
+    else
+        config.camera.frame_rate_hz = 10.0;
+    end
 end
 end
+

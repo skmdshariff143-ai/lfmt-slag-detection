@@ -19,10 +19,24 @@ def detect_matlab_environment() -> Dict[str, Any]:
     custom_exe = os.environ.get("LFMT_MATLAB_EXECUTABLE")
     matlab_exe = custom_exe if custom_exe and Path(custom_exe).is_file() else shutil.which("matlab")
 
-    if not matlab_exe and os.path.isdir("E:/MATLAB/bin"):
-        candidate = Path("E:/MATLAB/bin/matlab.exe")
-        if candidate.is_file():
-            matlab_exe = str(candidate)
+    if not matlab_exe:
+        for root in [
+            os.environ.get("MATLAB_ROOT", ""),
+            "E:/MATLAB",
+            "C:/Program Files/MATLAB",
+            "D:/MATLAB",
+            "/usr/local/MATLAB"
+        ]:
+            if root and os.path.isdir(root):
+                candidate_win = Path(root) / "bin" / "matlab.exe"
+                candidate_nix = Path(root) / "bin" / "matlab"
+                if candidate_win.is_file():
+                    matlab_exe = str(candidate_win)
+                    break
+                elif candidate_nix.is_file():
+                    matlab_exe = str(candidate_nix)
+                    break
+
 
     if not matlab_exe:
         return {

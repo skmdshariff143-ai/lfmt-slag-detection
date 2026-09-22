@@ -27,29 +27,44 @@ if isempty(defects)
     return;
 end
 
-% Process defect definitions (handle scalar or array of defect structs)
+% Process defect definitions (handle scalar struct, array of structs, or cell array)
 if isstruct(defects)
     n_def = length(defects);
+    get_def = @(i) defects(i);
+elseif iscell(defects)
+    n_def = length(defects);
+    get_def = @(i) defects{i};
 else
     n_def = 0;
+    get_def = @(i) struct();
 end
 
 for d_idx = 1:n_def
-    d_cfg = defects(d_idx);
+    d_cfg = get_def(d_idx);
+    if ~isfield(d_cfg, 'diameter_mm') || ~isfield(d_cfg, 'depth_mm') || ~isfield(d_cfg, 'thickness_mm')
+        continue;
+    end
     
-    diam_m = d_cfg.diameter_mm * 1e-3;
+    diam_m = double(d_cfg.diameter_mm) * 1e-3;
     if diam_m <= 0, continue; end
     
     rad_m = diam_m / 2.0;
-    cx_m = d_cfg.center_x_mm * 1e-3;
-    cy_m = d_cfg.center_y_mm * 1e-3;
-    z_top_m = d_cfg.depth_mm * 1e-3;
-    t_def_m = d_cfg.thickness_mm * 1e-3;
+    cx_m = double(d_cfg.center_x_mm) * 1e-3;
+    cy_m = double(d_cfg.center_y_mm) * 1e-3;
+    z_top_m = double(d_cfg.depth_mm) * 1e-3;
+    t_def_m = double(d_cfg.thickness_mm) * 1e-3;
     z_bot_m = z_top_m + t_def_m;
     
     % Material properties for inclusion
-    if isfield(d_cfg, 'material') && isfield(mat_db, d_cfg.material)
-        mat_inc = mat_db.(d_cfg.material);
+    mat_name = 'slag';
+    if isfield(d_cfg, 'material') && ~isempty(d_cfg.material)
+        if ischar(d_cfg.material) || isstring(d_cfg.material)
+            mat_name = char(d_cfg.material);
+        end
+    end
+    
+    if isfield(mat_db, mat_name)
+        mat_inc = mat_db.(mat_name);
     else
         mat_inc = mat_db.slag;
     end
@@ -63,3 +78,4 @@ for d_idx = 1:n_def
     defect_mask = defect_mask | in_def;
 end
 end
+

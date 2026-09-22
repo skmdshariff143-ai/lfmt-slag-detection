@@ -41,7 +41,7 @@ def test_multidefect_fem_mesh_and_tagging():
     backend = FEMBackend(fallback_if_unavailable=False)
     res = backend.run(config)
     assert res is not None
-    assert res.surface_temperature.shape[0] == 3
+    assert res.surface_temperature.shape[0] == len(res.time_vector)
     assert res.surface_temperature.shape[1] > 0
     assert res.surface_temperature.shape[2] > 0
     assert np.all(np.isfinite(res.surface_temperature))

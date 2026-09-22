@@ -29,7 +29,7 @@ def test_matlab_fdm_execution_and_contract():
 
     # 1. Dimension and type invariant
     assert res.surface_temperature.ndim == 3
-    assert res.surface_temperature.shape == (6, 28, 40)
+    assert res.surface_temperature.shape == (6, cfg.camera.resolution_y, cfg.camera.resolution_x)
     assert np.all(np.isfinite(res.surface_temperature))
 
     # 2. Frame 0 ambient invariant

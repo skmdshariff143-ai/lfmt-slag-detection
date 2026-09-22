@@ -85,22 +85,29 @@ def run_full_cross_validation():
         cfg.geometry.inclusion.center_x_mm = 50.0
         cfg.geometry.inclusion.center_y_mm = 35.0
 
-        # Uniform camera output resolution: 28 x 40
+        # Uniform simulation and camera parameters
+        cfg.simulation.timestep_s = 0.04
+        cfg.simulation.total_time_s = 10.0
+        cfg.excitation.duration_s = 10.0
+        cfg.camera.resolution_x = 40
+        cfg.camera.resolution_y = 28
+        cfg.camera.sampling_rate_hz = 10.0
         cfg.simulation.spatial_resolution["nx"] = 40
         cfg.simulation.spatial_resolution["ny"] = 28
         cfg.simulation.spatial_resolution["nz"] = 12
+
 
         # 1. Run Python FEM
         t0_fem = time.perf_counter()
         fem_res = fem_backend.run(cfg)
         time_fem = time.perf_counter() - t0_fem
-        print(f"  [Python FEM] Completed in {time_fem:.2f} s. Peak dT: {np.max(fem_res.surface_temperature - 293.15):.3f} K")
+        print(f"  [Python FEM] Completed in {time_fem:.2f} s. Peak dT: {np.max(fem_res.surface_temperature - 293.15):.3f} K, Frames: {len(fem_res.time_vector)}")
 
         # 2. Run MATLAB FDM
         t0_fdm = time.perf_counter()
         fdm_res = matlab_backend.run(cfg)
         time_fdm = time.perf_counter() - t0_fdm
-        print(f"  [MATLAB FDM] Completed in {time_fdm:.2f} s. Peak dT: {np.max(fdm_res.surface_temperature - 293.15):.3f} K")
+        print(f"  [MATLAB FDM] Completed in {time_fdm:.2f} s. Peak dT: {np.max(fdm_res.surface_temperature - 293.15):.3f} K, Frames: {len(fdm_res.time_vector)}")
 
         # 3. Compute Metrics
         metrics = compute_cross_validation_metrics(
@@ -124,7 +131,7 @@ def run_full_cross_validation():
             source=fdm_res.surface_temperature,
             metadata_override={
                 "source_type": "MATLAB_FDM",
-                "frame_rate_hz": 25.0,
+                "frame_rate_hz": 10.0,
                 "excitation_type": "LFMT_CHIRP"
             }
         )
@@ -144,19 +151,28 @@ def run_full_cross_validation():
             }
         }
 
-    # Grid convergence study on MATLAB FDM
-    print(f"\n=================== MATLAB FDM Grid Convergence Study ===================")
+    # Grid sensitivity study on MATLAB FDM (4 grid levels)
+    print(f"\n=================== MATLAB FDM Grid Sensitivity Study ===================")
     grid_configs = [
         {"name": "coarse", "nx": 20, "ny": 14, "nz": 6},
-        {"name": "medium", "nx": 40, "ny": 28, "nz": 12},
-        {"name": "fine", "nx": 60, "ny": 42, "nz": 18}
+        {"name": "baseline", "nx": 40, "ny": 28, "nz": 12},
+        {"name": "medium", "nx": 60, "ny": 42, "nz": 18},
+        {"name": "fine", "nx": 80, "ny": 56, "nz": 24}
     ]
     grid_results = {}
+    grid_surfaces = {}
+
     for gc in grid_configs:
         cfg = load_config("configs/research_v3_high_fidelity.yaml")
         cfg.geometry.inclusion.diameter_mm = 8.0
         cfg.geometry.inclusion.depth_mm = 0.4
         cfg.geometry.inclusion.thickness_mm = 0.40
+        cfg.simulation.timestep_s = 0.04
+        cfg.simulation.total_time_s = 10.0
+        cfg.excitation.duration_s = 10.0
+        cfg.camera.resolution_x = 40
+        cfg.camera.resolution_y = 28
+        cfg.camera.sampling_rate_hz = 10.0
         cfg.simulation.spatial_resolution["nx"] = gc["nx"]
         cfg.simulation.spatial_resolution["ny"] = gc["ny"]
         cfg.simulation.spatial_resolution["nz"] = gc["nz"]
@@ -164,16 +180,35 @@ def run_full_cross_validation():
         t0 = time.perf_counter()
         res = matlab_backend.run(cfg)
         runtime = time.perf_counter() - t0
-        peak_dt = float(np.max(res.surface_temperature - 293.15))
+
+        dT = res.surface_temperature - 293.15
+        peak_dt = float(np.max(dT))
+        probe_dt = float(dT[int(0.8 * len(res.time_vector)), 14, 20])
+        integrated_dt = float(np.sum(dT[int(0.8 * len(res.time_vector))]) * (100.0 * 70.0 * 1e-6 / (40 * 28)))
+
+        grid_surfaces[gc["name"]] = dT
         grid_results[gc["name"]] = {
             "nx": gc["nx"], "ny": gc["ny"], "nz": gc["nz"],
             "total_cells": gc["nx"] * gc["ny"] * gc["nz"],
             "peak_dT_k": peak_dt,
+            "probe_roi_dT_k": probe_dt,
+            "integrated_surface_dT_k_m2": integrated_dt,
             "runtime_s": runtime
         }
-        print(f"  [{gc['name']}] Cells={gc['nx']*gc['ny']*gc['nz']}, Peak dT={peak_dt:.3f} K, Runtime={runtime:.2f} s")
+        print(f"  [{gc['name']}] Cells={gc['nx']*gc['ny']*gc['nz']:5d}, Peak dT={peak_dt:.3f} K, Probe dT={probe_dt:.3f} K, Integrated dT={integrated_dt:.4f} K*m2, Runtime={runtime:.2f} s")
 
-    results_summary["grid_convergence"] = grid_results
+    # Compute relative L2 between successive grids
+    names = ["coarse", "baseline", "medium", "fine"]
+    for i in range(len(names) - 1):
+        g1 = names[i]
+        g2 = names[i + 1]
+        diff_l2 = float(np.linalg.norm(grid_surfaces[g1] - grid_surfaces[g2]))
+        ref_l2 = float(np.linalg.norm(grid_surfaces[g2]))
+        rel_l2 = (diff_l2 / max(1e-12, ref_l2)) * 100.0
+        grid_results[f"rel_l2_{g1}_vs_{g2}_pct"] = float(rel_l2)
+        print(f"  --> Rel L2 Difference ({g1} vs {g2}): {rel_l2:.2f} %")
+
+    results_summary["grid_sensitivity_study"] = grid_results
 
     # Temporal convergence study on MATLAB FDM
     print(f"\n=================== MATLAB FDM Temporal Convergence Study ===================")
@@ -185,9 +220,15 @@ def run_full_cross_validation():
         cfg.geometry.inclusion.depth_mm = 0.4
         cfg.geometry.inclusion.thickness_mm = 0.40
         cfg.simulation.timestep_s = dt_val
+        cfg.simulation.total_time_s = 10.0
+        cfg.excitation.duration_s = 10.0
+        cfg.camera.resolution_x = 40
+        cfg.camera.resolution_y = 28
+        cfg.camera.sampling_rate_hz = 10.0
         cfg.simulation.spatial_resolution["nx"] = 40
         cfg.simulation.spatial_resolution["ny"] = 28
         cfg.simulation.spatial_resolution["nz"] = 12
+
 
         t0 = time.perf_counter()
         res = matlab_backend.run(cfg)
@@ -195,11 +236,11 @@ def run_full_cross_validation():
         peak_dt = float(np.max(res.surface_temperature - 293.15))
         dt_results[f"dt_{dt_val}s"] = {
             "dt_s": dt_val,
-            "n_frames": len(res.time_vector),
+            "n_cam_frames": len(res.time_vector),
             "peak_dT_k": peak_dt,
             "runtime_s": runtime
         }
-        print(f"  [dt={dt_val} s] Frames={len(res.time_vector)}, Peak dT={peak_dt:.3f} K, Runtime={runtime:.2f} s")
+        print(f"  [dt={dt_val} s] Camera Frames={len(res.time_vector)}, Peak dT={peak_dt:.3f} K, Runtime={runtime:.2f} s")
 
     results_summary["temporal_convergence"] = dt_results
 
@@ -214,3 +255,4 @@ def run_full_cross_validation():
 
 if __name__ == "__main__":
     run_full_cross_validation()
+

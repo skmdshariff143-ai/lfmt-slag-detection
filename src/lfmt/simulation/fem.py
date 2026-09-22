@@ -354,7 +354,8 @@ class FEMBackend(ThermalSimulationBackend):
         f_amb = asm(amb_conv_load, fbasis_all)
 
         # 8. Time Integration via Implicit Euler
-        dt = config.simulation.timestep_s
+        dt_solver = config.simulation.timestep_s
+        cam_fps = float(getattr(config.camera, "sampling_rate_hz", 10.0) or (1.0 / dt_solver))
         total_time = config.simulation.total_time_s
 
         exc = LFMTExcitation(
@@ -362,12 +363,16 @@ class FEMBackend(ThermalSimulationBackend):
             f1_hz=config.excitation.f1_hz,
             duration_s=config.excitation.duration_s,
             q0_w_m2=config.excitation.q0_w_m2,
-            sampling_rate_hz=1.0 / dt
+            sampling_rate_hz=1.0 / dt_solver
         )
-        t_out = exc.compute_time_vector(total_time)
-        n_frames = len(t_out)
+        t_solver = exc.compute_time_vector(total_time)
+        n_solver_steps = len(t_solver)
 
-        A = (1.0 / dt) * M + K + M_conv
+        cam_dt = 1.0 / cam_fps
+        t_cam = np.arange(0.0, total_time + 0.5 * cam_dt, cam_dt)
+        n_cam_frames = len(t_cam)
+
+        A = (1.0 / dt_solver) * M + K + M_conv
         A_csc = A.tocsc()
         solve_implicit_step = spla.factorized(A_csc)
 
@@ -389,29 +394,51 @@ class FEMBackend(ThermalSimulationBackend):
             iy = np.searchsorted(y_unique_m, y_val)
             grid_node_map[iy, ix] = front_node_indices[idx]
 
-        # Uniform camera interpolation grid (64 x 64 or standard ny x nx)
-        cam_nx = config.simulation.spatial_resolution.get("nx", 80)
-        cam_ny = config.simulation.spatial_resolution.get("ny", 56)
+        # Uniform camera interpolation grid (cam_nx x cam_ny)
+        cam_nx = int(getattr(config.camera, "resolution_x", 40))
+        cam_ny = int(getattr(config.camera, "resolution_y", 28))
         cam_x_mm = np.linspace(0.0, config.geometry.plate.length_mm, cam_nx)
         cam_y_mm = np.linspace(0.0, config.geometry.plate.width_mm, cam_ny)
+        mesh_Y, mesh_X = np.meshgrid(cam_y_mm, cam_x_mm, indexing="ij")
 
-        # 10. Transient Time Loop
-        u_k = np.full(basis.N, T_amb, dtype=np.float64)
-        surface_frames = np.zeros((n_frames, cam_ny, cam_nx), dtype=np.float64)
+
+        # 10. Transient Time Loop with Decoupled Camera Interpolation
+        u_prev = np.full(basis.N, T_amb, dtype=np.float64)
+        u_curr = u_prev.copy()
+        surface_frames = np.zeros((n_cam_frames, cam_ny, cam_nx), dtype=np.float64)
         surface_frames[0] = T_amb
 
-        M_over_dt = (1.0 / dt) * M
+        M_over_dt = (1.0 / dt_solver) * M
+        next_cam_idx = 1
 
-        for k in range(1, n_frames):
-            t_curr = t_out[k]
+        for k in range(1, n_solver_steps):
+            t_prev = t_solver[k - 1]
+            t_curr = t_solver[k]
             q_curr = exc.heat_flux(t_curr)
-            rhs = M_over_dt.dot(u_k) + q_curr * f_front_unit + f_amb
-            u_k = solve_implicit_step(rhs)
+            rhs = M_over_dt.dot(u_prev) + q_curr * f_front_unit + f_amb
+            u_curr = solve_implicit_step(rhs)
 
-            # Extract 2D front surface mesh temperature matrix
-            surf_2d = u_k[grid_node_map]
+            while next_cam_idx < n_cam_frames and t_cam[next_cam_idx] <= t_curr + 1e-9:
+                t_c = t_cam[next_cam_idx]
+                alpha = (t_c - t_prev) / (t_curr - t_prev)
+                alpha = max(0.0, min(1.0, alpha))
+                u_interp = (1.0 - alpha) * u_prev + alpha * u_curr
 
-            # Interpolate to uniform camera output resolution
+                surf_2d = u_interp[grid_node_map]
+                interp = RegularGridInterpolator(
+                    (y_unique_m * 1e3, x_unique_m * 1e3),
+                    surf_2d,
+                    method="linear",
+                    bounds_error=False,
+                    fill_value=None
+                )
+                surface_frames[next_cam_idx] = interp((mesh_Y, mesh_X))
+                next_cam_idx += 1
+
+            u_prev = u_curr.copy()
+
+        while next_cam_idx < n_cam_frames:
+            surf_2d = u_curr[grid_node_map]
             interp = RegularGridInterpolator(
                 (y_unique_m * 1e3, x_unique_m * 1e3),
                 surf_2d,
@@ -419,8 +446,8 @@ class FEMBackend(ThermalSimulationBackend):
                 bounds_error=False,
                 fill_value=None
             )
-            mesh_Y, mesh_X = np.meshgrid(cam_y_mm, cam_x_mm, indexing="ij")
-            surface_frames[k] = interp((mesh_Y, mesh_X))
+            surface_frames[next_cam_idx] = interp((mesh_Y, mesh_X))
+            next_cam_idx += 1
 
         elapsed = time.perf_counter() - start_time
 
@@ -443,7 +470,7 @@ class FEMBackend(ThermalSimulationBackend):
 
         return SimulationResult(
             surface_temperature=surface_frames,
-            time_vector=t_out,
+            time_vector=t_cam,
             x_grid_mm=cam_x_mm,
             y_grid_mm=cam_y_mm,
             z_grid_mm=z_nodes * 1e3,
@@ -453,6 +480,9 @@ class FEMBackend(ThermalSimulationBackend):
                 "backend_type": "fem",
                 "engine": self._fem_engine_name,
                 "engine_name": self._fem_engine_name,
+                "solver_dt_s": dt_solver,
+                "camera_frame_rate_hz": cam_fps,
+
                 "n_elements": int(mesh.nelements),
                 "n_nodes": int(mesh.nvertices),
                 "dofs": int(basis.N),

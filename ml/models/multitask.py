@@ -160,6 +160,7 @@ class MultiTaskInferenceEngine:
     """Inference runner for PhysicsInformedMultiTaskNet."""
 
     def __init__(self, in_channels: int = 1):
+        torch.manual_seed(42)
         self.model = PhysicsInformedMultiTaskNet(in_channels=in_channels)
         self.model.eval()
 

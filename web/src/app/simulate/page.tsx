@@ -231,7 +231,7 @@ export default function SimulatePage() {
   };
 
   // Run Flagship Demo Shortcut
-  const handleRunFlagshipDemo = () => {
+  const handleRunFlagshipDemo = async () => {
     setSelectedBackend("matlab_fdm");
     setSelectedPreset("shallow_slag");
     setDiameterMm(8.0);
@@ -241,6 +241,13 @@ export default function SimulatePage() {
     setF1Hz(0.50);
     setDurationS(10.0);
     setQ0Wm2(5000.0);
+
+    // In hosted Vercel preview or when live backend is offline, seamlessly load precomputed simulation
+    if (backendsInfo?.matlab_fdm?.status !== "AVAILABLE") {
+      await handleLoadPrecomputed();
+      return;
+    }
+
     setTimeout(() => {
       handleRunSimulation();
     }, 100);

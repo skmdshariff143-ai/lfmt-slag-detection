@@ -9,11 +9,10 @@ Includes deterministic hash caching to prevent redundant 3D simulation runs.
 from __future__ import annotations
 import hashlib
 import json
-import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Any, List, Optional
 import pandas as pd
 import numpy as np
 
@@ -23,11 +22,11 @@ from lfmt.simulation import get_simulation_backend, SimulationResult
 from lfmt.camera import VirtualIRCamera, VirtualCameraCapture
 from lfmt.noise import apply_noise_pipeline
 from lfmt.excitation import LFMTExcitation
-from lfmt.pulse_compression import LFMTMatchedFilter, PulseCompressionResult
-from lfmt.contrast import RawThermalContrast, RawContrastResult
-from lfmt.pct import PrincipalComponentThermography, PCTResult
-from lfmt.spct import SparsePrincipalComponentThermography, SPCTResult
-from lfmt.rpt import RandomProjectionTechnique, RPTResult
+from lfmt.pulse_compression import LFMTMatchedFilter
+from lfmt.contrast import RawThermalContrast
+from lfmt.pct import PrincipalComponentThermography
+from lfmt.spct import SparsePrincipalComponentThermography
+from lfmt.rpt import RandomProjectionTechnique
 from lfmt.detection import DefectDetector, DetectionResult
 from lfmt.metrics import compute_metrics, EvaluationMetrics
 

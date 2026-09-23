@@ -10,10 +10,8 @@ Exports analysis results into:
 
 from __future__ import annotations
 import json
-import time
-import os
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")

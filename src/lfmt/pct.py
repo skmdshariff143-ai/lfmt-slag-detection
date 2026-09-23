@@ -9,7 +9,7 @@ Includes both ground-truth-guided and blind component selection strategies.
 from __future__ import annotations
 import time
 from dataclasses import dataclass
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple
 import numpy as np
 from sklearn.decomposition import TruncatedSVD
 

@@ -13,8 +13,8 @@ Computes:
 
 from __future__ import annotations
 import math
-from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, Tuple, List
+from dataclasses import dataclass
+from typing import Dict, Any, Optional, Tuple
 import numpy as np
 
 from lfmt.detection import DetectionResult
@@ -137,8 +137,8 @@ def compute_roc_pr_curves(
         pred_pos = norm_scores.ravel() >= th
         tp = int(np.sum(pred_pos & gt_flat))
         fp = int(np.sum(pred_pos & ~gt_flat))
-        fn = n_pos - tp
-        tn = n_neg - fp
+        _fn = n_pos - tp
+        _tn = n_neg - fp
 
         tpr = tp / n_pos if n_pos > 0 else 0.0
         fpr = fp / n_neg if n_neg > 0 else 0.0

@@ -21,7 +21,7 @@ Research V2 Features:
 from __future__ import annotations
 import math
 import time
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Tuple
 import numpy as np
 import scipy.sparse.linalg as spla
 from scipy.interpolate import RegularGridInterpolator
@@ -34,7 +34,7 @@ except ImportError:
     SKFEM_AVAILABLE = False
 
 from lfmt.config import LFMTConfig
-from lfmt.materials import get_material, Material
+from lfmt.materials import get_material
 from lfmt.excitation import LFMTExcitation
 from lfmt.simulation.base import ThermalSimulationBackend, SimulationResult, GroundTruth
 
@@ -233,7 +233,7 @@ class FEMBackend(ThermalSimulationBackend):
         # Optional Thermal Contact Resistance (Thin Boundary Conductance)
         contact_cfg = getattr(inc, "contact_resistance", None)
         contact_enabled = contact_cfg is not None and getattr(contact_cfg, "enabled", False)
-        h_contact = getattr(contact_cfg, "h_contact_w_m2k", 1e4) if contact_enabled else 1e8
+        _h_contact = getattr(contact_cfg, "h_contact_w_m2k", 1e4) if contact_enabled else 1e8
 
         # 4. Geometry Domain Classifier Function
         shape_type = getattr(inc, "shape", "cylinder").lower()

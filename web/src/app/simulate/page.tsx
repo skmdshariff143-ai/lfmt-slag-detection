@@ -707,12 +707,14 @@ export default function SimulatePage() {
             {/* Top Stats Banner */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
-                <div className="text-xs text-slate-400">Solver Core</div>
-                <div className="text-base font-semibold text-slate-100 mt-1">
-                  {simulationResult.solver_name}
+                <div className="text-xs text-slate-400">Simulation Source</div>
+                <div className="text-sm font-semibold text-amber-300 mt-1 font-mono">
+                  {simulationResult.is_precomputed
+                    ? "PRECOMPUTED MATLAB NUMERICAL SIMULATION"
+                    : "LIVE MATLAB ENGINE R2026a"}
                 </div>
-                <div className="text-[11px] text-slate-500 font-mono">
-                  {simulationResult.execution_time_s.toFixed(2)} s runtime
+                <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                  Solver: MATLAB_FDM (3-D FDM)
                 </div>
               </div>
 
@@ -722,7 +724,7 @@ export default function SimulatePage() {
                   +{simulationResult.peak_delta_t_k.toFixed(3)} K
                 </div>
                 <div className="text-[11px] text-slate-500 font-mono">
-                  Max: {simulationResult.max_temp_k.toFixed(2)} K
+                  Max: {simulationResult.max_temp_k.toFixed(2)} K · Ambient: {simulationResult.ambient_temp_k?.toFixed(2) || "293.15"} K
                 </div>
               </div>
 
@@ -1007,7 +1009,7 @@ export default function SimulatePage() {
                             </div>
                             <div className="text-[11px] text-slate-400 font-mono space-y-0.5">
                               <div>Location: {detectedLocation}</div>
-                              <div>Confidence: {((analysisVerdict?.consensus_confidence || 0.6) * 100).toFixed(0)}% (Multi-Method)</div>
+                              <div>Processing Evidence Score: {((analysisVerdict?.consensus_confidence || 0.6) * 100).toFixed(0)}% (Multi-Method Voting)</div>
                             </div>
                           </div>
                         </div>

@@ -1,9 +1,27 @@
 /**
  * Canonical REST API Client for LFMT Intelligent Defect Analyzer Backend.
+ * Handles local live execution, remote live execution, and hosted offline modes gracefully.
  */
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import {
+  getApiBaseUrl,
+  getApiRuntimeStatus,
+  isLocalRuntime,
+  isHostedRuntime,
+  ApiRuntimeMode,
+} from "./runtime";
+
+export { getApiRuntimeStatus, isLocalRuntime, isHostedRuntime };
+export type { ApiRuntimeMode };
+
+export const API_BASE_URL = getApiBaseUrl() || "";
+
+export class BackendOfflineError extends Error {
+  constructor(message = "Live analysis/simulation backend is offline in this hosted environment.") {
+    super(message);
+    this.name = "BackendOfflineError";
+  }
+}
 
 export interface ExampleCardInfo {
   id: string;
@@ -27,7 +45,11 @@ export interface ExampleCardInfo {
 }
 
 export async function fetchVerifiedExamples(): Promise<ExampleCardInfo[]> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/examples`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError();
+  }
+  const res = await fetch(`${baseUrl}/api/v1/examples`, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -41,7 +63,13 @@ export async function runExampleAnalysis(
   applyBaseline = true,
   smoothSigma = 0.0
 ): Promise<any> {
-  const url = `${API_BASE_URL}/api/v1/examples/${encodeURIComponent(
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError(
+      "LIVE ANALYSIS BACKEND OFFLINE: The Python analysis API is offline in this hosted preview. Run 'scripts/demo/start_local_demo.ps1' to test live analysis locally."
+    );
+  }
+  const url = `${baseUrl}/api/v1/examples/${encodeURIComponent(
     exampleId
   )}/analyze?apply_baseline=${applyBaseline}&smooth_sigma_px=${smoothSigma}`;
   const res = await fetch(url, {
@@ -55,7 +83,13 @@ export async function runExampleAnalysis(
 }
 
 export async function uploadAndAnalyzeFile(formData: FormData): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/analyze/upload`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError(
+      "LIVE ANALYSIS BACKEND OFFLINE: The Python analysis API is offline in this hosted preview. Run 'scripts/demo/start_local_demo.ps1' to test live upload analysis locally."
+    );
+  }
+  const res = await fetch(`${baseUrl}/api/v1/analyze/upload`, {
     method: "POST",
     body: formData,
   });
@@ -67,17 +101,56 @@ export async function uploadAndAnalyzeFile(formData: FormData): Promise<any> {
 }
 
 export async function fetchSimulationBackends(): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/backends`, {
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch backends: HTTP ${res.status}`);
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    // In hosted offline mode, return truthful offline status without attempting network call
+    return {
+      matlab_fdm: {
+        status: "UNAVAILABLE",
+        engine: "R2026a",
+        connection_mode: "offline",
+        message: "Unavailable in hosted preview (UNAVAILABLE_BY_DESIGN)",
+      },
+      python_fem: {
+        status: "UNAVAILABLE",
+        engine: "scikit-fem",
+        message: "Unavailable in hosted preview",
+      },
+    };
   }
-  return res.json();
+  try {
+    const res = await fetch(`${baseUrl}/api/v1/simulate/backends`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    return res.json();
+  } catch (e) {
+    return {
+      matlab_fdm: {
+        status: "UNAVAILABLE",
+        engine: "R2026a",
+        connection_mode: "offline",
+        message: "Live MATLAB backend offline",
+      },
+      python_fem: {
+        status: "UNAVAILABLE",
+        engine: "scikit-fem",
+        message: "Live Python backend offline",
+      },
+    };
+  }
 }
 
 export async function startSimulationRun(payload: any): Promise<{ run_id: string; status: string }> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/simulate`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError(
+      "LIVE MATLAB BACKEND OFFLINE: Simulation backend is unreachable in this hosted preview."
+    );
+  }
+  const res = await fetch(`${baseUrl}/api/v1/simulate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -90,7 +163,11 @@ export async function startSimulationRun(payload: any): Promise<{ run_id: string
 }
 
 export async function getSimulationStatus(runId: string): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/${encodeURIComponent(runId)}`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError();
+  }
+  const res = await fetch(`${baseUrl}/api/v1/simulate/${encodeURIComponent(runId)}`, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -100,7 +177,11 @@ export async function getSimulationStatus(runId: string): Promise<any> {
 }
 
 export async function getSimulationResult(runId: string): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/${encodeURIComponent(runId)}/result`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError();
+  }
+  const res = await fetch(`${baseUrl}/api/v1/simulate/${encodeURIComponent(runId)}/result`, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -110,7 +191,13 @@ export async function getSimulationResult(runId: string): Promise<any> {
 }
 
 export async function compareSimulationBackends(preset: string = "shallow_slag"): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/compare?preset=${encodeURIComponent(preset)}`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new BackendOfflineError(
+      "LIVE BACKEND OFFLINE: Comparison requires active local Python & MATLAB backends."
+    );
+  }
+  const res = await fetch(`${baseUrl}/api/v1/simulate/compare?preset=${encodeURIComponent(preset)}`, {
     method: "POST",
   });
   if (!res.ok) {
@@ -120,13 +207,23 @@ export async function compareSimulationBackends(preset: string = "shallow_slag")
 }
 
 export async function fetchPrecomputedSimulation(): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/simulate/precomputed`, {
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch precomputed simulation: HTTP ${res.status}`);
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
+    try {
+      const res = await fetch(`${baseUrl}/api/v1/simulate/precomputed`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        return res.json();
+      }
+    } catch {
+      // Fallback to static asset
+    }
   }
-  return res.json();
+  // Static asset fallback for hosted Vercel preview or offline backend
+  const staticRes = await fetch("/demo/matlab_shallow_slag.json");
+  if (!staticRes.ok) {
+    throw new Error(`Failed to load static precomputed demo: HTTP ${staticRes.status}`);
+  }
+  return staticRes.json();
 }
-
-

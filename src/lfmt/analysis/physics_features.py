@@ -8,7 +8,7 @@ temporal transient metrics, and 2D spatial morphology indicators.
 from __future__ import annotations
 import math
 from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Dict, Any, Optional, Tuple
 import numpy as np
 from scipy.ndimage import sobel, laplace
 

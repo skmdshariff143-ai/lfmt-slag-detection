@@ -10,35 +10,34 @@ Uncertainty & OOD Estimation -> Consensus Fusion -> Structured Diagnostic Report
 from __future__ import annotations
 import uuid
 import time
-import json
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional, Tuple, Union
 from pathlib import Path
 import numpy as np
 
 # IO & Inspection
-from lfmt.io.input_analyzer import UniversalInputAnalyzer, InputInspectionResult, InputType, QualityStatus, DataRepresentation
+from lfmt.io.input_analyzer import UniversalInputAnalyzer
 
 # Analysis & Applicability
-from lfmt.analysis.method_selector import MethodApplicabilityEngine, ApplicabilityMatrix, MethodStatus
-from lfmt.analysis.preprocessing import UniversalPreprocessor, PreprocessingManifest
-from lfmt.analysis.physics_features import PhysicsFeatureEngine, PhysicsFeatures, SpatioTemporalFeatures
-from lfmt.analysis.single_frame import SingleFrameSpatialAnalyzer, SingleFrameSpatialResult
+from lfmt.analysis.method_selector import MethodApplicabilityEngine
+from lfmt.analysis.preprocessing import UniversalPreprocessor
+from lfmt.analysis.physics_features import PhysicsFeatureEngine
+from lfmt.analysis.single_frame import SingleFrameSpatialAnalyzer
 
 from lfmt.excitation import LFMTExcitation
-from lfmt.contrast import RawThermalContrast, RawContrastResult
-from lfmt.pulse_compression import LFMTMatchedFilter, PulseCompressionResult
-from lfmt.pct import PrincipalComponentThermography, PCTResult
-from lfmt.spct import SparsePrincipalComponentThermography, SPCTResult
-from lfmt.rpt import RandomProjectionTechnique, RPTResult
-from lfmt.detection import MultiDefectDetector, MultiDetectionResult, DefectCandidate
+from lfmt.contrast import RawThermalContrast
+from lfmt.pulse_compression import LFMTMatchedFilter
+from lfmt.pct import PrincipalComponentThermography
+from lfmt.spct import SparsePrincipalComponentThermography
+from lfmt.rpt import RandomProjectionTechnique
+from lfmt.detection import MultiDefectDetector
 
 # Machine Learning & AI
 from ml.models.classical import ClassicalMLDefectEngine, MLPredictionResult
 from ml.models.multitask import MultiTaskInferenceEngine, MultiTaskPrediction
 from ml.uncertainty.dropout import MCDropoutUncertaintyEstimator, UncertaintyEstimate
-from ml.ood.detector import OODDetector, OODResult
-from ml.fusion.consensus import MultiMethodConsensusEngine, ConsensusVerdict
+from ml.ood.detector import OODDetector
+from ml.fusion.consensus import MultiMethodConsensusEngine
 
 
 @dataclass

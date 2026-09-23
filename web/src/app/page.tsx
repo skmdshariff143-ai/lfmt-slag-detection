@@ -123,7 +123,7 @@ export default function HomePage() {
               {formatMetric(topCnrMethod.mean_cnr, 2)} CNR
             </div>
             <div className="text-xs text-slate-300 font-medium">
-              {topCnrMethod.method} (Optimal EOF Spatial Mode)
+              {topCnrMethod.method} (Blind-Selected EOF Spatial Mode)
             </div>
             <div className="text-[11px] text-slate-400 pt-1">
               Orthogonal subspace decomposition isolates low-effusivity inclusions.

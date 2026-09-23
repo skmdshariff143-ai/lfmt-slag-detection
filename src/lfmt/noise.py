@@ -13,7 +13,7 @@ Supports:
 from __future__ import annotations
 import math
 from enum import Enum
-from typing import Optional, Tuple, Dict, Any, Union
+from typing import Optional, Tuple, Union
 import numpy as np
 from scipy.ndimage import gaussian_filter
 

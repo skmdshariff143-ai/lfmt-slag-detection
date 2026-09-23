@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 import time
 from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Dict, Any, Tuple, List
 import numpy as np
 from scipy.ndimage import label, binary_opening, binary_closing, center_of_mass, generate_binary_structure
 from scipy.optimize import linear_sum_assignment

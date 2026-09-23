@@ -10,10 +10,7 @@ Inspects arbitrary input files, directories, image stacks, and numerical cubes t
 """
 
 from __future__ import annotations
-import os
-import re
 import json
-import zipfile
 from enum import Enum
 from pathlib import Path
 from dataclasses import dataclass, field

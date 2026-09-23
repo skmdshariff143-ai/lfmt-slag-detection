@@ -8,7 +8,7 @@ local entropy mapping, and candidate isolation for static single-frame thermal u
 from __future__ import annotations
 import time
 from dataclasses import dataclass, field
-from typing import Dict, Any, Tuple, List, Optional
+from typing import Dict, Any, Tuple, Optional
 import numpy as np
 from scipy.ndimage import sobel, laplace, uniform_filter, gaussian_filter
 

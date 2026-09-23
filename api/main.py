@@ -13,8 +13,8 @@ repo_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(repo_root))
 sys.path.insert(0, str(repo_root / "src"))
 
-import os
-from api.routes import analyze, examples, simulate
+import os  # noqa: E402
+from api.routes import analyze, examples, simulate  # noqa: E402
 
 app = FastAPI(
     title="LFMT Intelligent Thermographic Defect Analyzer API",

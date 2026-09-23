@@ -7,15 +7,14 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, Optional
-import numpy as np
+from typing import Dict, Optional
 
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Query
 from fastapi.responses import JSONResponse, FileResponse
 
 from lfmt.analysis.analyzer import AutoDefectAnalyzer, AnalysisResult
 from lfmt.reporting.report_generator import DefectReportGenerator
-from api.schemas.analysis import AnalysisResponseSchema, AnalysisRequestMetadata
+from api.schemas.analysis import AnalysisResponseSchema
 
 router = APIRouter(prefix="/analyze", tags=["Intelligent Defect Analyzer"])
 

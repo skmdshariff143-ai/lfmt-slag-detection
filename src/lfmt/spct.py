@@ -8,11 +8,10 @@ thermal anomalies while enforcing spatial sparsity across the EOF basis function
 from __future__ import annotations
 import time
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional
 import numpy as np
 from sklearn.decomposition import SparsePCA, MiniBatchSparsePCA
 
-from lfmt.config import SPCTConfig
 
 
 @dataclass

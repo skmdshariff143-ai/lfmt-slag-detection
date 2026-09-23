@@ -7,16 +7,15 @@ and multi-panel comparison layouts.
 """
 
 from __future__ import annotations
-import math
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import List, Optional
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 import pandas as pd
 
 from lfmt.excitation import LFMTExcitation
-from lfmt.experiments import ExperimentCaseResult, MethodExecutionBundle
+from lfmt.experiments import ExperimentCaseResult
 
 # Set scientific plotting style
 plt.rcParams.update({
@@ -43,7 +42,7 @@ def plot_excitation_waveform(
     t = excitation.compute_time_vector(total_time_s)
     q = excitation.heat_flux(t)
     f = excitation.instantaneous_frequency(t)
-    phi = excitation.instantaneous_phase(t)
+    _phi = excitation.instantaneous_phase(t)
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
 
@@ -185,7 +184,7 @@ def plot_method_comparison_panel(
     for idx, (name, bundle) in enumerate(methods, start=1):
         ax = axes[idx]
         score = bundle.score_map
-        im = ax.imshow(score, origin="lower", cmap="plasma", extent=extent)
+        _im = ax.imshow(score, origin="lower", cmap="plasma", extent=extent)
         
         # Overlay detected contour / centroid
         if bundle.detection.is_detected:

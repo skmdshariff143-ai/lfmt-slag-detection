@@ -8,7 +8,7 @@ are scientifically valid for a given input, preventing unphysical or uncalibrate
 from __future__ import annotations
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from lfmt.io.input_analyzer import InputInspectionResult, InputType, DataRepresentation
 
 
@@ -71,7 +71,7 @@ class MethodApplicabilityEngine:
         matrix: Dict[str, MethodEligibility] = {}
         n_frames = inspection.n_frames
         is_seq = n_frames >= 2
-        is_rich_seq = n_frames >= 5
+        _is_rich_seq = n_frames >= 5
         is_visible = (inspection.input_type == InputType.VISIBLE_IMAGE or inspection.data_representation == DataRepresentation.VISIBLE_RGB)
         exc_type = inspection.excitation_type.lower()
         has_lfmt_meta = (exc_type == "lfmt" or "f0_hz" in inspection.excitation_metadata or "f0" in inspection.raw_metadata)

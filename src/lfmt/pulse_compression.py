@@ -7,10 +7,9 @@ and extract defect impedance and time-of-flight maps.
 """
 
 from __future__ import annotations
-import math
 import time
 from dataclasses import dataclass
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 import numpy as np
 from scipy.signal import fftconvolve
 

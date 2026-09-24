@@ -180,5 +180,57 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             export_dir = fullfile(root_dir, 'results', 'exports');
             testCase.verifyTrue(exist(export_dir, 'dir') > 0);
         end
+        
+        function testUITableDataTypesCompatibility(testCase)
+            % REGRESSION TEST: Verify all UITable Data properties contain strictly UITable-compatible types (char, numeric, logical)
+            app = testCase.App;
+            app.DiamEdit.Value = 8.0;
+            app.DepthEdit.Value = 0.4;
+            app.NoiseModeDrop.Value = 'Clean (Inf dB)';
+            app.SolverDrop.Value = '3-D Hex8 FEM (Primary)';
+            app.ModeDrop.Value = 'Quick Demo';
+            
+            % Execute inspection
+            app.runInspection();
+            
+            % Audit all 4 UITable components
+            tables_to_test = {
+                'MetricsTable', app.MetricsTable;
+                'MeshDataTable', app.MeshDataTable;
+                'AuditParamTable', app.AuditParamTable;
+                'AuditMetricsTable', app.AuditMetricsTable
+            };
+            
+            for t = 1:size(tables_to_test, 1)
+                t_name = tables_to_test{t, 1};
+                t_obj = tables_to_test{t, 2};
+                
+                testCase.verifyNotEmpty(t_obj.Data, sprintf('%s Data must not be empty', t_name));
+                
+                data = t_obj.Data;
+                if iscell(data)
+                    for r = 1:size(data, 1)
+                        for c = 1:size(data, 2)
+                            val = data{r, c};
+                            is_valid = isnumeric(val) || islogical(val) || ischar(val);
+                            testCase.verifyTrue(is_valid, ...
+                                sprintf('%s at (%d,%d) has invalid type %s (must be numeric, logical, or char)', ...
+                                t_name, r, c, class(val)));
+                            testCase.verifyFalse(isstring(val), ...
+                                sprintf('%s at (%d,%d) must NOT be a string scalar/array', t_name, r, c));
+                        end
+                    end
+                end
+            end
+            
+            % Verify method names in MetricsTable
+            methods_col = app.MetricsTable.Data(:, 1);
+            testCase.verifyTrue(any(strcmp(methods_col, 'Raw Contrast')));
+            testCase.verifyTrue(any(strcmp(methods_col, 'Matched Filter')));
+            testCase.verifyTrue(any(strcmp(methods_col, 'PCT (SVD)')));
+            testCase.verifyTrue(any(strcmp(methods_col, 'SPCT (L1-Sparse)')));
+            testCase.verifyTrue(any(strcmp(methods_col, 'RPT (Gaussian JL)')));
+        end
     end
 end
+

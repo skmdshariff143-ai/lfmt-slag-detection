@@ -1795,7 +1795,7 @@ classdef LFMTLiveLab < handle
                 end
                 data_cells{i, 8} = sprintf('%.3f', tbl.Runtime_s(i));
             end
-            app.MetricsTable.Data = data_cells;
+            app.MetricsTable.Data = LFMTLiveLab.normalizeUITableCellData(data_cells);
         end
         
         %% Simulation Connection Visuals
@@ -2039,9 +2039,12 @@ classdef LFMTLiveLab < handle
                 % Defect region wireframe highlight in red
                 idx_x = find(xm >= (d.center_x_mm - d.diameter_mm/2) & xm <= (d.center_x_mm + d.diameter_mm/2));
                 idx_y = find(ym >= (d.center_y_mm - d.diameter_mm/2) & ym <= (d.center_y_mm + d.diameter_mm/2));
-                if ~isempty(idx_x) && ~isempty(idx_y)
+                if length(idx_x) >= 2 && length(idx_y) >= 2
                     [X_def, Y_def] = meshgrid(xm(idx_x), ym(idx_y));
                     mesh(app.AxesMesh, X_def, Y_def, -d.depth_mm * ones(size(X_def)), 'EdgeColor', [1.0, 0.2, 0.2], 'FaceColor', 'none', 'LineWidth', 1.5);
+                elseif ~isempty(idx_x) && ~isempty(idx_y)
+                    [X_def, Y_def] = meshgrid(xm(idx_x), ym(idx_y));
+                    plot3(app.AxesMesh, X_def(:), Y_def(:), -d.depth_mm * ones(numel(X_def), 1), 'r.', 'MarkerSize', 14);
                 end
             end
             
@@ -2111,7 +2114,7 @@ classdef LFMTLiveLab < handle
                 'Solver Time Step dt', sprintf('%.3f', cfg.simulation.dt_s), 's', 'Implicit Backward Euler dt';
                 'Camera Dimensions', '256 x 256', 'pixels', 'Virtual IR Decoupled Grid'
             };
-            app.MeshDataTable.Data = rows;
+            app.MeshDataTable.Data = LFMTLiveLab.normalizeUITableCellData(rows);
         end
         
         %% Tab 4: Studio Updates & MP4 Export
@@ -2231,19 +2234,20 @@ classdef LFMTLiveLab < handle
                 v_writer.Quality = 95;
                 open(v_writer);
                 
+                h_im = imagesc(h_ax, sim_res.camera_x_mm, sim_res.camera_y_mm, squeeze(T_data(1, :, :)));
+                axis(h_ax, 'image');
+                colorbar(h_ax, 'Color', 'w');
+                caxis(h_ax, [app.GlobalTMin, app.GlobalTMax]);
+                xlabel(h_ax, 'X [mm]', 'Color', 'w'); ylabel(h_ax, 'Y [mm]', 'Color', 'w');
+                set(h_ax, 'XColor', 'w', 'YColor', 'w');
+                h_title = title(h_ax, '', 'Color', 'w');
+                
                 for f = 1:n_frames
                     frame_T = squeeze(T_data(f, :, :));
                     t_f = sim_res.time_vector(f);
                     
-                    cla(h_ax);
-                    imagesc(h_ax, sim_res.camera_x_mm, sim_res.camera_y_mm, frame_T);
-                    axis(h_ax, 'image');
-                    colorbar(h_ax, 'Color', 'w');
-                    caxis(h_ax, [app.GlobalTMin, app.GlobalTMax]);
-                    
-                    title(h_ax, sprintf('LFMT Thermal Field T(x,y,t)  |  t = %.2f s (Frame %d/%d)', t_f, f, n_frames), 'Color', 'w');
-                    xlabel(h_ax, 'X [mm]', 'Color', 'w'); ylabel(h_ax, 'Y [mm]', 'Color', 'w');
-                    set(h_ax, 'XColor', 'w', 'YColor', 'w');
+                    h_im.CData = frame_T;
+                    h_title.String = sprintf('LFMT Thermal Field T(x,y,t)  |  t = %.2f s (Frame %d/%d)', t_f, f, n_frames);
                     
                     f_rendered = getframe(h_fig);
                     writeVideo(v_writer, f_rendered);
@@ -2334,22 +2338,37 @@ classdef LFMTLiveLab < handle
             
             % Param specification rows
             cfg = app.CurrentResults.config;
+            if cfg.plate.has_defect
+                defect_presence_str = 'Yes (Slag Inclusion)';
+                defect_dim_str = sprintf('D = %.1f mm, z = %.2f mm, h = %.2f mm', ...
+                    cfg.plate.defect.diameter_mm, cfg.plate.defect.depth_mm, cfg.plate.defect.thickness_mm);
+            else
+                defect_presence_str = 'No (Healthy Control)';
+                defect_dim_str = 'None (0 mm)';
+            end
+            
+            if isempty(cfg.camera.noise_snr_db) || isinf(cfg.camera.noise_snr_db)
+                noise_str = 'Clean (Inf dB)';
+            else
+                noise_str = sprintf('%.1f dB', cfg.camera.noise_snr_db);
+            end
+            
             p_rows = {
                 'Plate', 'Dimensions (Lx, Ly, Lz)', sprintf('%.1f x %.1f x %.2f mm', cfg.plate.length_mm, cfg.plate.width_mm, cfg.plate.thickness_mm);
                 'Plate', 'Material / Substrate', 'Mild Steel (k = 45 W/m-K, rho = 7850, Cp = 460)';
-                'Defect', 'Inclusion Present', string(cfg.plate.has_defect);
-                'Defect', 'Slag Diameter & Depth', sprintf('D = %.1f mm, z = %.2f mm, h = %.2f mm', cfg.plate.defect.diameter_mm, cfg.plate.defect.depth_mm, cfg.plate.defect.thickness_mm);
+                'Defect', 'Inclusion Present', defect_presence_str;
+                'Defect', 'Slag Diameter & Depth', defect_dim_str;
                 'Defect', 'Slag Material Properties', 'k = 1.2 W/m-K, rho = 2800, Cp = 850';
                 'Excitation', 'Chirp Frequencies (f0 -> f1)', sprintf('%.3f -> %.3f Hz (Sweep Rate = %.4f Hz/s)', cfg.excitation.f0_hz, cfg.excitation.f1_hz, (cfg.excitation.f1_hz - cfg.excitation.f0_hz)/cfg.excitation.duration_s);
                 'Excitation', 'Heat Flux Amplitude q0', sprintf('%.0f W/m^2 (Texc = %.1f s, Tobs = %.1f s)', cfg.excitation.q0_w_m2, cfg.excitation.duration_s, cfg.excitation.observation_time_s);
                 'Camera', 'Decoupled Resolution', sprintf('%d x %d pixels @ %.1f Hz (%d frames)', size(T_cube, 3), size(T_cube, 2), sim_res.camera_frame_rate_hz, size(T_cube, 1));
-                'Camera', 'Noise Model', sprintf('SNR = %s, Seed = %d', string(cfg.camera.noise_snr_db), cfg.camera.noise_seed);
+                'Camera', 'Noise Model', sprintf('SNR = %s, Seed = %d', noise_str, cfg.camera.noise_seed);
                 'Solver', 'Discretization & Time Step', sprintf('%s (dt = %.3f s, Runtime = %.2f s)', sim_res.solver_name, sim_res.solver_dt_s, sim_res.runtime_s)
             };
-            app.AuditParamTable.Data = p_rows;
+            app.AuditParamTable.Data = LFMTLiveLab.normalizeUITableCellData(p_rows);
             
             % Summary table
-            app.AuditMetricsTable.Data = app.MetricsTable.Data;
+            app.AuditMetricsTable.Data = LFMTLiveLab.normalizeUITableCellData(app.MetricsTable.Data);
         end
         
         %% Results Saving & Report Exporting
@@ -2454,4 +2473,43 @@ classdef LFMTLiveLab < handle
             end
         end
     end
+    
+    methods (Static, Access = public)
+        function data = normalizeUITableCellData(data)
+            % NORMALIZEUITABLECELLDATA Ensures every cell in a UITable cell array is numeric, logical, or char.
+            if istable(data)
+                return;
+            end
+            if ~iscell(data)
+                return;
+            end
+            for i = 1:numel(data)
+                v = data{i};
+                if isstring(v)
+                    if isscalar(v)
+                        if ismissing(v)
+                            data{i} = '';
+                        else
+                            data{i} = char(v);
+                        end
+                    else
+                        data{i} = char(join(v, ', '));
+                    end
+                elseif iscategorical(v)
+                    data{i} = char(string(v));
+                elseif ismissing(v)
+                    data{i} = '';
+                elseif isempty(v)
+                    % Preserve valid empty
+                elseif ~(isnumeric(v) || islogical(v) || ischar(v))
+                    try
+                        data{i} = char(string(v));
+                    catch
+                        data{i} = '';
+                    end
+                end
+            end
+        end
+    end
 end
+

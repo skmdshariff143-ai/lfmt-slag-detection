@@ -1,0 +1,6 @@
+method_name,healthy_evaluations,false_alarms,specificity_pct
+Matched Filter,31,31,0
+PCT,31,31,0
+RPT,31,31,0
+Raw Contrast,31,31,0
+SPCT,31,21,32.258064516129

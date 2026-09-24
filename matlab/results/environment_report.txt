@@ -1,0 +1,29 @@
+================================================================================
+               LFMT MATLAB SCIENTIFIC ENVIRONMENT & CAPABILITY REPORT            
+================================================================================
+Date & Time:        2026-09-24 06:43:29
+MATLAB Version:     26.1.0.3312084 (R2026a) Update 4
+MATLAB Release:     (R2026a) (19-Nov-2025)
+Operating System:   PCWIN64
+--------------------------------------------------------------------------------
+TOOLBOX AVAILABILITY AUDIT:
+  - PDE Toolbox:                NOT INSTALLED / UNAVAILABLE (Licensed: YES, femodel: NO)
+  - Signal Processing Toolbox:  INSTALLED (v26.1)
+  - Image Processing Toolbox:   INSTALLED (v26.1)
+  - Statistics & ML Toolbox:    NOT INSTALLED / UNAVAILABLE
+  - Parallel Computing Toolbox: NOT INSTALLED / UNAVAILABLE
+--------------------------------------------------------------------------------
+SOLVER ARCHITECTURE DECISION:
+  - Primary 3D Solver:          Pure MATLAB 3-D Structured Hexahedral FEM (Hex8 Trilinear Formulation)
+  - FEM Engine:                 pure_matlab_hex8_fem
+  - Secondary Solver:           3-D Conservative Finite Difference (MATLAB_FDM)
+--------------------------------------------------------------------------------
+SIGNAL PROCESSING & BLIND DETECTION ENGINE:
+  - Raw Contrast:               Pure MATLAB (Blind spatial variance max frame)
+  - Matched Filter:             Pure MATLAB / Signal Toolbox (Vectorized FFT correlation)
+  - SVD PCT:                    Pure MATLAB (svd / Truncated SVD, Kurtosis selection)
+  - Sparse PCT (SPCT):          Pure MATLAB (L1-Penalized Coordinate Descent / Proximal)
+  - Random Projection (RPT):    Pure MATLAB (Gaussian JL projection, Dynamic Range)
+  - Downstream Detector:        Pure MATLAB (Otsu + 8-connectivity binary opening/closing)
+  - Ground Truth Anti-Leakage:  ENFORCED (GT strictly isolated from processing & selection)
+================================================================================

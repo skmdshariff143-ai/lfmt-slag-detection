@@ -30,21 +30,27 @@ run_demo;
 
 ---
 
-## 2. Interactive GUI Controls & Features
+## 2. Interactive GUI Architecture & 6 Research Views
 
-| GUI Component | Description |
+The **LFMT Live Thermography Lab** (`LFMTLiveLab.m`) provides an end-to-end interactive research environment structured across 6 dedicated views:
+
+| View Tab | Scientific Purpose & Capabilities |
 | :--- | :--- |
-| **Inspection Inputs** | Edit defect parameters ($D$, $z$, thickness, position) or pick from standard presets ($4, 6, 8, 10, 12\text{ mm}$). Check *Healthy Plate* for control testing. |
-| **LFMT Excitation** | Configure chirp sweep frequencies ($f_0 \to f_1\text{ Hz}$), optical flux $q_0\text{ [W/m²]}$, and durations. |
-| **Camera & Noise** | Set virtual sensor noise condition (Clean, 30 dB, 25 dB, 20 dB, or Custom SNR) and deterministic seed. |
-| **Numerical Solver** | Toggle between 3-D Hex8 FEM (Primary) and 3-D FDM (Secondary), and choose resolution mode. |
-| **Live Thermogram Player** | High-resolution thermal frame display with interactive Play/Pause, Frame Slider, Step forward/backward, and 0.25x–4x playback speed. |
-| **Point Inspector** | Click anywhere on the live thermogram to inspect the full transient temperature curve $T(t)$ at that specific pixel. |
-| **LFMT Waveform View** | Live excitation heat flux $q(t)$ and instantaneous frequency $f(t)$ tracking the current frame cursor. |
-| **5-Method Score Maps** | Simultaneous side-by-side display of Raw Contrast, Matched Filter, SVD-PCT, SPCT, and RPT with predicted defect boundaries and centroids. |
-| **Ground-Truth Overlay** | Optional toggle for educational/audit overlay of true defect boundaries (strictly isolated from detectors). |
-| **5-Method Metric Table** | Quantitative comparison table reporting Detection status, CNR, IoU, Dice, Localization Error (mm), Diameter Error (mm), and Runtime. |
-| **Save & Export** | One-click export to `.mat` binary checkpoints and timestamped reports containing CSV summary, configuration JSON, and 300 DPI PNG figures. |
+| **`🔬 LIVE INSPECTION`** | Dual-column interactive dashboard featuring the real-time front-surface thermal field $T(x,y,t)$, interactive point-and-click pixel curve inspector $T_{\text{pixel}}(t)$, 5 simultaneous blind score maps, defect boundary contours, predicted centroids, and quantitative metrics summary. |
+| **`🔄 SIMULATION CONNECTION`** | Complete connected pipeline flow visualization tracking data structures through 8 stages with dynamic live status lamps: *(1) Inputs & Spec $\to$ (2) Chirp Synthesis $\to$ (3) 3-D Hex8 FEM Solver $\to$ (4) Decoupled Virtual IR Camera $\to$ (5) 5 Blind Methods $\to$ (6) Defect Segmentation $\to$ (7) Metric Evaluation $\to$ (8) Full Export Package*. |
+| **`📐 FEM & 3D MODEL`** | Interactive 3-D physical geometry and discretization inspector: 3D mild steel plate volume with embedded slag cylinder, 2D cross-section schematic ($X-Z$ depth plane with convection boundaries), real 3D Hex8 element wireframe, and physical property summary table ($k, \rho, C_p, \alpha, \text{DOFs}$). |
+| **`🎬 THERMAL VIDEO STUDIO`** | High-resolution thermal video player with scrubbing, variable playback speed ($0.25\times \to 4.0\times$), **Lock Color Scale** (keeps color limits fixed across all frames), dynamic excitation flux $q(t)$, transient surface temperature envelope ($T_{\max}(t), T_{\text{mean}}(t), T_{\min}(t)$), dedicated pop-out window (`🖥 Large View`), and direct **MP4 Video Export** (`VideoWriter` at 25 fps). |
+| **`📊 5-METHOD BENCHMARK`** | Side-by-side high-resolution comparison grid of all 5 blind signal processing score maps (Raw Contrast, Matched Filter, SVD-PCT, SPCT, RPT) with predicted bounding boxes and overlay contours, accompanied by dual-axis CNR and IoU performance ranking charts. |
+| **`📋 RESULTS & AUDIT`** | Ground-truth differential thermal contrast curve $\Delta T(t) = T_{\text{defect}}(t) - T_{\text{sound}}(t)$ (strictly labeled: *AUDIT ONLY — ISOLATED FROM DETECTORS*), active experiment parameters specification table, and export package generator. |
+
+---
+
+### Global Inspection & Solver Controls (Left Sidebar)
+- **Defect Presets**: Quick loading for *8 mm (z=0.4 mm) [Default / Easy]*, *6 mm (z=0.4 mm) [Medium]*, *8 mm (z=0.8 mm) [Deep]*, *4 mm (z=1.0 mm) [Hard / Small]*, *Healthy Control (D=0) [No Defect]*, or *Custom Values*.
+- **LFMT Excitation**: Configure chirp sweep frequencies ($f_0 \to f_1\text{ Hz}$), heat flux $q_0\text{ [W/m²]}$, and duration $T_{\text{exc}} / T_{\text{obs}}$.
+- **Camera & Noise**: Choose noise conditions (*Clean*, *30 dB*, *25 dB*, *20 dB*, or *Custom SNR*) with deterministic seed control.
+- **Forward Solver**: Primary 3-D Trilinear Hexahedral Finite Element Method (`MATLAB_FEM`) or Secondary 3-D Finite Difference (`MATLAB_FDM`), with resolution modes (*Standard Research*, *Quick Demo*, *High-Res Physics*).
+- **Export Formats**: One-click export to `.mat` binary checkpoints, summary `.csv` metrics, `.json` configuration manifests, high-res 300 DPI `.png` figures, and high-quality `.mp4` video sequences.
 
 ---
 

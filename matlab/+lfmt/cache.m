@@ -44,6 +44,16 @@ switch lower(action)
         cache_file = fullfile(cache_dir, [hash_str, '.mat']);
         out = (exist(cache_file, 'file') == 2);
         
+    case 'clear'
+        files = dir(fullfile(cache_dir, '*.mat'));
+        for k = 1:length(files)
+            delete(fullfile(cache_dir, files(k).name));
+        end
+        out = length(files);
+        
+    case 'dir'
+        out = cache_dir;
+        
     otherwise
         error('LFMT:InvalidCacheAction', 'Unknown cache action: %s', action);
 end

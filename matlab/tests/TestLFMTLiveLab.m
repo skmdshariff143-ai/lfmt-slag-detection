@@ -30,6 +30,18 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             testCase.verifyFalse(testCase.App.HealthyCheck.Value);
             testCase.verifyEqual(testCase.App.F0Edit.Value, 0.05);
             testCase.verifyEqual(testCase.App.F1Edit.Value, 0.50);
+            
+            % Verify 6 main navigation tabs
+            testCase.verifyTrue(isvalid(testCase.App.LiveInspectionTab));
+            testCase.verifyTrue(isvalid(testCase.App.SimConnectionTab));
+            testCase.verifyTrue(isvalid(testCase.App.FEMModelTab));
+            testCase.verifyTrue(isvalid(testCase.App.ThermalStudioTab));
+            testCase.verifyTrue(isvalid(testCase.App.BenchmarkTab));
+            testCase.verifyTrue(isvalid(testCase.App.AuditTab));
+            
+            % Verify 8 simulation connection stage lamps
+            testCase.verifyEqual(length(testCase.App.StageLamps), 8);
+            testCase.verifyTrue(all(isvalid(testCase.App.StageLamps)));
         end
         
         function testCaseA_CleanStandardDefect(testCase)
@@ -50,6 +62,10 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             testCase.verifyTrue(res.processed.PCT.metrics.is_detected);
             testCase.verifyGreaterThan(res.processed.MF.metrics.iou, 0.5);
             testCase.verifyEqual(app.DetectionText.Text, 'DEFECT DETECTED: YES');
+            
+            % Verify mesh structure was populated
+            testCase.verifyTrue(isfield(res.simulation, 'mesh'));
+            testCase.verifyGreaterThan(res.simulation.mesh.total_nodes, 0);
         end
         
         function testCaseB_DeepsDefect25dB(testCase)
@@ -66,7 +82,6 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             res = app.CurrentResults;
             testCase.verifyNotEmpty(res);
             testCase.verifyTrue(res.processed.MF.metrics.is_detected);
-            % Matched Filter should detect at 0.8mm depth
             testCase.verifyGreaterThan(res.processed.MF.metrics.cnr, 1.0);
         end
         
@@ -100,6 +115,56 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             testCase.verifyNotEmpty(res);
             testCase.verifyTrue(isfield(res, 'summary_table'));
             testCase.verifyEqual(height(res.summary_table), 5);
+        end
+        
+        function testVideoPlaybackAndLockScale(testCase)
+            % Test video playback controls and locked color scale
+            app = testCase.App;
+            app.ModeDrop.Value = 'Quick Demo';
+            app.runInspection();
+            
+            % Step frame forward and backward
+            app.stepFrame(5);
+            testCase.verifyEqual(app.CurrentFrameIdx, 6);
+            
+            app.stepFrame(-2);
+            testCase.verifyEqual(app.CurrentFrameIdx, 4);
+            
+            % Toggle Lock Color Scale
+            app.LockColorScaleCheck.Value = true;
+            app.updateThermogramFrame();
+            testCase.verifyTrue(app.LockColorScaleCheck.Value);
+            
+            % Toggle playback start/stop
+            app.togglePlayback();
+            testCase.verifyTrue(app.IsPlaying);
+            app.togglePlayback();
+            testCase.verifyFalse(app.IsPlaying);
+        end
+        
+        function testLargePopoutAndMP4Export(testCase)
+            % Test Standalone Popout View and Video MP4 Export
+            app = testCase.App;
+            app.ModeDrop.Value = 'Quick Demo';
+            app.runInspection();
+            
+            % Open Large Popout View
+            app.openLargeThermalView();
+            testCase.verifyTrue(isvalid(app.PopoutFigure));
+            
+            % Export MP4 Video to temporary test path
+            root_dir = fileparts(fileparts(mfilename('fullpath')));
+            temp_mp4 = fullfile(root_dir, 'results', 'exports', 'test_video_export.mp4');
+            app.exportMP4Video(temp_mp4, false);
+            testCase.verifyTrue(exist(temp_mp4, 'file') > 0);
+            
+            % Clean up temporary video file and popout figure
+            if exist(temp_mp4, 'file')
+                delete(temp_mp4);
+            end
+            if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
+                delete(app.PopoutFigure);
+            end
         end
         
         function testSaveAndExportRoutines(testCase)

@@ -4,29 +4,67 @@ This directory contains the production-grade, research-verified MATLAB implement
 
 ---
 
-## 1. Quick Start
+## 1. Live Interactive MATLAB Application (LFMT Live Lab)
 
-### A. Run Interactive Flagship Demo
+You can launch and interact with the **LFMT Live Thermography Lab** via three easy options:
+
+### Option 1: Double-Click the Windows Launcher
+Double-click the launcher script in the repository root:
+```cmd
+E:\lfmt-slag-detection\Start_LFMT_LiveLab.bat
+```
+*(or double-click the **LFMT Live Thermography Lab** shortcut on your Windows Desktop).*
+
+### Option 2: Launch Directly from MATLAB Desktop
+Open MATLAB and execute:
 ```matlab
-cd matlab
-res = run_demo();
+cd('E:\lfmt-slag-detection\matlab')
+LFMTLiveLab;
 ```
 
-### B. Run Master Validation Suite
+### Option 3: Run the Flagship Visual Demo
 ```matlab
-cd matlab
+cd('E:\lfmt-slag-detection\matlab')
+run_demo;
+```
+
+---
+
+## 2. Interactive GUI Controls & Features
+
+| GUI Component | Description |
+| :--- | :--- |
+| **Inspection Inputs** | Edit defect parameters ($D$, $z$, thickness, position) or pick from standard presets ($4, 6, 8, 10, 12\text{ mm}$). Check *Healthy Plate* for control testing. |
+| **LFMT Excitation** | Configure chirp sweep frequencies ($f_0 \to f_1\text{ Hz}$), optical flux $q_0\text{ [W/m²]}$, and durations. |
+| **Camera & Noise** | Set virtual sensor noise condition (Clean, 30 dB, 25 dB, 20 dB, or Custom SNR) and deterministic seed. |
+| **Numerical Solver** | Toggle between 3-D Hex8 FEM (Primary) and 3-D FDM (Secondary), and choose resolution mode. |
+| **Live Thermogram Player** | High-resolution thermal frame display with interactive Play/Pause, Frame Slider, Step forward/backward, and 0.25x–4x playback speed. |
+| **Point Inspector** | Click anywhere on the live thermogram to inspect the full transient temperature curve $T(t)$ at that specific pixel. |
+| **LFMT Waveform View** | Live excitation heat flux $q(t)$ and instantaneous frequency $f(t)$ tracking the current frame cursor. |
+| **5-Method Score Maps** | Simultaneous side-by-side display of Raw Contrast, Matched Filter, SVD-PCT, SPCT, and RPT with predicted defect boundaries and centroids. |
+| **Ground-Truth Overlay** | Optional toggle for educational/audit overlay of true defect boundaries (strictly isolated from detectors). |
+| **5-Method Metric Table** | Quantitative comparison table reporting Detection status, CNR, IoU, Dice, Localization Error (mm), Diameter Error (mm), and Runtime. |
+| **Save & Export** | One-click export to `.mat` binary checkpoints and timestamped reports containing CSV summary, configuration JSON, and 300 DPI PNG figures. |
+
+---
+
+## 3. Command-Line Workflows & Test Runners
+
+### A. Run Master Validation Suite
+```matlab
+cd('E:\lfmt-slag-detection\matlab')
 val_results = run_validation_suite('Quick', false);
 ```
 
-### C. Run Full 4,030-Evaluation Scientific Study
+### B. Run Full 4,030-Evaluation Scientific Study
 ```matlab
-cd matlab
+cd('E:\lfmt-slag-detection\matlab')
 study_results = run_full_study('Quick', false);
 ```
 
-### D. Run Automated MATLAB Test Suite
+### C. Run Automated MATLAB Test Suite (34/34 Tests)
 ```matlab
-cd matlab
+cd('E:\lfmt-slag-detection\matlab')
 test_results = run_tests();
 ```
 

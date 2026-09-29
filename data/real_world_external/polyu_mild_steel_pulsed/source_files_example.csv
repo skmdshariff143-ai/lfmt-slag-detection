@@ -1,0 +1,6 @@
+source_file,source_file_id,source_url,file_size_bytes,specimen,interface,replicate,frame_range,format,download_status
+MS-facq-50Hz-air-cir-1_0-999.zip,701,https://researchdata.lib.polyu.edu.hk/api/access/datafile/701,501894301,Plate 1 (Circular FBH),steel-air,1,0-999 (0.0 - 19.98 s),TIFF sequence / zip,downloaded_representative
+MS-facq-50Hz-air-cir-1_1000-1999.zip,710,https://researchdata.lib.polyu.edu.hk/api/access/datafile/710,500326285,Plate 1 (Circular FBH),steel-air,1,1000-1999 (20.0 - 39.98 s),TIFF sequence / zip,cataloged_only
+MS-facq-50Hz-air-cir-2_0-999.zip,693,https://researchdata.lib.polyu.edu.hk/api/access/datafile/693,512376114,Plate 1 (Circular FBH),steel-air,2,0-999 (0.0 - 19.98 s),TIFF sequence / zip,cataloged_only
+MS-facq-50Hz-air-rect-1_0-999.zip,713,https://researchdata.lib.polyu.edu.hk/api/access/datafile/713,488253682,Plate 2 (Rectangular FBH),steel-air,1,0-999 (0.0 - 19.98 s),TIFF sequence / zip,cataloged_only
+MS-facq-50Hz-sand-cir-1_0-999.zip,729,https://researchdata.lib.polyu.edu.hk/api/access/datafile/729,474028964,Plate 1 (Circular FBH),steel-sand,1,0-999 (0.0 - 19.98 s),TIFF sequence / zip,cataloged_only

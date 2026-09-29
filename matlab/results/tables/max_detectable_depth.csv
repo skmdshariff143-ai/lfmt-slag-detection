@@ -1,0 +1,3326 @@
+method_name,diameter_mm,snr_condition,max_detectable_depth_mm
+Matched Filter,4,20dB,0.6
+Matched Filter,4,25dB,1
+Matched Filter,4,30dB,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,4,clean,1
+Matched Filter,6,20dB,0.6
+Matched Filter,6,25dB,1
+Matched Filter,6,30dB,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,6,clean,1
+Matched Filter,8,20dB,1
+Matched Filter,8,25dB,1
+Matched Filter,8,30dB,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,8,clean,1
+Matched Filter,10,20dB,1
+Matched Filter,10,25dB,1
+Matched Filter,10,30dB,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,10,clean,1
+Matched Filter,12,20dB,1
+Matched Filter,12,25dB,1
+Matched Filter,12,30dB,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+Matched Filter,12,clean,1
+PCT,4,20dB,0.4
+PCT,4,25dB,0.6
+PCT,4,30dB,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,4,clean,1
+PCT,6,20dB,0.4
+PCT,6,25dB,0.6
+PCT,6,30dB,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,6,clean,1
+PCT,8,20dB,1
+PCT,8,25dB,1
+PCT,8,30dB,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,8,clean,1
+PCT,10,20dB,1
+PCT,10,25dB,1
+PCT,10,30dB,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,10,clean,1
+PCT,12,20dB,1
+PCT,12,25dB,1
+PCT,12,30dB,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+PCT,12,clean,1
+RPT,4,20dB,0
+RPT,4,25dB,0.2
+RPT,4,30dB,0.2
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,4,clean,1
+RPT,6,20dB,0
+RPT,6,25dB,0.2
+RPT,6,30dB,0.2
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,6,clean,1
+RPT,8,20dB,0.4
+RPT,8,25dB,0.6
+RPT,8,30dB,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,8,clean,1
+RPT,10,20dB,0.4
+RPT,10,25dB,0.6
+RPT,10,30dB,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,10,clean,1
+RPT,12,20dB,0.6
+RPT,12,25dB,0.8
+RPT,12,30dB,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+RPT,12,clean,1
+Raw Contrast,4,20dB,0.2
+Raw Contrast,4,25dB,0.6
+Raw Contrast,4,30dB,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,4,clean,1
+Raw Contrast,6,20dB,0.2
+Raw Contrast,6,25dB,0.6
+Raw Contrast,6,30dB,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,6,clean,1
+Raw Contrast,8,20dB,1
+Raw Contrast,8,25dB,1
+Raw Contrast,8,30dB,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,8,clean,1
+Raw Contrast,10,20dB,1
+Raw Contrast,10,25dB,1
+Raw Contrast,10,30dB,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,10,clean,1
+Raw Contrast,12,20dB,1
+Raw Contrast,12,25dB,1
+Raw Contrast,12,30dB,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+Raw Contrast,12,clean,1
+SPCT,4,20dB,0.4
+SPCT,4,25dB,0.6
+SPCT,4,30dB,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,4,clean,1
+SPCT,6,20dB,0.4
+SPCT,6,25dB,0.6
+SPCT,6,30dB,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,6,clean,1
+SPCT,8,20dB,1
+SPCT,8,25dB,1
+SPCT,8,30dB,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,8,clean,1
+SPCT,10,20dB,1
+SPCT,10,25dB,1
+SPCT,10,30dB,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,10,clean,1
+SPCT,12,20dB,1
+SPCT,12,25dB,1
+SPCT,12,30dB,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1
+SPCT,12,clean,1

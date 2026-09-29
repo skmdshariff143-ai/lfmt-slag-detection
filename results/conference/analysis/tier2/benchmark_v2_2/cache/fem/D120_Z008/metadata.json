@@ -1,0 +1,17 @@
+{
+  "backend_type": "fem",
+  "engine": "scikit-fem (ElementHex1 3D Trilinear Hexahedral FEM)",
+  "engine_name": "scikit-fem (ElementHex1 3D Trilinear Hexahedral FEM)",
+  "solver_dt_s": 0.1,
+  "camera_frame_rate_hz": 10.0,
+  "n_elements": 7920,
+  "n_nodes": 9269,
+  "dofs": 9269,
+  "mesh_mode": "uniform",
+  "weld_enabled": false,
+  "contact_resistance_enabled": false,
+  "heating_profile": "uniform",
+  "runtime_seconds": 21.302046199998586,
+  "solver_runtime_s": 21.329575700001442,
+  "config_hash": "5e0a2cfd697e22e3"
+}

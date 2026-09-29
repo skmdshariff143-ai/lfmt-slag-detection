@@ -10,7 +10,6 @@ with dynamic LFMT chirp surface flux and convective/radiative boundary condition
 from __future__ import annotations
 import math
 import time
-from typing import Tuple, Dict, Any, Optional
 import numpy as np
 
 try:
@@ -20,7 +19,7 @@ except ImportError:
     NUMBA_AVAILABLE = False
 
 from lfmt.config import LFMTConfig
-from lfmt.materials import get_material, Material
+from lfmt.materials import get_material
 from lfmt.excitation import LFMTExcitation
 from lfmt.simulation.base import ThermalSimulationBackend, SimulationResult, GroundTruth
 

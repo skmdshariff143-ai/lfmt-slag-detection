@@ -1,0 +1,38 @@
+dataset:
+  camera: FLIR_A655sc_640x480
+  dimensions_mm:
+  - 150.0
+  - 150.0
+  - 10.0
+  doi: 10.60933/PRDR/HJYNZB
+  excitation: pulsed_optical_flash
+  frame_rate_hz: 50.0
+  name: PolyU Mild Steel Pulsed Thermography Transfer Example
+  specimen: mild_steel_plate_11_circular_fbh
+processing:
+  detection:
+    min_area_px: 10
+    morphology_kernel_size: 3
+    threshold_method: adaptive_otsu
+  matched_filter:
+    enabled: false
+    reason: External dataset uses pulsed thermography, not LFMT chirp excitation
+  pct:
+    enabled: true
+    mode: blind
+    n_components: 6
+    selection_criterion: blind_kurtosis
+  raw_contrast:
+    enabled: true
+    mode: blind
+  rpt:
+    enabled: true
+    matrix_type: gaussian
+    mode: blind
+    n_components: 6
+  spct:
+    alpha: 0.05
+    enabled: true
+    max_iter: 40
+    mode: blind
+    n_components: 6

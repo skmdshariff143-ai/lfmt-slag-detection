@@ -9,11 +9,10 @@ Includes deterministic hash caching to prevent redundant 3D simulation runs.
 from __future__ import annotations
 import hashlib
 import json
-import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Any, List, Optional
 import pandas as pd
 import numpy as np
 
@@ -23,11 +22,11 @@ from lfmt.simulation import get_simulation_backend, SimulationResult
 from lfmt.camera import VirtualIRCamera, VirtualCameraCapture
 from lfmt.noise import apply_noise_pipeline
 from lfmt.excitation import LFMTExcitation
-from lfmt.pulse_compression import LFMTMatchedFilter, PulseCompressionResult
-from lfmt.contrast import RawThermalContrast, RawContrastResult
-from lfmt.pct import PrincipalComponentThermography, PCTResult
-from lfmt.spct import SparsePrincipalComponentThermography, SPCTResult
-from lfmt.rpt import RandomProjectionTechnique, RPTResult
+from lfmt.pulse_compression import LFMTMatchedFilter
+from lfmt.contrast import RawThermalContrast
+from lfmt.pct import PrincipalComponentThermography
+from lfmt.spct import SparsePrincipalComponentThermography
+from lfmt.rpt import RandomProjectionTechnique
 from lfmt.detection import DefectDetector, DetectionResult
 from lfmt.metrics import compute_metrics, EvaluationMetrics
 
@@ -353,9 +352,19 @@ def compute_config_hash(cfg: LFMTConfig) -> str:
     rho_inc = cfg.geometry.inclusion.density if getattr(cfg.geometry.inclusion, "density", None) is not None else mat_inc.density
     cp_inc = cfg.geometry.inclusion.specific_heat if getattr(cfg.geometry.inclusion, "specific_heat", None) is not None else mat_inc.specific_heat
 
+    mesh_ref_dict = getattr(cfg.simulation, "mesh_refinement", None)
+    mesh_ref_data = mesh_ref_dict.__dict__ if hasattr(mesh_ref_dict, "__dict__") else str(mesh_ref_dict)
+
+    contact_dict = getattr(cfg.geometry.inclusion, "contact_resistance", None)
+    contact_data = contact_dict.__dict__ if hasattr(contact_dict, "__dict__") else str(contact_dict)
+
+    heating_dict = getattr(cfg.excitation, "heating_profile", None)
+    heating_data = heating_dict.__dict__ if hasattr(heating_dict, "__dict__") else str(heating_dict)
+
     d = {
         "backend": cfg.simulation.backend,
         "dx": cfg.simulation.spatial_resolution,
+        "mesh_refinement": mesh_ref_data,
         "dt": cfg.simulation.timestep_s,
         "t_total": cfg.simulation.total_time_s,
         "plate": {
@@ -377,6 +386,7 @@ def compute_config_hash(cfg: LFMTConfig) -> str:
             "k": k_inc,
             "rho": rho_inc,
             "cp": cp_inc,
+            "contact_resistance": contact_data,
         },
         "excitation": {
             "f0": cfg.excitation.f0_hz,
@@ -385,6 +395,7 @@ def compute_config_hash(cfg: LFMTConfig) -> str:
             "q0": cfg.excitation.q0_w_m2,
             "h_conv": cfg.excitation.h_conv_w_m2k,
             "t_amb": cfg.excitation.ambient_temp_k,
+            "heating_profile": heating_data,
         }
     }
     return hashlib.sha256(json.dumps(d, sort_keys=True, default=json_serialize).encode("utf-8")).hexdigest()[:16]

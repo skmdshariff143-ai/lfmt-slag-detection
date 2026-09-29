@@ -32,6 +32,8 @@ import pandas as pd
 import scipy
 import sklearn
 import skfem
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from lfmt.config import LFMTConfig, load_config
@@ -49,6 +51,8 @@ from lfmt.rpt import RandomProjectionTechnique
 from lfmt.detection import DefectDetector
 from lfmt.metrics import compute_metrics, EvaluationMetrics
 from lfmt.experiments import compute_config_hash, json_serialize
+from lfmt.advanced_processing import ThermalSignalReconstruction, ChirpPhaseFusion
+from lfmt.ml import TemporalPixelSegmenter
 
 
 DIAMETERS_MM = [4.0, 6.0, 8.0, 10.0, 12.0]
@@ -72,11 +76,6 @@ def get_git_commit_hash() -> str:
         return res.stdout.strip()
     except Exception:
         return "f7b2779"
-
-        return float(obj)
-    elif isinstance(obj, np.ndarray):
-        return obj.tolist()
-    return str(obj)
 
 
 def simulate_or_load_clean_fem(
@@ -104,33 +103,36 @@ def simulate_or_load_clean_fem(
 
     sim_time = 0.0
     loaded = False
+    cfg_hash = compute_config_hash(config)
 
     if use_resume and npz_path.exists() and gt_json_path.exists() and meta_json_path.exists():
         try:
-            data = np.load(npz_path)
-            surf_temp = data["surface_temperature"]
-            t_vec = data["time_vector"]
-            x_grid = data["x_grid_mm"]
-            y_grid = data["y_grid_mm"]
-            z_grid = data["z_grid_mm"]
-            with open(gt_json_path, "r", encoding="utf-8") as f:
-                gt_dict = json.load(f)
             with open(meta_json_path, "r", encoding="utf-8") as f:
                 meta_dict = json.load(f)
+            cached_hash = meta_dict.get("config_hash")
+            if cached_hash == cfg_hash:
+                data = np.load(npz_path)
+                surf_temp = data["surface_temperature"]
+                t_vec = data["time_vector"]
+                x_grid = data["x_grid_mm"]
+                y_grid = data["y_grid_mm"]
+                z_grid = data["z_grid_mm"]
+                with open(gt_json_path, "r", encoding="utf-8") as f:
+                    gt_dict = json.load(f)
 
-            gt = GroundTruth(**gt_dict)
-            sim_res = SimulationResult(
-                surface_temperature=surf_temp,
-                time_vector=t_vec,
-                x_grid_mm=x_grid,
-                y_grid_mm=y_grid,
-                z_grid_mm=z_grid,
-                ground_truth=gt,
-                backend_name=config.simulation.backend,
-                metadata=meta_dict
-            )
-            sim_time = float(meta_dict.get("solver_runtime_s", 0.0))
-            loaded = True
+                gt = GroundTruth(**gt_dict)
+                sim_res = SimulationResult(
+                    surface_temperature=surf_temp,
+                    time_vector=t_vec,
+                    x_grid_mm=x_grid,
+                    y_grid_mm=y_grid,
+                    z_grid_mm=z_grid,
+                    ground_truth=gt,
+                    backend_name=config.simulation.backend,
+                    metadata=meta_dict
+                )
+                sim_time = float(meta_dict.get("solver_runtime_s", 0.0))
+                loaded = True
         except Exception:
             loaded = False
 
@@ -140,6 +142,7 @@ def simulate_or_load_clean_fem(
         sim_res = backend.run(config)
         sim_time = time.perf_counter() - t0
         sim_res.metadata["solver_runtime_s"] = sim_time
+        sim_res.metadata["config_hash"] = cfg_hash
 
         np.savez_compressed(
             npz_path,
@@ -165,10 +168,11 @@ def execute_processing_pipeline(
     time_vector: np.ndarray,
     config: LFMTConfig,
     gt: GroundTruth,
-    gt_mask: np.ndarray
+    gt_mask: np.ndarray,
+    segmentation_model: Optional[TemporalPixelSegmenter] = None,
 ) -> List[EvaluationMetrics]:
     """
-    Run 5 signal processing methods in strict blind mode and evaluate metrics.
+    Run five classical methods, optionally adding three experimental baselines.
     """
     fov = (config.geometry.plate.length_mm, config.geometry.plate.width_mm)
     detector = DefectDetector(
@@ -212,10 +216,9 @@ def execute_processing_pipeline(
 
     # 4. SPCT (Blind Anomaly Ratio)
     spct_engine = SparsePrincipalComponentThermography(
-        n_components=4,
-        alpha=0.05,
-        max_iter=30,
-        tol=1e-2,
+        n_components=config.processing.spct.n_components,
+        alpha=config.processing.spct.alpha,
+        max_iter=config.processing.spct.max_iter,
         mode="blind"
     )
     res_spct = spct_engine.process(thermograms)
@@ -233,6 +236,22 @@ def execute_processing_pipeline(
     det_rpt = detector.detect(res_rpt.selected_rpt_image, fov_mm=fov)
     met_rpt = compute_metrics("RPT", det_rpt, gt, gt_mask, res_rpt.selected_rpt_image, res_rpt.runtime_seconds, fov)
     metrics_list.append(met_rpt)
+
+    if segmentation_model is not None:
+        tsr = ThermalSignalReconstruction().process(thermograms, time_vector, config.excitation.duration_s)
+        frequencies = np.arange(1, int(config.excitation.f1_hz * config.excitation.duration_s) + 1) / config.excitation.duration_s
+        frequencies = frequencies[frequencies >= config.excitation.f0_hz]
+        heating = time_vector <= config.excitation.duration_s
+        phase = ChirpPhaseFusion().process(thermograms[heating], time_vector[heating],
+                                         exc.heat_flux(time_vector[heating]), frequencies)
+        start = time.perf_counter()
+        learned = segmentation_model.predict(thermograms)
+        learned_runtime = time.perf_counter() - start
+        for name, score, runtime in [("TSR", tsr.score_map, tsr.runtime_seconds),
+                                     ("Chirp Phase Fusion", phase.score_map, phase.runtime_seconds),
+                                     ("Temporal Pixel Net", learned, learned_runtime)]:
+            detection = detector.detect(score, fov_mm=fov)
+            metrics_list.append(compute_metrics(name, detection, gt, gt_mask, score, runtime, fov))
 
     return metrics_list
 
@@ -721,22 +740,38 @@ def generate_all_conference_figures(
     fig.savefig(figures_dir / "fig17_parameter_sensitivity.png", dpi=300)
     plt.close(fig)
 
-    print("All 17 publication figures generated successfully in:", figures_dir)
+    print(f"Generated {len(list(figures_dir.glob('*.png')))} figure files in: {figures_dir}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Run Full LFMT Conference Experiment Study.")
+    parser.add_argument("--config", type=str, default="configs/conference_v1_1_corrected.yaml", help="Path to YAML configuration")
     parser.add_argument("--quick", action="store_true", help="Run in quick mode (3 noise seeds).")
     parser.add_argument("--conference", action="store_true", help="Run full conference mode (10 noise seeds).")
     parser.add_argument("--backend", type=str, default="fem", choices=["fem", "fdm"], help="Simulation backend.")
-    parser.add_argument("--resume", action="store_true", default=True, help="Reuse cached simulation files.")
-    parser.add_argument("--outdir", type=str, default="results/conference", help="Output directory.")
+    parser.add_argument("--resume", action=argparse.BooleanOptionalAction, default=True, help="Reuse cached simulation files.")
+    parser.add_argument("--outdir", type=str, default="results/corrected_v1_1", help="Output directory.")
+    parser.add_argument("--extended-model", type=Path, help="Trained temporal-pixel JSON; enables all three experimental methods.")
+    parser.add_argument("--tracking-dir", type=Path, help="Optional local MLflow SQLite/artifact directory; install the tracking extra.")
     args = parser.parse_args()
+
+    from lfmt.experiment_tracking import track_study
+    with track_study(args.tracking_dir, Path(args.outdir), Path(args.config)):
+        run_study(args)
+
+
+def run_study(args):
 
     start_total_time = time.perf_counter()
     out_dir = Path(args.outdir)
+    frozen = (Path(__file__).resolve().parents[1] / "results/conference/final").resolve()
+    if out_dir.resolve() == frozen.parent or out_dir.resolve().is_relative_to(frozen):
+        raise ValueError("The audited conference dataset is frozen; choose a new versioned output directory")
+    if (out_dir / "raw_results.csv").exists() or (out_dir / "final/raw_results_final.csv").exists():
+        raise ValueError("Existing benchmark results must not be overwritten; choose a new versioned output directory")
+    segmentation_model = TemporalPixelSegmenter.load(args.extended_model) if args.extended_model else None
     out_dir.mkdir(parents=True, exist_ok=True)
-    cache_base_dir = Path("data/generated") / args.backend
+    cache_base_dir = out_dir / "cache" / args.backend
     cache_base_dir.mkdir(parents=True, exist_ok=True)
 
     seeds = QUICK_SEEDS if args.quick else CONFERENCE_SEEDS
@@ -755,19 +790,9 @@ def main():
     print(f"Output Directory:    {out_dir}")
     print("=" * 70)
 
-    # Load baseline config
-    base_config = load_config("configs/default.yaml")
+    # Load canonical config
+    base_config = load_config(args.config)
     base_config.simulation.backend = args.backend
-    # High-accuracy FEM grid balanced for multi-case statistical studies
-    if args.quick:
-        base_config.simulation.spatial_resolution = {"nx": 26, "ny": 18, "nz": 7}
-    else:
-        base_config.simulation.spatial_resolution = {"nx": 30, "ny": 21, "nz": 8}
-    base_config.simulation.timestep_s = 0.04
-    base_config.simulation.total_time_s = 10.0
-    base_config.camera.resolution_x = 32
-    base_config.camera.resolution_y = 32
-    base_config.camera.sampling_rate_hz = 10.0
 
     raw_records = []
     run_counter = 0
@@ -784,7 +809,8 @@ def main():
             cfg.geometry.inclusion.material = "welding_slag_silicate"
             cfg_hash = compute_config_hash(cfg)
 
-            case_idx = run_counter // (5 * (1 + len(NOISE_LEVELS_DB) * len(seeds))) + 1
+            method_count = 8 if segmentation_model is not None else 5
+            case_idx = run_counter // (method_count * (1 + len(NOISE_LEVELS_DB) * len(seeds))) + 1
             print(f"[{case_idx:02d}/26] Simulating/Loading FEM D={diam:.1f}mm, z={depth:.1f}mm...", flush=True)
             sim_res, capture_clean, sim_time = simulate_or_load_clean_fem(cfg, cache_base_dir, use_resume=args.resume)
             if rep_capture is None and abs(diam - 8.0) < 1e-3 and abs(depth - 0.4) < 1e-3:
@@ -795,7 +821,7 @@ def main():
             t_vec = capture_clean.time_vector
 
             # Condition 1: Clean
-            metrics_clean = execute_processing_pipeline(capture_clean.thermograms, t_vec, cfg, gt, gt_mask)
+            metrics_clean = execute_processing_pipeline(capture_clean.thermograms, t_vec, cfg, gt, gt_mask, segmentation_model)
             for m in metrics_clean:
                 run_counter += 1
                 raw_records.append({
@@ -840,10 +866,10 @@ def main():
                 for seed in seeds:
                     noise_cfg = copy.deepcopy(cfg.noise)
                     noise_cfg.snr_db = snr_db
-                    noise_cfg.random_seed = seed
+                    noise_cfg.seed = seed
                     noisy_therm = apply_noise_pipeline(capture_clean.thermograms, noise_cfg)
 
-                    metrics_noisy = execute_processing_pipeline(noisy_therm, t_vec, cfg, gt, gt_mask)
+                    metrics_noisy = execute_processing_pipeline(noisy_therm, t_vec, cfg, gt, gt_mask, segmentation_model)
                     for m in metrics_noisy:
                         run_counter += 1
                         raw_records.append({
@@ -896,7 +922,7 @@ def main():
     t_vec_h = capture_clean_h.time_vector
 
     # Clean healthy
-    metrics_clean_h = execute_processing_pipeline(capture_clean_h.thermograms, t_vec_h, cfg_healthy, gt_h, gt_mask_h)
+    metrics_clean_h = execute_processing_pipeline(capture_clean_h.thermograms, t_vec_h, cfg_healthy, gt_h, gt_mask_h, segmentation_model)
     for m in metrics_clean_h:
         run_counter += 1
         raw_records.append({
@@ -941,10 +967,10 @@ def main():
         for seed in seeds:
             noise_cfg = copy.deepcopy(cfg_healthy.noise)
             noise_cfg.snr_db = snr_db
-            noise_cfg.random_seed = seed
+            noise_cfg.seed = seed
             noisy_therm_h = apply_noise_pipeline(capture_clean_h.thermograms, noise_cfg)
 
-            metrics_noisy_h = execute_processing_pipeline(noisy_therm_h, t_vec_h, cfg_healthy, gt_h, gt_mask_h)
+            metrics_noisy_h = execute_processing_pipeline(noisy_therm_h, t_vec_h, cfg_healthy, gt_h, gt_mask_h, segmentation_model)
             for m in metrics_noisy_h:
                 run_counter += 1
                 raw_records.append({
@@ -1006,6 +1032,8 @@ def main():
 
     # 7. Create Reproducibility Manifest
     manifest = {
+        "pipeline_version": "experimental-v2.2" if segmentation_model is not None else "classical-current",
+        "segmentation_checkpoint_sha256": hashlib.sha256(args.extended_model.read_bytes()).hexdigest() if args.extended_model else None,
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "git_commit_sha": git_commit,
         "mode": "quick" if args.quick else "conference",

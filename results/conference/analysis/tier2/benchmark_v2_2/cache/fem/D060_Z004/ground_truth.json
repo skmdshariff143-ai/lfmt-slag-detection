@@ -1,0 +1,11 @@
+{
+  "center_x_mm": 50.0,
+  "center_y_mm": 35.0,
+  "depth_mm": 0.4,
+  "diameter_mm": 6.0,
+  "thickness_mm": 0.5,
+  "material_name": "welding_slag_silicate",
+  "area_mm2": 28.274333882308138,
+  "volume_mm3": 14.137166941154069,
+  "has_defect": true
+}

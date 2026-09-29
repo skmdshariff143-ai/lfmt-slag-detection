@@ -10,7 +10,7 @@ and extracts peak contrast time t_max and optimal contrast spatial maps.
 from __future__ import annotations
 import time
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional
 import numpy as np
 
 

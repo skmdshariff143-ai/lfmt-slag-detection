@@ -1,0 +1,36 @@
+{
+  "cache_sha256": {
+    "data\\generated\\fem\\D040_Z002\\clean_thermograms.npz": "84b5a36d651f2f928f6c0d436e39006689630fe5779b66f77e5aae54e01fa87d",
+    "data\\generated\\fem\\D040_Z004\\clean_thermograms.npz": "8c4837a53f6b78cf09a2d8393961e35d67edc5c8f155c23f825fefe1d2240591",
+    "data\\generated\\fem\\D040_Z006\\clean_thermograms.npz": "6b60e5d16e5385c5052a9d06b020c1c64f3d232caaa7fc3b339a35cd14e004c3",
+    "data\\generated\\fem\\D040_Z008\\clean_thermograms.npz": "ec54954a8e8b26d54dccd70ac2a6db5047d5075fd9398de15cc182136a80180b",
+    "data\\generated\\fem\\D040_Z010\\clean_thermograms.npz": "fb8e96f44e62f1780b6712a53efe98f27fed2dcef1a051c4f924ad18136ec63b",
+    "data\\generated\\fem\\D060_Z002\\clean_thermograms.npz": "a8b180ab22334ccb732a8e89f0173d564ae67ca131c1856770583eaf21215fc2",
+    "data\\generated\\fem\\D060_Z004\\clean_thermograms.npz": "c4610a34250c780928b25aa473d69979ef5d14272c7f36c26b4b5949b9e45e21",
+    "data\\generated\\fem\\D060_Z006\\clean_thermograms.npz": "e24a984438c6f83bbecb805a36a0544c78dc5321d6134bfefbb62b8289b4f3f3",
+    "data\\generated\\fem\\D060_Z008\\clean_thermograms.npz": "393eefe9a01af328a18162da0bb7d65095f7a7bc396deb1c35d3b97aa73ca959",
+    "data\\generated\\fem\\D060_Z010\\clean_thermograms.npz": "bbdc4ff72a00a4a04758e397c237f36c13e692e7bcddfe6c29b4a2516e5a8331",
+    "data\\generated\\fem\\D080_Z002\\clean_thermograms.npz": "d64279af152429f7370680a144283a345ef6129f33f046d6320d6e4124d4b48e",
+    "data\\generated\\fem\\D080_Z004\\clean_thermograms.npz": "3efb3596f4b1f8f8fea4f99f617dd60785584f0140932f7da4d434f02ca1da2e",
+    "data\\generated\\fem\\D080_Z006\\clean_thermograms.npz": "bfcdf00fc83b5802704b4bd05fc30e1c34c180a45a605ff72379eb4400aba4b0",
+    "data\\generated\\fem\\D080_Z008\\clean_thermograms.npz": "cdbb33267226f6d6e6e5af0b7a0e7e6b62475c1b8147f476781bb16095b86960",
+    "data\\generated\\fem\\D080_Z010\\clean_thermograms.npz": "a745dfa84c7d0ff49ab40a3463b5c8d777b990b3b7297865101ddf73d8906e7f",
+    "data\\generated\\fem\\D100_Z002\\clean_thermograms.npz": "94246416d51af1df1808c5d9ee32dbd2770572889c9167b8d44d8f9ebfb86688",
+    "data\\generated\\fem\\D100_Z004\\clean_thermograms.npz": "0f6a3463c9c5a1c722bd91e163e16626db7cfccd4c9ae2dae7fef99f97e550b5",
+    "data\\generated\\fem\\D100_Z006\\clean_thermograms.npz": "8350f146a7f2ac51963691628e5c038e335f8d269d9ede22d58b1bcdcf5569b7",
+    "data\\generated\\fem\\D100_Z008\\clean_thermograms.npz": "c9569a411c34cda2730a0c60909b32180b07c599f3c0d9ea5cba4c806b6e543b",
+    "data\\generated\\fem\\D100_Z010\\clean_thermograms.npz": "146fa674e6d2d8db5bcc6f4b57e6348b80a6989ae947ad5c23ffbc6fbc34b1e1",
+    "data\\generated\\fem\\D120_Z002\\clean_thermograms.npz": "940d8cee031067ae1e3ada1669278cd818bef8af226d3e548226a538538c9720",
+    "data\\generated\\fem\\D120_Z004\\clean_thermograms.npz": "de66869155e887eb2fddff2531f476c1528404d21362c11d5f941964dc808048",
+    "data\\generated\\fem\\D120_Z006\\clean_thermograms.npz": "b4c897f284d49800a18c508fda87472d7ce6f0c5c5ab9de36fb297a661cf56c0",
+    "data\\generated\\fem\\D120_Z008\\clean_thermograms.npz": "e2f28d85196b9fa4fd2eb1998ba611393b16132efbf7a55a47d7c91db41cd9cc",
+    "data\\generated\\fem\\D120_Z010\\clean_thermograms.npz": "5a1475a3e4407842e2f40e3d41d1fbb4d0d9ba8a4d9f58682cb526e80bd9d50d"
+  },
+  "camera_resolution": [
+    32,
+    32
+  ],
+  "sampling_rate_hz": 10,
+  "noise_seed": 1001,
+  "note": "Clean morphology replay; noisy mechanism experiment uses current noise code."
+}

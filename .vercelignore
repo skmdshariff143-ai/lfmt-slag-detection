@@ -1,0 +1,17 @@
+# Prevent Vercel from detecting or packaging Python backend and scientific artifacts
+api/
+src/
+ml/
+matlab/
+configs/
+scripts/
+tests/
+data/
+results/
+pyproject.toml
+*.py
+*.npz
+*.npy
+*.mat
+*.h5
+*.hdf5

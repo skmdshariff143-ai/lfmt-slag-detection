@@ -1,0 +1,40 @@
+{
+  "example_id": "single_thermal_frame",
+  "title": "Single Thermogram Snapshot (t = 8.0 s)",
+  "category": "A",
+  "source_type": "NUMERICAL_FEM_EXTRACT",
+  "source_example_id": "slag_shallow",
+  "source_frame_index": 80,
+  "source_time_s": 8.0,
+  "material": "mild_steel",
+  "plate_dimensions_mm": [
+    100.0,
+    70.0,
+    2.3
+  ],
+  "excitation": {
+    "type": "snapshot",
+    "source_excitation": "lfmt_chirp"
+  },
+  "time": {
+    "n_frames": 1,
+    "duration_s": 0.0
+  },
+  "camera": {
+    "resolution": [
+      28,
+      40
+    ],
+    "fov_mm": [
+      100.0,
+      70.0
+    ]
+  },
+  "temperature_units": "K",
+  "temperature_unit_status": "SOURCE_VERIFIED",
+  "radiometric_status": "VERIFIED_NUMERICAL",
+  "software_git_sha": "115fa00e6e8ce0cc7742c0659717e179e520bfe7",
+  "generated_timestamp": "2026-09-21T01:05:22Z",
+  "generator_script": "scripts/generate_verified_examples.py",
+  "scientific_status": "VERIFIED_SINGLE_FRAME_SPATIAL"
+}

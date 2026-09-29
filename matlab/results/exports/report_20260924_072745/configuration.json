@@ -1,0 +1,82 @@
+{
+  "plate": {
+    "material": "mild_steel",
+    "length_mm": 100,
+    "width_mm": 70,
+    "thickness_mm": 2.3,
+    "thermal_conductivity": 51.9,
+    "density": 7850,
+    "specific_heat": 486,
+    "has_defect": true,
+    "defect": {
+      "diameter_mm": 8,
+      "radius_m": 0.004,
+      "depth_mm": 0.4,
+      "depth_m": 0.0004,
+      "thickness_mm": 0.5,
+      "thickness_m": 0.0005,
+      "center_x_mm": 50,
+      "center_x_m": 0.05,
+      "center_y_mm": 35,
+      "center_y_m": 0.035,
+      "area_mm2": 50.26548245743669
+    }
+  },
+  "defects": {
+    "id": 1,
+    "shape": "cylinder",
+    "material": "slag",
+    "center_x_mm": 50,
+    "center_y_mm": 35,
+    "depth_mm": 0.4,
+    "diameter_mm": 8,
+    "thickness_mm": 0.5,
+    "thermal_conductivity": 1.2,
+    "density": 2800,
+    "specific_heat": 850
+  },
+  "excitation": {
+    "f0_hz": 0.05,
+    "f1_hz": 0.5,
+    "duration_s": 10,
+    "q0_w_m2": 5000,
+    "h_conv_w_m2k": 10,
+    "ambient_temp_k": 293.15,
+    "observation_time_s": 10
+  },
+  "simulation": {
+    "solver_type": "fem",
+    "Nx": 40,
+    "Ny": 28,
+    "Nz": 12,
+    "dt_s": 0.08,
+    "total_time_s": 10,
+    "nx": 20,
+    "ny": 14,
+    "nz": 6
+  },
+  "camera": {
+    "cam_nx": 64,
+    "cam_ny": 64,
+    "sampling_rate_hz": 25,
+    "frame_rate_hz": 25,
+    "noise_snr_db": [],
+    "noise_seed": 42
+  },
+  "processing": {
+    "methods": [
+      "RAW",
+      "MF",
+      "PCT",
+      "SPCT",
+      "RPT"
+    ],
+    "pct_n_components": 6,
+    "spct_n_components": 6,
+    "spct_alpha": 0.05,
+    "rpt_n_components": 6,
+    "rpt_seed": 42,
+    "detection_min_area_px": 3,
+    "detection_threshold_method": "otsu"
+  }
+}

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import cast
 
 import numpy as np
 from numpy.typing import NDArray
@@ -21,8 +22,19 @@ def features(cube: FloatArray) -> FloatArray:
     channels = cube[indices] - cube[0]
     channels -= np.median(channels, axis=(1, 2), keepdims=True)
     pad = np.pad(channels, ((0, 0), (1, 1), (1, 1)), mode="reflect")
-    pooled = np.lib.stride_tricks.sliding_window_view(pad, (3, 3), axis=(1, 2)).mean(axis=(-1, -2))
-    return np.concatenate([channels, pooled], axis=0).reshape(16, -1).T
+    pooled = (
+        pad[:, :-2, :-2]
+        + pad[:, :-2, 1:-1]
+        + pad[:, :-2, 2:]
+        + pad[:, 1:-1, :-2]
+        + pad[:, 1:-1, 1:-1]
+        + pad[:, 1:-1, 2:]
+        + pad[:, 2:, :-2]
+        + pad[:, 2:, 1:-1]
+        + pad[:, 2:, 2:]
+    ) / 9.0
+    res = np.concatenate([channels, pooled], axis=0).reshape(16, -1).T
+    return cast(FloatArray, np.asarray(res, dtype=np.float64))
 
 
 class TemporalPixelSegmenter:
@@ -65,7 +77,8 @@ class TemporalPixelSegmenter:
             raise ValueError("Train or load the segmentation baseline before inference")
         x = np.clip((features(cube) - self.mean) / self.scale, -10, 10)
         logits = np.tanh(x @ self.w1 + self.b1) @ self.w2 + self.b2[0]
-        return (1 / (1 + np.exp(-np.clip(logits, -40, 40)))).reshape(cube.shape[1:])
+        prob = 1.0 / (1.0 + np.exp(-np.clip(logits, -40.0, 40.0)))
+        return cast(FloatArray, np.asarray(prob.reshape(cube.shape[1:]), dtype=np.float64))
 
     def save(self, path: Path) -> None:
         if not self.trained:

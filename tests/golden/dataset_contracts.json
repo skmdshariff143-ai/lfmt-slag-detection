@@ -52,7 +52,7 @@
         "src/lfmt/matlab/environment.py": "e4e5c5ac0fcdfa237f10c7140b6d2a6a4b09825dd3226c3f8d2837c547372f88",
         "src/lfmt/metrics.py": "002ac07e83078fea2c9aedfa85bed50d1e8a253656766305dd9900264bbea9a8",
         "src/lfmt/ml/__init__.py": "3bb89e25df87c3e87ad56be5cc21ace4faff01af5d1e8e211ec29de747344892",
-        "src/lfmt/ml/segmenter.py": "9f4a38444540a8b260ea1834488bd943bd009b99781a8053f4b96d09f5e40b96",
+        "src/lfmt/ml/segmenter.py": "e091efe89d3afbb110d76fde7d5a62313846c6c1c9a7748b028bd8938475f3ac",
         "src/lfmt/noise.py": "c9c63f86b8da1100ac33aa1f5e38b256e152fb2b8aac5ff9bf6fdfd7ddd3eac2",
         "src/lfmt/pct.py": "d9240d3f3e23d77626a45937c6d4215e8060903091f88b77118c74419b0dd3bb",
         "src/lfmt/pulse_compression.py": "046467cb4989d1e165b04741487896a21931a625132eddea73055404ffc2e2c6",

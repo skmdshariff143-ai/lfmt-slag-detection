@@ -1,5 +1,5 @@
 {
-  "dataset_version": "2.1.1-final-audited",
+  "dataset_version": "2.1.0-final-audited",
   "protocol_version": "blind-v2-audited",
   "git_commit_sha": "53197576af3e8a08e12b4e3dec645eb48819ae44",
   "source_directory": "results/conference/final",

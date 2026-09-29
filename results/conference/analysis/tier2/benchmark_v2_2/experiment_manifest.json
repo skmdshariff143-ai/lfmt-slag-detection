@@ -1,0 +1,182 @@
+{
+  "pipeline_version": "experimental-v2.2",
+  "status": "completed_after_plot_backend_repair",
+  "total_records": 6448,
+  "source_git_commit": [
+    "5eb5ff65798f09541ac1911560d06a27b10628e3"
+  ],
+  "raw_sha256": "1348b095f8ab9fe32dbb9e3e39d37c80d604831c107d6b17a5dd9a90ae65e294",
+  "config": {
+    "project": {
+      "name": "LFMT Experimental Signal Baselines",
+      "version": "experimental-v2.2",
+      "random_seed": 2026
+    },
+    "simulation": {
+      "backend": "fem",
+      "spatial_resolution": {
+        "nx": 30,
+        "ny": 22,
+        "nz": 12
+      },
+      "timestep_s": 0.1,
+      "total_time_s": 14.0,
+      "mesh_refinement": {
+        "mode": "uniform",
+        "target_elements_across_diameter": 8,
+        "target_elements_through_depth": 4,
+        "grading_factor": 1.3
+      }
+    },
+    "geometry": {
+      "plate": {
+        "length_mm": 100.0,
+        "width_mm": 70.0,
+        "thickness_mm": 2.3,
+        "material": "mild_steel",
+        "thermal_conductivity": null,
+        "density": null,
+        "specific_heat": null
+      },
+      "inclusion": {
+        "shape": "cylinder",
+        "center_x_mm": 50.0,
+        "center_y_mm": 35.0,
+        "depth_mm": 0.4,
+        "diameter_mm": 8.0,
+        "thickness_mm": 0.5,
+        "material": "welding_slag_silicate",
+        "thermal_conductivity": null,
+        "density": null,
+        "specific_heat": null,
+        "major_axis_mm": 8.0,
+        "minor_axis_mm": 8.0,
+        "orientation_deg": 0.0,
+        "seed": 42,
+        "inclusions_list": null,
+        "contact_resistance": {
+          "enabled": false,
+          "h_contact_w_m2k": 10000.0,
+          "r_contact_m2k_w": null
+        }
+      },
+      "weld": {
+        "enabled": false,
+        "weld_bead_width_mm": 12.0,
+        "weld_bead_thickness_mm": 0.5,
+        "haz_width_mm": 4.0,
+        "weld_centerline_x_mm": 50.0,
+        "material_weld": "weld_metal_er70s",
+        "k_weld": 48.0,
+        "rho_weld": 7850.0,
+        "cp_weld": 490.0,
+        "material_haz": "haz_mild_steel",
+        "k_haz": 45.0,
+        "rho_haz": 7850.0,
+        "cp_haz": 500.0
+      }
+    },
+    "excitation": {
+      "type": "linear_chirp",
+      "f0_hz": 0.05,
+      "f1_hz": 0.5,
+      "duration_s": 10.0,
+      "q0_w_m2": 5000.0,
+      "ambient_temp_k": 293.15,
+      "h_conv_w_m2k": 10.0,
+      "emissivity": 0.95,
+      "heating_profile": {
+        "type": "uniform",
+        "center_x_mm": 50.0,
+        "center_y_mm": 35.0,
+        "sigma_x_mm": 30.0,
+        "sigma_y_mm": 25.0,
+        "gradient_slope_x": 0.0
+      }
+    },
+    "camera": {
+      "resolution_x": 32,
+      "resolution_y": 32,
+      "sampling_rate_hz": 10.0,
+      "lens_fov_mm": [
+        100.0,
+        70.0
+      ],
+      "model_tier": "v1_ideal",
+      "netd_mK": 25.0,
+      "psf_sigma_px": 0.5,
+      "integration_time_ms": 5.0,
+      "adc_bits": 14,
+      "fpn_factor": 0.002,
+      "drift_rate_k_per_s": 0.001,
+      "emissivity_model": "simplified_kelvin_v1",
+      "background_reflected_temp_k": 293.15
+    },
+    "noise": {
+      "preset": "CONTROLLED_AWGN",
+      "snr_db": 30.0,
+      "spatial_nonuniformity": 0.005,
+      "emissivity_variation": 0.005,
+      "seed": 2026
+    },
+    "processing": {
+      "pct": {
+        "n_components": 6,
+        "selection_criterion": "blind_kurtosis"
+      },
+      "spct": {
+        "n_components": 6,
+        "alpha": 0.05,
+        "max_iter": 40
+      },
+      "rpt": {
+        "n_components": 6,
+        "matrix_type": "gaussian"
+      },
+      "matched_filter": {
+        "normalize": true,
+        "zero_pad": true
+      },
+      "detection": {
+        "threshold_method": "adaptive_otsu",
+        "morphology_kernel_size": 3,
+        "min_area_px": 4,
+        "multi_defect_mode": false,
+        "evaluation_tier": "tier_a"
+      }
+    },
+    "material_uncertainty": {
+      "enabled": false,
+      "k_slag_range": [
+        1.0,
+        1.4
+      ],
+      "rho_slag_range": [
+        2600.0,
+        3000.0
+      ],
+      "cp_slag_range": [
+        750.0,
+        950.0
+      ],
+      "k_steel_range": [
+        48.0,
+        55.0
+      ],
+      "cp_steel_range": [
+        460.0,
+        510.0
+      ],
+      "sampling_method": "latin_hypercube",
+      "seed": 42
+    }
+  },
+  "checkpoint_sha256": "dd4db1678cfd5678559745324ed7ce582305f9dc165a9f8964f78ac84ae93746",
+  "source_sha256": {
+    "scripts\\run_conference_study.py": "feb025b543a0083cd6e3f587a08f42530ab4a0a88591fdd728ef2b824a96442e",
+    "src\\lfmt\\advanced_processing.py": "e6b989e7495ced5d46c8a57ab583a0feaaa6bd4b062de7f2ac31a1c5dee9c4c8",
+    "src\\lfmt\\ml\\segmenter.py": "9f4a38444540a8b260ea1834488bd943bd009b99781a8053f4b96d09f5e40b96"
+  },
+  "total_execution_time_s": null,
+  "note": "Original evaluation and sensitivity completed; Tk plotting failed before the original manifest. Figures regenerated with Agg without modifying raw results. End-to-end runtime unavailable."
+}

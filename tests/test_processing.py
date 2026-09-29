@@ -120,3 +120,24 @@ def test_rpt_reproducibility(synthetic_thermogram_defect):
 
     assert np.allclose(res1.projected_matrix, res2.projected_matrix)
     assert np.allclose(res1.selected_rpt_image, res2.selected_rpt_image)
+
+
+def test_pct_strict_blind_mode_no_gt_leakage(synthetic_thermogram_defect):
+    """Verify that in strict blind mode, PCT never leaks or uses ground truth."""
+    tensor, _, gt_mask, _ = synthetic_thermogram_defect
+    pct_blind = PrincipalComponentThermography(
+        n_components=6,
+        selection_criterion="blind_kurtosis",
+        mode="blind"
+    )
+
+    # Run without GT
+    res_no_gt = pct_blind.process(tensor, ground_truth_mask=None)
+    # Run with GT passed (must be ignored in blind mode)
+    res_with_gt = pct_blind.process(tensor, ground_truth_mask=gt_mask)
+
+    assert res_no_gt.selection_method == "blind_excess_kurtosis"
+    assert res_with_gt.selection_method == "blind_excess_kurtosis"
+    assert res_no_gt.selected_component_idx == res_with_gt.selected_component_idx
+    assert np.array_equal(res_no_gt.selected_eof_image, res_with_gt.selected_eof_image)
+

@@ -1,0 +1,376 @@
+method,diameter_mm,depth_mm,noise_condition,is_detected,iou,cnr
+Matched Filter,4.0,0.2,SNR 20 dB,1,1,1
+Matched Filter,4.0,0.2,SNR 25 dB,1,1,1
+Matched Filter,4.0,0.2,SNR 30 dB,1,1,1
+Matched Filter,4.0,0.4,SNR 20 dB,1,1,1
+Matched Filter,4.0,0.4,SNR 25 dB,1,1,1
+Matched Filter,4.0,0.4,SNR 30 dB,1,1,1
+Matched Filter,4.0,0.6,SNR 20 dB,1,1,1
+Matched Filter,4.0,0.6,SNR 25 dB,1,1,1
+Matched Filter,4.0,0.6,SNR 30 dB,1,1,1
+Matched Filter,4.0,0.8,SNR 20 dB,1,1,1
+Matched Filter,4.0,0.8,SNR 25 dB,1,1,1
+Matched Filter,4.0,0.8,SNR 30 dB,1,1,1
+Matched Filter,4.0,1.0,SNR 20 dB,1,1,1
+Matched Filter,4.0,1.0,SNR 25 dB,1,1,1
+Matched Filter,4.0,1.0,SNR 30 dB,1,1,1
+Matched Filter,6.0,0.2,SNR 20 dB,1,1,1
+Matched Filter,6.0,0.2,SNR 25 dB,1,1,1
+Matched Filter,6.0,0.2,SNR 30 dB,1,1,1
+Matched Filter,6.0,0.4,SNR 20 dB,1,1,1
+Matched Filter,6.0,0.4,SNR 25 dB,1,1,1
+Matched Filter,6.0,0.4,SNR 30 dB,1,1,1
+Matched Filter,6.0,0.6,SNR 20 dB,1,1,1
+Matched Filter,6.0,0.6,SNR 25 dB,1,1,1
+Matched Filter,6.0,0.6,SNR 30 dB,1,1,1
+Matched Filter,6.0,0.8,SNR 20 dB,1,1,1
+Matched Filter,6.0,0.8,SNR 25 dB,1,1,1
+Matched Filter,6.0,0.8,SNR 30 dB,1,1,1
+Matched Filter,6.0,1.0,SNR 20 dB,1,1,1
+Matched Filter,6.0,1.0,SNR 25 dB,1,1,1
+Matched Filter,6.0,1.0,SNR 30 dB,1,1,1
+Matched Filter,8.0,0.2,SNR 20 dB,1,1,1
+Matched Filter,8.0,0.2,SNR 25 dB,1,1,1
+Matched Filter,8.0,0.2,SNR 30 dB,1,1,1
+Matched Filter,8.0,0.4,SNR 20 dB,1,1,1
+Matched Filter,8.0,0.4,SNR 25 dB,1,1,1
+Matched Filter,8.0,0.4,SNR 30 dB,1,1,1
+Matched Filter,8.0,0.6,SNR 20 dB,1,1,1
+Matched Filter,8.0,0.6,SNR 25 dB,1,1,1
+Matched Filter,8.0,0.6,SNR 30 dB,1,1,1
+Matched Filter,8.0,0.8,SNR 20 dB,1,1,1
+Matched Filter,8.0,0.8,SNR 25 dB,1,1,1
+Matched Filter,8.0,0.8,SNR 30 dB,1,1,1
+Matched Filter,8.0,1.0,SNR 20 dB,1,1,1
+Matched Filter,8.0,1.0,SNR 25 dB,1,1,1
+Matched Filter,8.0,1.0,SNR 30 dB,1,1,1
+Matched Filter,10.0,0.2,SNR 20 dB,1,1,1
+Matched Filter,10.0,0.2,SNR 25 dB,1,1,1
+Matched Filter,10.0,0.2,SNR 30 dB,1,1,1
+Matched Filter,10.0,0.4,SNR 20 dB,1,1,1
+Matched Filter,10.0,0.4,SNR 25 dB,1,1,1
+Matched Filter,10.0,0.4,SNR 30 dB,1,1,1
+Matched Filter,10.0,0.6,SNR 20 dB,1,1,1
+Matched Filter,10.0,0.6,SNR 25 dB,1,1,1
+Matched Filter,10.0,0.6,SNR 30 dB,1,1,1
+Matched Filter,10.0,0.8,SNR 20 dB,1,1,1
+Matched Filter,10.0,0.8,SNR 25 dB,1,1,1
+Matched Filter,10.0,0.8,SNR 30 dB,1,1,1
+Matched Filter,10.0,1.0,SNR 20 dB,1,1,1
+Matched Filter,10.0,1.0,SNR 25 dB,1,1,1
+Matched Filter,10.0,1.0,SNR 30 dB,1,1,1
+Matched Filter,12.0,0.2,SNR 20 dB,1,1,1
+Matched Filter,12.0,0.2,SNR 25 dB,1,1,1
+Matched Filter,12.0,0.2,SNR 30 dB,1,1,1
+Matched Filter,12.0,0.4,SNR 20 dB,1,1,1
+Matched Filter,12.0,0.4,SNR 25 dB,1,1,1
+Matched Filter,12.0,0.4,SNR 30 dB,1,1,1
+Matched Filter,12.0,0.6,SNR 20 dB,1,1,1
+Matched Filter,12.0,0.6,SNR 25 dB,1,1,1
+Matched Filter,12.0,0.6,SNR 30 dB,1,1,1
+Matched Filter,12.0,0.8,SNR 20 dB,1,1,1
+Matched Filter,12.0,0.8,SNR 25 dB,1,1,1
+Matched Filter,12.0,0.8,SNR 30 dB,1,1,1
+Matched Filter,12.0,1.0,SNR 20 dB,1,1,1
+Matched Filter,12.0,1.0,SNR 25 dB,1,1,1
+Matched Filter,12.0,1.0,SNR 30 dB,1,1,1
+PCT,4.0,0.2,SNR 20 dB,1,1,1
+PCT,4.0,0.2,SNR 25 dB,1,1,1
+PCT,4.0,0.2,SNR 30 dB,1,1,1
+PCT,4.0,0.4,SNR 20 dB,1,1,1
+PCT,4.0,0.4,SNR 25 dB,1,1,1
+PCT,4.0,0.4,SNR 30 dB,1,1,1
+PCT,4.0,0.6,SNR 20 dB,1,1,1
+PCT,4.0,0.6,SNR 25 dB,1,1,1
+PCT,4.0,0.6,SNR 30 dB,1,1,1
+PCT,4.0,0.8,SNR 20 dB,1,1,1
+PCT,4.0,0.8,SNR 25 dB,1,1,1
+PCT,4.0,0.8,SNR 30 dB,1,1,1
+PCT,4.0,1.0,SNR 20 dB,1,1,1
+PCT,4.0,1.0,SNR 25 dB,1,1,1
+PCT,4.0,1.0,SNR 30 dB,1,1,1
+PCT,6.0,0.2,SNR 20 dB,1,1,1
+PCT,6.0,0.2,SNR 25 dB,1,1,1
+PCT,6.0,0.2,SNR 30 dB,1,1,1
+PCT,6.0,0.4,SNR 20 dB,1,1,1
+PCT,6.0,0.4,SNR 25 dB,1,1,1
+PCT,6.0,0.4,SNR 30 dB,1,1,1
+PCT,6.0,0.6,SNR 20 dB,1,1,1
+PCT,6.0,0.6,SNR 25 dB,1,1,1
+PCT,6.0,0.6,SNR 30 dB,1,1,1
+PCT,6.0,0.8,SNR 20 dB,1,1,1
+PCT,6.0,0.8,SNR 25 dB,1,1,1
+PCT,6.0,0.8,SNR 30 dB,1,1,1
+PCT,6.0,1.0,SNR 20 dB,1,1,1
+PCT,6.0,1.0,SNR 25 dB,1,1,1
+PCT,6.0,1.0,SNR 30 dB,1,1,1
+PCT,8.0,0.2,SNR 20 dB,1,1,1
+PCT,8.0,0.2,SNR 25 dB,1,1,1
+PCT,8.0,0.2,SNR 30 dB,1,1,1
+PCT,8.0,0.4,SNR 20 dB,1,1,1
+PCT,8.0,0.4,SNR 25 dB,1,1,1
+PCT,8.0,0.4,SNR 30 dB,1,1,1
+PCT,8.0,0.6,SNR 20 dB,1,1,1
+PCT,8.0,0.6,SNR 25 dB,1,1,1
+PCT,8.0,0.6,SNR 30 dB,1,1,1
+PCT,8.0,0.8,SNR 20 dB,1,1,1
+PCT,8.0,0.8,SNR 25 dB,1,1,1
+PCT,8.0,0.8,SNR 30 dB,1,1,1
+PCT,8.0,1.0,SNR 20 dB,1,1,1
+PCT,8.0,1.0,SNR 25 dB,1,1,1
+PCT,8.0,1.0,SNR 30 dB,1,1,1
+PCT,10.0,0.2,SNR 20 dB,1,1,1
+PCT,10.0,0.2,SNR 25 dB,1,1,1
+PCT,10.0,0.2,SNR 30 dB,1,1,1
+PCT,10.0,0.4,SNR 20 dB,1,1,1
+PCT,10.0,0.4,SNR 25 dB,1,1,1
+PCT,10.0,0.4,SNR 30 dB,1,1,1
+PCT,10.0,0.6,SNR 20 dB,1,1,1
+PCT,10.0,0.6,SNR 25 dB,1,1,1
+PCT,10.0,0.6,SNR 30 dB,1,1,1
+PCT,10.0,0.8,SNR 20 dB,1,1,1
+PCT,10.0,0.8,SNR 25 dB,1,1,1
+PCT,10.0,0.8,SNR 30 dB,1,1,1
+PCT,10.0,1.0,SNR 20 dB,1,1,1
+PCT,10.0,1.0,SNR 25 dB,1,1,1
+PCT,10.0,1.0,SNR 30 dB,1,1,1
+PCT,12.0,0.2,SNR 20 dB,1,1,1
+PCT,12.0,0.2,SNR 25 dB,1,1,1
+PCT,12.0,0.2,SNR 30 dB,1,1,1
+PCT,12.0,0.4,SNR 20 dB,1,1,1
+PCT,12.0,0.4,SNR 25 dB,1,1,1
+PCT,12.0,0.4,SNR 30 dB,1,1,1
+PCT,12.0,0.6,SNR 20 dB,1,1,1
+PCT,12.0,0.6,SNR 25 dB,1,1,1
+PCT,12.0,0.6,SNR 30 dB,1,1,1
+PCT,12.0,0.8,SNR 20 dB,1,1,1
+PCT,12.0,0.8,SNR 25 dB,1,1,1
+PCT,12.0,0.8,SNR 30 dB,1,1,1
+PCT,12.0,1.0,SNR 20 dB,1,1,1
+PCT,12.0,1.0,SNR 25 dB,1,1,1
+PCT,12.0,1.0,SNR 30 dB,1,1,1
+RPT,4.0,0.2,SNR 20 dB,1,1,1
+RPT,4.0,0.2,SNR 25 dB,1,1,1
+RPT,4.0,0.2,SNR 30 dB,1,1,1
+RPT,4.0,0.4,SNR 20 dB,1,1,1
+RPT,4.0,0.4,SNR 25 dB,1,1,1
+RPT,4.0,0.4,SNR 30 dB,1,1,1
+RPT,4.0,0.6,SNR 20 dB,1,1,1
+RPT,4.0,0.6,SNR 25 dB,1,1,1
+RPT,4.0,0.6,SNR 30 dB,1,1,1
+RPT,4.0,0.8,SNR 20 dB,1,1,1
+RPT,4.0,0.8,SNR 25 dB,1,1,1
+RPT,4.0,0.8,SNR 30 dB,1,1,1
+RPT,4.0,1.0,SNR 20 dB,1,1,1
+RPT,4.0,1.0,SNR 25 dB,1,1,1
+RPT,4.0,1.0,SNR 30 dB,1,1,1
+RPT,6.0,0.2,SNR 20 dB,1,1,1
+RPT,6.0,0.2,SNR 25 dB,1,1,1
+RPT,6.0,0.2,SNR 30 dB,1,1,1
+RPT,6.0,0.4,SNR 20 dB,1,1,1
+RPT,6.0,0.4,SNR 25 dB,1,1,1
+RPT,6.0,0.4,SNR 30 dB,1,1,1
+RPT,6.0,0.6,SNR 20 dB,1,1,1
+RPT,6.0,0.6,SNR 25 dB,1,1,1
+RPT,6.0,0.6,SNR 30 dB,1,1,1
+RPT,6.0,0.8,SNR 20 dB,1,1,1
+RPT,6.0,0.8,SNR 25 dB,1,1,1
+RPT,6.0,0.8,SNR 30 dB,1,1,1
+RPT,6.0,1.0,SNR 20 dB,1,1,1
+RPT,6.0,1.0,SNR 25 dB,1,1,1
+RPT,6.0,1.0,SNR 30 dB,1,1,1
+RPT,8.0,0.2,SNR 20 dB,1,1,1
+RPT,8.0,0.2,SNR 25 dB,1,1,1
+RPT,8.0,0.2,SNR 30 dB,1,1,1
+RPT,8.0,0.4,SNR 20 dB,1,1,1
+RPT,8.0,0.4,SNR 25 dB,1,1,1
+RPT,8.0,0.4,SNR 30 dB,1,1,1
+RPT,8.0,0.6,SNR 20 dB,1,1,1
+RPT,8.0,0.6,SNR 25 dB,1,1,1
+RPT,8.0,0.6,SNR 30 dB,1,1,1
+RPT,8.0,0.8,SNR 20 dB,1,1,1
+RPT,8.0,0.8,SNR 25 dB,1,1,1
+RPT,8.0,0.8,SNR 30 dB,1,1,1
+RPT,8.0,1.0,SNR 20 dB,1,1,1
+RPT,8.0,1.0,SNR 25 dB,1,1,1
+RPT,8.0,1.0,SNR 30 dB,1,1,1
+RPT,10.0,0.2,SNR 20 dB,1,1,1
+RPT,10.0,0.2,SNR 25 dB,1,1,1
+RPT,10.0,0.2,SNR 30 dB,1,1,1
+RPT,10.0,0.4,SNR 20 dB,1,1,1
+RPT,10.0,0.4,SNR 25 dB,1,1,1
+RPT,10.0,0.4,SNR 30 dB,1,1,1
+RPT,10.0,0.6,SNR 20 dB,1,1,1
+RPT,10.0,0.6,SNR 25 dB,1,1,1
+RPT,10.0,0.6,SNR 30 dB,1,1,1
+RPT,10.0,0.8,SNR 20 dB,1,1,1
+RPT,10.0,0.8,SNR 25 dB,1,1,1
+RPT,10.0,0.8,SNR 30 dB,1,1,1
+RPT,10.0,1.0,SNR 20 dB,1,1,1
+RPT,10.0,1.0,SNR 25 dB,1,1,1
+RPT,10.0,1.0,SNR 30 dB,1,1,1
+RPT,12.0,0.2,SNR 20 dB,1,1,1
+RPT,12.0,0.2,SNR 25 dB,1,1,1
+RPT,12.0,0.2,SNR 30 dB,1,1,1
+RPT,12.0,0.4,SNR 20 dB,1,1,1
+RPT,12.0,0.4,SNR 25 dB,1,1,1
+RPT,12.0,0.4,SNR 30 dB,1,1,1
+RPT,12.0,0.6,SNR 20 dB,1,1,1
+RPT,12.0,0.6,SNR 25 dB,1,1,1
+RPT,12.0,0.6,SNR 30 dB,1,1,1
+RPT,12.0,0.8,SNR 20 dB,1,1,1
+RPT,12.0,0.8,SNR 25 dB,1,1,1
+RPT,12.0,0.8,SNR 30 dB,1,1,1
+RPT,12.0,1.0,SNR 20 dB,1,1,1
+RPT,12.0,1.0,SNR 25 dB,1,1,1
+RPT,12.0,1.0,SNR 30 dB,1,1,1
+Raw Contrast,4.0,0.2,SNR 20 dB,1,1,1
+Raw Contrast,4.0,0.2,SNR 25 dB,1,1,1
+Raw Contrast,4.0,0.2,SNR 30 dB,1,1,1
+Raw Contrast,4.0,0.4,SNR 20 dB,1,1,1
+Raw Contrast,4.0,0.4,SNR 25 dB,1,1,1
+Raw Contrast,4.0,0.4,SNR 30 dB,1,1,1
+Raw Contrast,4.0,0.6,SNR 20 dB,1,1,1
+Raw Contrast,4.0,0.6,SNR 25 dB,1,1,1
+Raw Contrast,4.0,0.6,SNR 30 dB,1,1,1
+Raw Contrast,4.0,0.8,SNR 20 dB,1,1,1
+Raw Contrast,4.0,0.8,SNR 25 dB,1,1,1
+Raw Contrast,4.0,0.8,SNR 30 dB,1,1,1
+Raw Contrast,4.0,1.0,SNR 20 dB,1,1,1
+Raw Contrast,4.0,1.0,SNR 25 dB,1,1,1
+Raw Contrast,4.0,1.0,SNR 30 dB,1,1,1
+Raw Contrast,6.0,0.2,SNR 20 dB,1,1,1
+Raw Contrast,6.0,0.2,SNR 25 dB,1,1,1
+Raw Contrast,6.0,0.2,SNR 30 dB,1,1,1
+Raw Contrast,6.0,0.4,SNR 20 dB,1,1,1
+Raw Contrast,6.0,0.4,SNR 25 dB,1,1,1
+Raw Contrast,6.0,0.4,SNR 30 dB,1,1,1
+Raw Contrast,6.0,0.6,SNR 20 dB,1,1,1
+Raw Contrast,6.0,0.6,SNR 25 dB,1,1,1
+Raw Contrast,6.0,0.6,SNR 30 dB,1,1,1
+Raw Contrast,6.0,0.8,SNR 20 dB,1,1,1
+Raw Contrast,6.0,0.8,SNR 25 dB,1,1,1
+Raw Contrast,6.0,0.8,SNR 30 dB,1,1,1
+Raw Contrast,6.0,1.0,SNR 20 dB,1,1,1
+Raw Contrast,6.0,1.0,SNR 25 dB,1,1,1
+Raw Contrast,6.0,1.0,SNR 30 dB,1,1,1
+Raw Contrast,8.0,0.2,SNR 20 dB,1,1,1
+Raw Contrast,8.0,0.2,SNR 25 dB,1,1,1
+Raw Contrast,8.0,0.2,SNR 30 dB,1,1,1
+Raw Contrast,8.0,0.4,SNR 20 dB,1,1,1
+Raw Contrast,8.0,0.4,SNR 25 dB,1,1,1
+Raw Contrast,8.0,0.4,SNR 30 dB,1,1,1
+Raw Contrast,8.0,0.6,SNR 20 dB,1,1,1
+Raw Contrast,8.0,0.6,SNR 25 dB,1,1,1
+Raw Contrast,8.0,0.6,SNR 30 dB,1,1,1
+Raw Contrast,8.0,0.8,SNR 20 dB,1,1,1
+Raw Contrast,8.0,0.8,SNR 25 dB,1,1,1
+Raw Contrast,8.0,0.8,SNR 30 dB,1,1,1
+Raw Contrast,8.0,1.0,SNR 20 dB,1,1,1
+Raw Contrast,8.0,1.0,SNR 25 dB,1,1,1
+Raw Contrast,8.0,1.0,SNR 30 dB,1,1,1
+Raw Contrast,10.0,0.2,SNR 20 dB,1,1,1
+Raw Contrast,10.0,0.2,SNR 25 dB,1,1,1
+Raw Contrast,10.0,0.2,SNR 30 dB,1,1,1
+Raw Contrast,10.0,0.4,SNR 20 dB,1,1,1
+Raw Contrast,10.0,0.4,SNR 25 dB,1,1,1
+Raw Contrast,10.0,0.4,SNR 30 dB,1,1,1
+Raw Contrast,10.0,0.6,SNR 20 dB,1,1,1
+Raw Contrast,10.0,0.6,SNR 25 dB,1,1,1
+Raw Contrast,10.0,0.6,SNR 30 dB,1,1,1
+Raw Contrast,10.0,0.8,SNR 20 dB,1,1,1
+Raw Contrast,10.0,0.8,SNR 25 dB,1,1,1
+Raw Contrast,10.0,0.8,SNR 30 dB,1,1,1
+Raw Contrast,10.0,1.0,SNR 20 dB,1,1,1
+Raw Contrast,10.0,1.0,SNR 25 dB,1,1,1
+Raw Contrast,10.0,1.0,SNR 30 dB,1,1,1
+Raw Contrast,12.0,0.2,SNR 20 dB,1,1,1
+Raw Contrast,12.0,0.2,SNR 25 dB,1,1,1
+Raw Contrast,12.0,0.2,SNR 30 dB,1,1,1
+Raw Contrast,12.0,0.4,SNR 20 dB,1,1,1
+Raw Contrast,12.0,0.4,SNR 25 dB,1,1,1
+Raw Contrast,12.0,0.4,SNR 30 dB,1,1,1
+Raw Contrast,12.0,0.6,SNR 20 dB,1,1,1
+Raw Contrast,12.0,0.6,SNR 25 dB,1,1,1
+Raw Contrast,12.0,0.6,SNR 30 dB,1,1,1
+Raw Contrast,12.0,0.8,SNR 20 dB,1,1,1
+Raw Contrast,12.0,0.8,SNR 25 dB,1,1,1
+Raw Contrast,12.0,0.8,SNR 30 dB,1,1,1
+Raw Contrast,12.0,1.0,SNR 20 dB,1,1,1
+Raw Contrast,12.0,1.0,SNR 25 dB,1,1,1
+Raw Contrast,12.0,1.0,SNR 30 dB,1,1,1
+SPCT,4.0,0.2,SNR 20 dB,1,1,1
+SPCT,4.0,0.2,SNR 25 dB,1,1,1
+SPCT,4.0,0.2,SNR 30 dB,1,1,1
+SPCT,4.0,0.4,SNR 20 dB,1,1,1
+SPCT,4.0,0.4,SNR 25 dB,1,1,1
+SPCT,4.0,0.4,SNR 30 dB,1,1,1
+SPCT,4.0,0.6,SNR 20 dB,1,1,1
+SPCT,4.0,0.6,SNR 25 dB,1,1,1
+SPCT,4.0,0.6,SNR 30 dB,1,1,1
+SPCT,4.0,0.8,SNR 20 dB,1,1,1
+SPCT,4.0,0.8,SNR 25 dB,1,1,1
+SPCT,4.0,0.8,SNR 30 dB,1,1,1
+SPCT,4.0,1.0,SNR 20 dB,1,1,1
+SPCT,4.0,1.0,SNR 25 dB,1,1,1
+SPCT,4.0,1.0,SNR 30 dB,1,1,1
+SPCT,6.0,0.2,SNR 20 dB,1,1,1
+SPCT,6.0,0.2,SNR 25 dB,1,1,1
+SPCT,6.0,0.2,SNR 30 dB,1,1,1
+SPCT,6.0,0.4,SNR 20 dB,1,1,1
+SPCT,6.0,0.4,SNR 25 dB,1,1,1
+SPCT,6.0,0.4,SNR 30 dB,1,1,1
+SPCT,6.0,0.6,SNR 20 dB,1,1,1
+SPCT,6.0,0.6,SNR 25 dB,1,1,1
+SPCT,6.0,0.6,SNR 30 dB,1,1,1
+SPCT,6.0,0.8,SNR 20 dB,1,1,1
+SPCT,6.0,0.8,SNR 25 dB,1,1,1
+SPCT,6.0,0.8,SNR 30 dB,1,1,1
+SPCT,6.0,1.0,SNR 20 dB,1,1,1
+SPCT,6.0,1.0,SNR 25 dB,1,1,1
+SPCT,6.0,1.0,SNR 30 dB,1,1,1
+SPCT,8.0,0.2,SNR 20 dB,1,1,1
+SPCT,8.0,0.2,SNR 25 dB,1,1,1
+SPCT,8.0,0.2,SNR 30 dB,1,1,1
+SPCT,8.0,0.4,SNR 20 dB,1,1,1
+SPCT,8.0,0.4,SNR 25 dB,1,1,1
+SPCT,8.0,0.4,SNR 30 dB,1,1,1
+SPCT,8.0,0.6,SNR 20 dB,1,1,1
+SPCT,8.0,0.6,SNR 25 dB,1,1,1
+SPCT,8.0,0.6,SNR 30 dB,1,1,1
+SPCT,8.0,0.8,SNR 20 dB,1,1,1
+SPCT,8.0,0.8,SNR 25 dB,1,1,1
+SPCT,8.0,0.8,SNR 30 dB,1,1,1
+SPCT,8.0,1.0,SNR 20 dB,1,1,1
+SPCT,8.0,1.0,SNR 25 dB,1,1,1
+SPCT,8.0,1.0,SNR 30 dB,1,1,1
+SPCT,10.0,0.2,SNR 20 dB,1,1,1
+SPCT,10.0,0.2,SNR 25 dB,1,1,1
+SPCT,10.0,0.2,SNR 30 dB,1,1,1
+SPCT,10.0,0.4,SNR 20 dB,1,1,1
+SPCT,10.0,0.4,SNR 25 dB,1,1,1
+SPCT,10.0,0.4,SNR 30 dB,1,1,1
+SPCT,10.0,0.6,SNR 20 dB,1,1,1
+SPCT,10.0,0.6,SNR 25 dB,1,1,1
+SPCT,10.0,0.6,SNR 30 dB,1,1,1
+SPCT,10.0,0.8,SNR 20 dB,1,1,1
+SPCT,10.0,0.8,SNR 25 dB,1,1,1
+SPCT,10.0,0.8,SNR 30 dB,1,1,1
+SPCT,10.0,1.0,SNR 20 dB,1,1,1
+SPCT,10.0,1.0,SNR 25 dB,1,1,1
+SPCT,10.0,1.0,SNR 30 dB,1,1,1
+SPCT,12.0,0.2,SNR 20 dB,1,1,1
+SPCT,12.0,0.2,SNR 25 dB,1,1,1
+SPCT,12.0,0.2,SNR 30 dB,1,1,1
+SPCT,12.0,0.4,SNR 20 dB,1,1,1
+SPCT,12.0,0.4,SNR 25 dB,1,1,1
+SPCT,12.0,0.4,SNR 30 dB,1,1,1
+SPCT,12.0,0.6,SNR 20 dB,1,1,1
+SPCT,12.0,0.6,SNR 25 dB,1,1,1
+SPCT,12.0,0.6,SNR 30 dB,1,1,1
+SPCT,12.0,0.8,SNR 20 dB,1,1,1
+SPCT,12.0,0.8,SNR 25 dB,1,1,1
+SPCT,12.0,0.8,SNR 30 dB,1,1,1
+SPCT,12.0,1.0,SNR 20 dB,1,1,1
+SPCT,12.0,1.0,SNR 25 dB,1,1,1
+SPCT,12.0,1.0,SNR 30 dB,1,1,1

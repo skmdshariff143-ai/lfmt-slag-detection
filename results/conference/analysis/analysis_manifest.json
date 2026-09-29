@@ -1,0 +1,27 @@
+{
+  "analysis_version": "1.0.0",
+  "source_version": "2.1.0-final-audited",
+  "frozen_sha256": {
+    "experiment_manifest_final.json": "1ed6e535ee21aad3ee497f51591485749652cbb1dc1780ffdc2c9cd942e1acea",
+    "healthy_specificity_final.csv": "008f470e23f6ede056bab6401c1203c60ed3158eeb92f86aef002b96946effd8",
+    "max_detectable_depth_final.csv": "d927fd2978ef630293366f712bf3baa8e447671b1865a25c514a8417559f8af6",
+    "raw_results_final.csv": "c5246d83de595d26c3609574a911032fc7ef218dfaf0cf99c18ca253f672a3b2",
+    "sensitivity_final.csv": "b5df071c7245270f25f1cc843f4b5efd0ba975acadc74ce442056461a30d1ed4",
+    "summary_by_depth_final.csv": "9b18b4e18e64963c43b45d5423a1d5d3ea33ae02b48ec6153e0f756dcb413386",
+    "summary_by_diameter_final.csv": "05944d8e2512cbd713a16b299caa17b218c5f34088f27cb0cefb3533d2328e0c",
+    "summary_by_method_final.csv": "a9d2cdfb71d9b893cebd6c1deb154512060b7f2d7e6e53f514f719e074fa4218",
+    "summary_by_noise_final.csv": "36a383f5d31d5fda3cff90b821d75ebd08de46403ee5b7ebbe998d38d65c5944"
+  },
+  "pair_keys": [
+    "diameter_mm",
+    "depth_mm",
+    "noise_condition",
+    "noise_seed"
+  ],
+  "metrics": [
+    "is_detected",
+    "iou",
+    "cnr"
+  ],
+  "notes": "Two-sided asymptotic Wilcoxon; zeros discarded, all-zero pairs p=1. Holm across ten method pairs per metric/condition/unit. Geometry means are primary; run-level p-values are exploratory because seeds share specimens. Clean fractions have n=1 per cell, noisy n=10; pooled n=31 is protocol-weighted, not a population POD estimate."
+}

@@ -1,0 +1,10 @@
+Stage,Module,Runtime_s,Fraction_Percent
+3-D Hex8 FEM Solver,lfmt_simulate_fem.m,4.7119397,84.452977514573
+Virtual IR Camera Sampling,Camera Interpolation,6.46e-05,0.00115783789581208
+Raw Contrast Processor,lfmt_raw_contrast.m,0.034883,0.625214540551283
+Matched Filter Processor,lfmt_matched_filter.m,0.0309265,0.554301450229603
+PCT (SVD) Processor,lfmt_pct.m,0.143046,2.56384024217237
+SPCT (L1-Sparse) Processor,lfmt_spct.m,0.2508085,4.49528770730317
+RPT (Gaussian JL) Processor,lfmt_rpt.m,0.0700701,1.25587952234276
+Segmentation & Sizing (5 methods),segment_defect.m,0.3376264,6.05134118493202
+TOTAL SIMULATION PIPELINE,Complete Suite,5.5793648,100

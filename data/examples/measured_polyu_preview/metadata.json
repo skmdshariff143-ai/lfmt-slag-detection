@@ -1,0 +1,38 @@
+{
+  "example_id": "measured_polyu_preview",
+  "title": "PolyU Measured Flash Pulsed Thermography (Mild Steel 11-FBH)",
+  "category": "B",
+  "source_type": "EXTERNAL_MEASURED",
+  "material": "mild_steel",
+  "plate_dimensions_mm": [
+    150.0,
+    150.0,
+    10.0
+  ],
+  "excitation": {
+    "type": "pulsed_flash",
+    "energy_kj": 6.0,
+    "pulse_duration_ms": 4.0
+  },
+  "camera": {
+    "frame_rate_hz": 50.0,
+    "resolution": [
+      256,
+      320
+    ],
+    "fov_mm": [
+      150.0,
+      150.0
+    ]
+  },
+  "temperature_units": "C",
+  "temperature_unit_status": "EXPLICIT",
+  "radiometric_status": "MEASURED_RADIOMETRIC",
+  "GT_available": true,
+  "dataset_installed": false,
+  "scientific_status": "EXTERNAL_MEASURED_TRANSFER_STUDY",
+  "guardrails": [
+    "Matched Filter MUST be disabled.",
+    "This is NOT physical validation of LFMT slag."
+  ]
+}

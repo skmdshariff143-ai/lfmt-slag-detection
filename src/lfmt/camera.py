@@ -9,11 +9,11 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Tuple, Dict, Any, Optional
+from typing import Dict, Any
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
-from lfmt.config import LFMTConfig, CameraConfig
+from lfmt.config import CameraConfig
 from lfmt.simulation.base import SimulationResult, GroundTruth
 
 

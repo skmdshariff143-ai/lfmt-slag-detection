@@ -1,0 +1,24 @@
+{
+  "evaluation_only": true,
+  "notice": "Ground truth is strictly isolated and inaccessible during blind inference.",
+  "defects": [
+    {
+      "defect_id": "SLAG-01",
+      "defect_type": "SLAG_INCLUSION",
+      "diameter_mm": 6.0,
+      "depth_mm": 0.4,
+      "thickness_mm": 0.5,
+      "center_x_mm": 42.5,
+      "center_y_mm": 35.0
+    },
+    {
+      "defect_id": "SLAG-02",
+      "defect_type": "SLAG_INCLUSION",
+      "diameter_mm": 4.8,
+      "depth_mm": 0.4,
+      "thickness_mm": 0.5,
+      "center_x_mm": 57.5,
+      "center_y_mm": 35.0
+    }
+  ]
+}

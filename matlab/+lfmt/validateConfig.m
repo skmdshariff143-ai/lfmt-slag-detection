@@ -1,0 +1,43 @@
+function config = validateConfig(config)
+% VALIDATECONFIG Ensures required physics fields exist with defaults
+if ~isfield(config, 'plate')
+    config.plate = struct('length_mm', 100.0, 'width_mm', 70.0, 'thickness_mm', 2.3);
+end
+if ~isfield(config, 'excitation')
+    config.excitation = struct(...
+        'type', 'LFMT', ...
+        'f0_hz', 0.05, ...
+        'f1_hz', 0.50, ...
+        'q0_w_m2', 5000.0, ...
+        'duration_s', 10.0, ...
+        'h_conv_w_m2k', 10.0, ...
+        'ambient_temp_k', 293.15 ...
+    );
+end
+if ~isfield(config, 'simulation')
+    config.simulation = struct('Nx', 40, 'Ny', 28, 'Nz', 12, 'dt_s', 0.04, 'total_time_s', 10.0);
+end
+if ~isfield(config.simulation, 'dt_s')
+    config.simulation.dt_s = 0.04;
+end
+if ~isfield(config.simulation, 'total_time_s')
+    config.simulation.total_time_s = 10.0;
+end
+if ~isfield(config, 'camera')
+    config.camera = struct('cam_nx', 40, 'cam_ny', 28, 'frame_rate_hz', 10.0);
+end
+if ~isfield(config.camera, 'cam_nx')
+    config.camera.cam_nx = 40;
+end
+if ~isfield(config.camera, 'cam_ny')
+    config.camera.cam_ny = 28;
+end
+if ~isfield(config.camera, 'frame_rate_hz')
+    if isfield(config.camera, 'sampling_rate_hz')
+        config.camera.frame_rate_hz = config.camera.sampling_rate_hz;
+    else
+        config.camera.frame_rate_hz = 10.0;
+    end
+end
+end
+

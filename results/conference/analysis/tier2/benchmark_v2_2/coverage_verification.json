@@ -1,0 +1,16 @@
+{
+  "records": 6448,
+  "methods": [
+    "Chirp Phase Fusion",
+    "Matched Filter",
+    "PCT",
+    "RPT",
+    "Raw Contrast",
+    "SPCT",
+    "TSR",
+    "Temporal Pixel Net"
+  ],
+  "paired_inputs": 806,
+  "frozen_files_unchanged": true,
+  "validation": "passed"
+}

@@ -1,0 +1,50 @@
+{
+  "dataset_title": "Thermal imaging dataset from mild steel plate inspected by pulsed thermography with interface differences",
+  "doi": "10.60933/PRDR/HJYNZB",
+  "version": "2.0",
+  "publication_date": "2025-05-19",
+  "repository": "PolyU Research Data Repository (Dataverse)",
+  "repository_url": "https://researchdata.lib.polyu.edu.hk/dataset.xhtml?persistentId=doi:10.60933/PRDR/HJYNZB",
+  "authors": [
+    "Samuel Yu",
+    "Winnie Wai-sze Chung",
+    "Tom Chun-wai Lau",
+    "Wallace Wai-lok Lai",
+    "Janet Fung Chu Sham",
+    "Chun Yiu Ho"
+  ],
+  "affiliations": [
+    "The Hong Kong Polytechnic University",
+    "The Hong Kong and China Gas Company Limited"
+  ],
+  "license": "Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+  "license_url": "http://creativecommons.org/licenses/by-nc/4.0",
+  "data_type": "Measured Infrared Thermography (Laboratory NDT)",
+  "thermography_method": "Pulsed Thermography (Flash Optically-Excited)",
+  "specimen_material": "Mild steel plate",
+  "specimen_dimensions_mm": [
+    150.0,
+    150.0,
+    10.0
+  ],
+  "defect_type": "Manufactured circular and rectangular flat-bottom holes (pipe-wall thinning / corrosion surrogates)",
+  "interface_conditions": [
+    "steel-air",
+    "steel-sand"
+  ],
+  "excitation_source": "Dual photographic flashes (ELINCHROM ZOOM Pro HD, 2x 3 kJ = 6 kJ total, 4 ms pulse duration)",
+  "camera_model": "FLIR A655sc uncooled microbolometer (640x480 pixels, NETD < 30 mK, 7.5-14 um LWIR)",
+  "acquisition_frame_rate_hz": 50.0,
+  "total_sequences_in_repository": 6,
+  "total_repository_size_gb": 43.9,
+  "representative_file": "MS-facq-50Hz-air-cir-1_0-999.zip",
+  "representative_file_url": "https://researchdata.lib.polyu.edu.hk/api/access/datafile/701",
+  "representative_file_size_bytes": 501894301,
+  "scientific_classification": {
+    "measured_data": true,
+    "lfmt_excitation": false,
+    "real_slag_inclusions": false,
+    "external_transfer_example": true
+  },
+  "download_timestamp_utc": "2026-09-20T11:45:00Z"
+}

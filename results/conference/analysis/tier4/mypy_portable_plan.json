@@ -1,0 +1,92 @@
+{
+  "version": "1",
+  "pip_version": "26.0.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/8d/f4/4ce9a05ce5ded1de3ec1c1d96cf9f9504a04e54ce0ed55cfa38619a32b8d/mypy-1.19.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=f1235f5ea01b7db5468d53ece6aaddf1ad0b88d9e7462b86ef96fe04995d7247",
+          "hashes": {
+            "sha256": "f1235f5ea01b7db5468d53ece6aaddf1ad0b88d9e7462b86ef96fe04995d7247"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "mypy",
+        "version": "1.19.1",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "Optional static typing for Python",
+        "description": "Mypy -- Optional Static Typing for Python\n=========================================\n\nAdd type annotations to your Python programs, and use mypy to type\ncheck them.  Mypy is essentially a Python linter on steroids, and it\ncan catch many programming errors by analyzing your program, without\nactually having to run it.  Mypy has a powerful type system with\nfeatures such as type inference, gradual typing, generics and union\ntypes.\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Jukka Lehtosalo <jukka.lehtosalo@iki.fi>",
+        "license": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Console",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Topic :: Software Development",
+          "Typing :: Typed"
+        ],
+        "requires_dist": [
+          "typing_extensions>=4.6.0",
+          "mypy_extensions>=1.0.0",
+          "pathspec>=0.9.0",
+          "tomli>=1.1.0; python_version < \"3.11\"",
+          "librt>=0.6.2; platform_python_implementation != \"PyPy\"",
+          "psutil>=4.0; extra == \"dmypy\"",
+          "setuptools>=50; extra == \"mypyc\"",
+          "lxml; extra == \"reports\"",
+          "pip; extra == \"install-types\"",
+          "orjson; extra == \"faster-cache\""
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Homepage, https://www.mypy-lang.org/",
+          "Documentation, https://mypy.readthedocs.io/en/stable/index.html",
+          "Repository, https://github.com/python/mypy",
+          "Changelog, https://github.com/python/mypy/blob/master/CHANGELOG.md",
+          "Issues, https://github.com/python/mypy/issues"
+        ],
+        "provides_extra": [
+          "dmypy",
+          "mypyc",
+          "python2",
+          "reports",
+          "install-types",
+          "faster-cache"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.13.13",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26200",
+    "python_full_version": "3.13.13",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.13",
+    "sys_platform": "win32"
+  }
+}

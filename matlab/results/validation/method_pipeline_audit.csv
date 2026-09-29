@@ -1,0 +1,6 @@
+Method,InputShape,OutputShape,Blind,Normalized,Segmentation,RuntimeMeasured,Status
+Raw Contrast,"[251,64,64]","[64,64]",YES (Max Spatial Variance),"YES [0,1]",Otsu + 8-CC,0.0349 s,VERIFIED
+Matched Filter,"[251,64,64]","[64,64]",YES (Zero-Mean AC Chirp),"YES [0,1]",Otsu + 8-CC,0.0309 s,VERIFIED
+PCT (SVD),"[251,64,64]","[64,64]",YES (Excess Kurtosis),"YES [0,1]",Otsu + 8-CC,0.1430 s,VERIFIED
+SPCT (L1-Sparse),"[251,64,64]","[64,64]",YES (P2B Anomaly Ratio),"YES [0,1]",Otsu + 8-CC,0.2508 s,VERIFIED
+RPT (Gaussian JL),"[251,64,64]","[64,64]",YES (Dynamic Range),"YES [0,1]",Otsu + 8-CC,0.0701 s,VERIFIED

@@ -8,7 +8,6 @@ according to the Johnson-Lindenstrauss lemma:
 """
 
 from __future__ import annotations
-import math
 import time
 from dataclasses import dataclass
 from typing import Dict, Any, Optional

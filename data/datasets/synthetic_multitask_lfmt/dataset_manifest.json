@@ -1,0 +1,47 @@
+{
+  "dataset_name": "Synthetic LFMT Multi-Task Thermography Dataset",
+  "version": "v3.0-synthetic-prior",
+  "description": "Systematic physics-informed synthetic LFMT thermogram dataset with defect characterization ground truths.",
+  "classes": [
+    "HEALTHY",
+    "SLAG_INCLUSION",
+    "WALL_THINNING",
+    "AIR_VOID"
+  ],
+  "splits": {
+    "train": {
+      "split": "train",
+      "n_samples": 160,
+      "file": "train.npz",
+      "class_distribution": {
+        "HEALTHY": 40,
+        "SLAG_INCLUSION": 40,
+        "WALL_THINNING": 40,
+        "AIR_VOID": 40
+      }
+    },
+    "val": {
+      "split": "val",
+      "n_samples": 40,
+      "file": "val.npz",
+      "class_distribution": {
+        "HEALTHY": 10,
+        "SLAG_INCLUSION": 10,
+        "WALL_THINNING": 10,
+        "AIR_VOID": 10
+      }
+    },
+    "test": {
+      "split": "test",
+      "n_samples": 60,
+      "file": "test.npz",
+      "class_distribution": {
+        "HEALTHY": 15,
+        "SLAG_INCLUSION": 15,
+        "WALL_THINNING": 15,
+        "AIR_VOID": 15
+      }
+    }
+  },
+  "total_samples": 260
+}

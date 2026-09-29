@@ -5,11 +5,10 @@ Abstract base class and data structures for 3D thermal simulation backends.
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional
 import numpy as np
 
 from lfmt.config import LFMTConfig
-from lfmt.materials import Material
 
 
 @dataclass

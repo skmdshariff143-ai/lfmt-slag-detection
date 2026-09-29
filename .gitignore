@@ -79,6 +79,13 @@ results/figures/*
 *.mp4
 *.gif
 *.log
+*.db
+mlruns/
+.pytest_temp/
+matlab/results/exports/*
+!matlab/results/exports/.gitkeep
+matlab/results/final_demo/*
+!matlab/results/final_demo/.gitkeep
 *.zip
 *.tif
 *.tiff

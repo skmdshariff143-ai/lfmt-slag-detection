@@ -169,7 +169,7 @@ class MATLABFDMBackend(ThermalSimulationBackend):
                 json_path = f_json.name
 
             try:
-                res_struct = self._engine.lfmt.solveTransientThermal(json_path)
+                res_struct = self._engine.lfmt.solveForPython(json_path)
                 
                 # Extract surface temperature array: MATLAB [N_frames, 28, 40]
                 surf_mat = res_struct["surface_temperature"]

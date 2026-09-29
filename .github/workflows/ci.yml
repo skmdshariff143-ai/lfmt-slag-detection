@@ -17,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -27,7 +29,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[ci]"
+        pip install -e ".[ci,tracking]" mypy==1.19.1
+
+    - name: Strict typing (incremental scientific modules)
+      run: python -m mypy --strict src/lfmt/advanced_processing.py src/lfmt/ml src/lfmt/experiment_tracking.py
+
+    - name: Versioned dataset golden contract
+      env:
+        LFMT_GOLDEN_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
+      run: python -m pytest tests/test_dataset_contract.py -v
 
     - name: Run unit test suite (Portable non-MATLAB)
       run: |
@@ -53,6 +63,18 @@ jobs:
     - name: Verify web data consistency
       run: |
         python scripts/verify_web_data.py
+
+  container-benchmark:
+    name: Pinned container and numerical canary
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build pinned scientific environment
+      run: docker build --tag lfmt-benchmark:tier4 .
+    - name: Reproduce versioned benchmark cases
+      run: docker run --rm lfmt-benchmark:tier4
+    - name: Check golden dataset contract inside container
+      run: docker run --rm lfmt-benchmark:tier4 python -m pytest tests/test_dataset_contract.py -v
 
   web-build:
     name: Next.js Web Portal CI

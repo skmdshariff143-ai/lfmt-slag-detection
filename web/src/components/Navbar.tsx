@@ -16,7 +16,8 @@ import {
   Menu, 
   X,
   Presentation,
-  Sparkles
+  Sparkles,
+  Flame
 } from "lucide-react";
 
 export const Navbar: React.FC = () => {
@@ -24,8 +25,9 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
+    { name: "Simulation", href: "/simulate", icon: Flame, highlight: true },
     { name: "Conference", href: "/conference", icon: Presentation, highlight: true },
-    { name: "Analyzer", href: "/analyze", icon: Sparkles, highlight: true },
+    { name: "Analyzer", href: "/analyze", icon: Sparkles },
     { name: "Results", href: "/results", icon: BarChart3 },
     { name: "Explorer", href: "/explorer", icon: Eye },
     { name: "Thermograms", href: "/thermograms", icon: Film },

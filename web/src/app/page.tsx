@@ -13,6 +13,7 @@ import {
   Eye,
   Workflow,
   Sparkles,
+  Flame,
 } from "lucide-react";
 import { getManifest, getMethodSummaries, formatPct, formatMetric } from "@/lib/data";
 
@@ -71,6 +72,13 @@ export default function HomePage() {
 
             {/* Primary Action Buttons */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+              <Link
+                href="/simulate"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-rose-500 hover:opacity-95 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/20"
+              >
+                <Flame className="w-4 h-4 fill-current" />
+                Open Simulation Lab
+              </Link>
               <Link
                 href="/conference"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition-all shadow-lg shadow-cyan-500/20"

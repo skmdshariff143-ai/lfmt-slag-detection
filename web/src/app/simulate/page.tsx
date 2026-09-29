@@ -69,11 +69,51 @@ export default function SimulatePage() {
   // Active NDT method tab
   const [activeMethodTab, setActiveMethodTab] = useState<string>("mf");
 
-  // Load backends info on mount
+  // Load Precomputed Result (Presentation Backup / Hosted Default)
+  const handleLoadPrecomputed = async () => {
+    setIsSimulating(true);
+    setErrorMsg(null);
+    setComparisonResult(null);
+    setStageMessage("Loading verified precomputed MATLAB simulation...");
+    try {
+      let data: any = null;
+      try {
+        data = await fetchPrecomputedSimulation();
+      } catch {
+        // Fallback to static bundled asset for hosted Vercel preview
+        const res = await fetch("/demo/matlab_shallow_slag.json");
+        if (res.ok) {
+          data = await res.json();
+        }
+      }
+      if (!data) {
+        throw new Error("Could not load precomputed MATLAB result from server or static cache.");
+      }
+      setSimulationResult(data);
+      setSelectedPreset("shallow_slag");
+      setSelectedBackend("matlab_fdm");
+      setCurrentFrame(0);
+      setIsSimulating(false);
+      setIsPlaying(true);
+    } catch (err: any) {
+      setErrorMsg(err.message || "Failed loading precomputed MATLAB result.");
+      setIsSimulating(false);
+    }
+  };
+
+  // Load backends info on mount and initialize precomputed dataset if offline
   useEffect(() => {
     fetchSimulationBackends()
-      .then((data) => setBackendsInfo(data))
-      .catch((err) => console.error("Could not fetch backends:", err));
+      .then((data) => {
+        setBackendsInfo(data);
+        if (data?.matlab_fdm?.status !== "AVAILABLE") {
+          handleLoadPrecomputed();
+        }
+      })
+      .catch((err) => {
+        console.error("Could not fetch backends:", err);
+        handleLoadPrecomputed();
+      });
   }, []);
 
   // Update parameters when preset changes
@@ -194,38 +234,6 @@ export default function SimulatePage() {
       setErrorMsg(
         "LIVE MATLAB BACKEND OFFLINE: Simulation backend is unreachable in this hosted preview. Click 'PRECOMPUTED MATLAB NUMERICAL SIMULATION' to explore full 3-D transient thermograms and autonomous NDT analysis."
       );
-      setIsSimulating(false);
-    }
-  };
-
-  // Load Precomputed Result (Presentation Backup)
-  const handleLoadPrecomputed = async () => {
-    setIsSimulating(true);
-    setErrorMsg(null);
-    setComparisonResult(null);
-    setStageMessage("Loading verified precomputed MATLAB simulation...");
-    try {
-      let data: any = null;
-      try {
-        data = await fetchPrecomputedSimulation();
-      } catch {
-        // Fallback to static bundled asset for hosted Vercel preview
-        const res = await fetch("/demo/matlab_shallow_slag.json");
-        if (res.ok) {
-          data = await res.json();
-        }
-      }
-      if (!data) {
-        throw new Error("Could not load precomputed MATLAB result from server or static cache.");
-      }
-      setSimulationResult(data);
-      setSelectedPreset("shallow_slag");
-      setSelectedBackend("matlab_fdm");
-      setCurrentFrame(0);
-      setIsSimulating(false);
-      setIsPlaying(true);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed loading precomputed MATLAB result.");
       setIsSimulating(false);
     }
   };

@@ -138,17 +138,21 @@ streamlit run app/dashboard.py
 
 ---
 
-## 🌐 Live Conference Portal
+## 🌐 Live Conference Portal & Simulation Lab
 
-- **Production:** https://web-kappa-woad-56.vercel.app
+- **Production Portal:** https://web-kappa-woad-56.vercel.app
+- **Simulation Lab:** https://web-kappa-woad-56.vercel.app/simulate
 - **Conference Mode:** https://web-kappa-woad-56.vercel.app/conference
-- **GitHub:** https://github.com/skmdshariff143-ai/lfmt-slag-detection
+- **Defect Explorer:** https://web-kappa-woad-56.vercel.app/explorer
+- **Thermograms View:** https://web-kappa-woad-56.vercel.app/thermograms
+- **GitHub Repository:** https://github.com/skmdshariff143-ai/lfmt-slag-detection
 
 ### 💻 Web Features
+- **Simulation Lab (`/simulate`):** Interactive transient heat conduction visualizer with 101-frame surface thermograms, dynamic temperature curves, and multi-method NDT consensus analysis (serves verified precomputed MATLAB numerical simulation on Vercel; live MATLAB execution locally).
 - **Conference Presentation Mode (`/conference`):** Fullscreen projector dashboard with dynamic noise toggles, specimen filters, and live metric tables.
 - **Single-Case Defect Explorer (`/explorer`):** Side-by-side post-processing maps across 25 geometries + healthy control under variable AWGN.
 - **Virtual IR Camera Animated Scrubber (`/thermograms`):** 10-second LFMT chirp excitation sequence playback with real-time temperature telemetry HUD.
-- **Zero Runtime Simulation:** Consumes cryptographically locked, pre-compiled JSON summaries (`web/public/data/dataset-lock.json`) exported from the audited 4,030-evaluation FEM benchmark.
+- **Zero Runtime Simulation on Vercel:** Consumes cryptographically locked, pre-compiled JSON summaries (`web/public/data/dataset-lock.json` & `web/public/demo/matlab_shallow_slag.json`) exported from the audited 4,030-evaluation FEM benchmark.
 
 ---
 

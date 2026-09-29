@@ -40,7 +40,26 @@ if ($LASTEXITCODE -ne 0) {
 
 # 3. Start Backend in Background
 Write-Host "[3/4] Launching FastAPI Backend Server (port 8000)..." -ForegroundColor White
-$BackendProcess = Start-Process -FilePath "python" -ArgumentList "-m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload" -PassThru -NoNewWindow
+$BackendProcess = Start-Process -FilePath "python" -ArgumentList "-m uvicorn api.main:app --host 127.0.0.1 --port 8000" -PassThru -NoNewWindow
+
+# Wait for backend readiness
+$BackendReady = $false
+for ($i = 0; $i -lt 30; $i++) {
+    try {
+        $resp = Invoke-WebRequest -Uri "http://127.0.0.1:8000/health" -UseBasicParsing -TimeoutSec 2 -ErrorAction SilentlyContinue
+        if ($resp.StatusCode -eq 200) {
+            $BackendReady = $true
+            break
+        }
+    } catch {
+        Start-Sleep -Milliseconds 500
+    }
+}
+if ($BackendReady) {
+    Write-Host "  -> FastAPI Backend Ready: http://localhost:8000 (PID: $($BackendProcess.Id))" -ForegroundColor Green
+} else {
+    Write-Host "  [!] Backend starting in background..." -ForegroundColor Yellow
+}
 
 # 4. Start Next.js Frontend
 Write-Host "[4/4] Launching Next.js Frontend Portal (port 3000)..." -ForegroundColor White
@@ -48,14 +67,35 @@ Set-Location "$RepoRoot\web"
 $FrontendProcess = Start-Process -FilePath "npm.cmd" -ArgumentList "run dev" -PassThru -NoNewWindow
 Set-Location $RepoRoot
 
+# Wait for frontend readiness
+$FrontendReady = $false
+for ($i = 0; $i -lt 30; $i++) {
+    try {
+        $resp = Invoke-WebRequest -Uri "http://localhost:3000" -UseBasicParsing -TimeoutSec 2 -ErrorAction SilentlyContinue
+        if ($resp.StatusCode -eq 200) {
+            $FrontendReady = $true
+            break
+        }
+    } catch {
+        Start-Sleep -Milliseconds 500
+    }
+}
+if ($FrontendReady) {
+    Write-Host "  -> Next.js Frontend Ready: http://localhost:3000 (PID: $($FrontendProcess.Id))" -ForegroundColor Green
+} else {
+    Write-Host "  [!] Frontend starting in background..." -ForegroundColor Yellow
+}
+
 Write-Host ""
 Write-Host "=================================================================" -ForegroundColor Green
-Write-Host "  DEMO PLATFORM READY FOR LIVE PRESENTATION!" -ForegroundColor Green
+Write-Host "  LOCAL FULL-STACK DEMO PLATFORM READY!" -ForegroundColor Green
 Write-Host "=================================================================" -ForegroundColor Green
 Write-Host ""
+Write-Host "  * Next.js Web Portal: http://localhost:3000" -ForegroundColor Cyan
 Write-Host "  * Simulation Lab UI : http://localhost:3000/simulate" -ForegroundColor Cyan
-Write-Host "  * Main Web Portal   : http://localhost:3000" -ForegroundColor Cyan
-Write-Host "  * REST API OpenAPI  : http://localhost:8000/docs" -ForegroundColor Cyan
+Write-Host "  * Conference Mode   : http://localhost:3000/conference" -ForegroundColor Cyan
+Write-Host "  * FastAPI Backend   : http://localhost:8000" -ForegroundColor Cyan
+Write-Host "  * OpenAPI API Docs  : http://localhost:8000/api/docs" -ForegroundColor Cyan
 Write-Host "  * MATLAB Backend    : MATLAB_FDM (3-D Transient Heat Transfer)" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Press Ctrl+C or close this console to terminate the servers." -ForegroundColor Gray

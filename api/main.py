@@ -47,6 +47,7 @@ app.include_router(simulate.router, prefix="/api/v1")
 
 
 @app.get("/")
+@app.get("/health")
 async def root_health():
     """Service health and version telemetry."""
     return {
@@ -59,6 +60,12 @@ async def root_health():
             "docs": "/api/docs"
         }
     }
+
+
+@app.get("/docs", include_in_schema=False)
+async def redirect_docs():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/api/docs")
 
 
 if __name__ == "__main__":

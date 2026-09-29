@@ -121,6 +121,11 @@ classdef LFMTLiveLab < handle
         StageStatusLabels
         StageDetailTextArea matlab.ui.control.TextArea
         ConnFlowAxes matlab.ui.control.UIAxes
+        ViewSimConnButton matlab.ui.control.Button
+        ViewPhysConnButton matlab.ui.control.Button
+        OpenSimulinkButton matlab.ui.control.Button
+        SidebarSimConnButton matlab.ui.control.Button
+        SidebarSimulinkButton matlab.ui.control.Button
         
         % --- TAB 3: FEM & 3D PHYSICAL MODEL COMPONENTS ---
         Axes3DPlate matlab.ui.control.UIAxes
@@ -290,9 +295,9 @@ classdef LFMTLiveLab < handle
                 'BackgroundColor', [0.14, 0.16, 0.21], 'Scrollable', 'on');
             app.LeftScrollPanel.Layout.Column = 1;
             
-            leftGrid = uigridlayout(app.LeftScrollPanel, [22, 2]);
+            leftGrid = uigridlayout(app.LeftScrollPanel, [23, 2]);
             leftGrid.ColumnWidth = {'1x', '1x'};
-            leftGrid.RowHeight = repmat({23}, 1, 22);
+            leftGrid.RowHeight = repmat({23}, 1, 23);
             leftGrid.Padding = [6, 4, 6, 4];
             leftGrid.RowSpacing = 3;
             
@@ -401,13 +406,15 @@ classdef LFMTLiveLab < handle
             app.StageLabel.Layout.Column = [1, 2];
             
             % Action Buttons Grid
-            actGrid = uigridlayout(leftGrid, [2, 2]);
+            actGrid = uigridlayout(leftGrid, [3, 2]);
             actGrid.Layout.Column = [1, 2];
             actGrid.Padding = [0, 0, 0, 0]; actGrid.RowSpacing = 3; actGrid.ColumnSpacing = 3;
             app.SaveResButton = uibutton(actGrid, 'Text', '💾 Save Data', 'ButtonPushedFcn', @(src, evt) app.saveResults(true));
             app.ExportRepButton = uibutton(actGrid, 'Text', '📊 Export Report', 'ButtonPushedFcn', @(src, evt) app.exportReport(true));
             app.RunValButton = uibutton(actGrid, 'Text', '🔬 Validate', 'ButtonPushedFcn', @(src, evt) app.runValidation());
             app.RunTestButton = uibutton(actGrid, 'Text', '🧪 Run Tests', 'ButtonPushedFcn', @(src, evt) app.runTests());
+            app.SidebarSimConnButton = uibutton(actGrid, 'Text', '🔄 Sim Flow', 'ButtonPushedFcn', @(src, evt) app.onViewSimulationConnection());
+            app.SidebarSimulinkButton = uibutton(actGrid, 'Text', '⚙️ Simulink', 'ButtonPushedFcn', @(src, evt) app.onOpenSimulinkModel());
         end
         
         %% Tab 1: Live Inspection Construction
@@ -646,12 +653,35 @@ classdef LFMTLiveLab < handle
             app.ConnFlowAxes.XColor = 'none'; app.ConnFlowAxes.YColor = 'none';
             app.drawSimulationConnectionDiagram();
             
-            detailPanel = uipanel(bottomGrid, 'Title', '📖 SCIENTIFIC FORMULATION & STAGE DETAILS', ...
+            detailPanel = uipanel(bottomGrid, 'Title', '📖 SCIENTIFIC FORMULATION & CONNECTION CONTROLS', ...
                 'FontSize', 10, 'FontWeight', 'bold', 'ForegroundColor', [0.9, 0.95, 1.0], ...
                 'BackgroundColor', [0.14, 0.16, 0.21]);
-            detailGrid = uigridlayout(detailPanel, [1, 1]); detailGrid.Padding = [4, 4, 4, 4];
+            detailGrid = uigridlayout(detailPanel, [2, 1]);
+            detailGrid.RowHeight = {34, '1x'};
+            detailGrid.Padding = [4, 4, 4, 4];
+            detailGrid.RowSpacing = 4;
+            
+            btnGrid = uigridlayout(detailGrid, [1, 3]);
+            btnGrid.Layout.Row = 1;
+            btnGrid.ColumnWidth = {'1x', '1x', '1x'};
+            btnGrid.Padding = [0, 0, 0, 0];
+            btnGrid.ColumnSpacing = 4;
+            
+            app.ViewSimConnButton = uibutton(btnGrid, 'Text', '🔍 View Sim Flow', ...
+                'FontWeight', 'bold', 'FontSize', 9, 'BackgroundColor', [0.15, 0.45, 0.65], ...
+                'FontColor', 'w', 'ButtonPushedFcn', @(src, evt) app.onViewSimulationConnection());
+            
+            app.ViewPhysConnButton = uibutton(btnGrid, 'Text', '🔬 View Physical Rig', ...
+                'FontWeight', 'bold', 'FontSize', 9, 'BackgroundColor', [0.45, 0.35, 0.65], ...
+                'FontColor', 'w', 'ButtonPushedFcn', @(src, evt) app.onViewPhysicalConnection());
+            
+            app.OpenSimulinkButton = uibutton(btnGrid, 'Text', '⚙️ Open Simulink', ...
+                'FontWeight', 'bold', 'FontSize', 9, 'BackgroundColor', [0.20, 0.55, 0.35], ...
+                'FontColor', 'w', 'ButtonPushedFcn', @(src, evt) app.onOpenSimulinkModel());
+            
             app.StageDetailTextArea = uitextarea(detailGrid, 'BackgroundColor', [0.08, 0.09, 0.12], ...
                 'FontColor', [0.85, 0.92, 1.0], 'FontName', 'Consolas', 'FontSize', 9, 'Editable', 'off');
+            app.StageDetailTextArea.Layout.Row = 2;
             app.populateStageDetailsText();
         end
         
@@ -1151,7 +1181,9 @@ classdef LFMTLiveLab < handle
             if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
                 delete(app.PopoutFigure);
             end
-            delete(app.UIFigure);
+            if ~isempty(app.UIFigure) && isvalid(app.UIFigure)
+                delete(app.UIFigure);
+            end
         end
         
         %% Input Validation & Config Builder
@@ -2471,6 +2503,42 @@ classdef LFMTLiveLab < handle
             catch ME
                 app.logMessage(['Unit Test Runner Error: ', ME.message]);
             end
+        end
+        
+        %% Simulation & Physical Connection Diagram Handlers
+        function onViewSimulationConnection(app)
+            [cfg, valid, err] = app.buildValidatedConfig();
+            if ~valid
+                if isvalid(app.UIFigure)
+                    uialert(app.UIFigure, err, 'Config Error');
+                end
+                return;
+            end
+            plot_simulation_connection(cfg, 'Target', 'simulation', 'Visible', 'on');
+            app.logMessage('Opened Publication-Grade Simulation Connection Architecture Diagram.');
+        end
+        
+        function onViewPhysicalConnection(app)
+            [cfg, valid, err] = app.buildValidatedConfig();
+            if ~valid
+                if isvalid(app.UIFigure)
+                    uialert(app.UIFigure, err, 'Config Error');
+                end
+                return;
+            end
+            plot_simulation_connection(cfg, 'Target', 'physical', 'Visible', 'on');
+            app.logMessage('Opened Proposed Physical Experimental Rig Connection Diagram.');
+        end
+        
+        function onOpenSimulinkModel(app)
+            root_dir = fileparts(mfilename('fullpath'));
+            slx_path = fullfile(root_dir, 'simulink', 'LFMT_System_Connection.slx');
+            if ~exist(slx_path, 'file')
+                app.logMessage('Building Simulink model LFMT_System_Connection.slx...');
+                slx_path = build_lfmt_simulink_model();
+            end
+            open_system(slx_path);
+            app.logMessage('Opened Native Simulink System Connection Model (LFMT_System_Connection.slx).');
         end
     end
     

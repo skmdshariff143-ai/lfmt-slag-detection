@@ -12,6 +12,7 @@ addpath(fullfile(matlab_root, 'detection'));
 addpath(fullfile(matlab_root, 'evaluation'));
 addpath(fullfile(matlab_root, 'validation'));
 addpath(fullfile(matlab_root, 'visualization'));
+addpath(fullfile(matlab_root, 'simulink'));
 addpath(fullfile(matlab_root, 'tests'));
 
 fprintf('================================================================================\n');

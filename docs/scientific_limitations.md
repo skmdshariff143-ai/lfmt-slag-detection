@@ -24,12 +24,13 @@
 
 ---
 
-## 2. Experimental Rig Distinction
+## 2. 100% Virtual Simulation Framework
 
 > [!IMPORTANT]
-> The physical experimental hardware diagram (`physical_connection.png`) represents a **PROPOSED PHYSICAL EXPERIMENTAL REFERENCE ARCHITECTURE**. All current quantitative results are derived from the 3-D Hex8 Finite Element Method (FEM) solver and virtual IR camera sensor models.
+> The LFMT project is **100% COMPUTATIONAL SIMULATION BASED**. All quantitative results are derived from the validated 3-D Hex8 Finite Element Method (FEM) transient thermal solver, decoupled virtual IR camera model, and blind thermographic signal processing algorithms. No physical hardware components or experimental acquisitions are involved.
 
-Future experimental validation requires:
-1. Physical fabrication of mild steel test coupons with EDM flat-bottom holes or encapsulated silicate inclusions.
-2. Dual 1000 W halogen lamps driven by an arbitrary waveform generator and solid-state power amplifier.
-3. Calibrated Long-Wave Infrared (LWIR) InSb or microbolometer thermal camera (e.g. FLIR A655sc / SC7000).
+The virtual simulation pipeline models:
+1. Discretized AISI 1018 mild steel plate with cylindrical slag inclusion using Hex8 finite elements.
+2. Synthesized linear frequency-modulated optical heat flux boundary conditions ($q_0 = 5000\text{ W/m}^2$, $f = 0.05 \to 0.50\text{ Hz}$).
+3. Decoupled virtual radiometric IR camera sensor ($64 \times 64$ spatial grid @ $25\text{ fps}$) with calibrated NETD Gaussian noise.
+4. Five parallel blind signal processing methods (Raw Contrast, Matched Filter, SVD-PCT, SPCT, RPT).

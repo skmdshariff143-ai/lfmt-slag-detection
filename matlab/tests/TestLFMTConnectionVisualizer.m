@@ -1,5 +1,5 @@
 classdef TestLFMTConnectionVisualizer < matlab.unittest.TestCase
-    % TESTLFMTCONNECTIONVISUALIZER Unit tests for LFMT simulation & physical connection diagrams and Simulink model
+    % TESTLFMTCONNECTIONVISUALIZER Unit tests for LFMT virtual simulation connection diagrams and Simulink model
     
     properties
         FigList = []
@@ -35,10 +35,19 @@ classdef TestLFMTConnectionVisualizer < matlab.unittest.TestCase
             testCase.FigList = [testCase.FigList, h];
         end
         
-        function testPhysicalDiagramRendering(testCase)
-            % Test proposed physical experimental rig diagram generation
+        function testVirtualFEMDiagramRendering(testCase)
+            % Test 3-D Hex8 FEM numerical heat diffusion architecture diagram generation
             cfg = default_config();
-            h = plot_simulation_connection(cfg, 'Target', 'physical', 'Export', false, 'Visible', 'off');
+            h = plot_simulation_connection(cfg, 'Target', 'virtual_fem', 'Export', false, 'Visible', 'off');
+            testCase.verifyNotEmpty(h);
+            testCase.verifyTrue(isvalid(h));
+            testCase.FigList = [testCase.FigList, h];
+        end
+        
+        function testProcessingDiagramRendering(testCase)
+            % Test 5 Blind Signal Processing Suite & Segmentation architecture diagram generation
+            cfg = default_config();
+            h = plot_simulation_connection(cfg, 'Target', 'processing', 'Export', false, 'Visible', 'off');
             testCase.verifyNotEmpty(h);
             testCase.verifyTrue(isvalid(h));
             testCase.FigList = [testCase.FigList, h];
@@ -59,11 +68,12 @@ classdef TestLFMTConnectionVisualizer < matlab.unittest.TestCase
             cfg.defects = [];
             cfg.plate.has_defect = false;
             
-            [h_sim, h_phys, h_spec] = plot_simulation_connection(cfg, 'Target', 'all', 'Export', false, 'Visible', 'off');
+            [h_sim, h_fem, h_proc, h_spec] = plot_simulation_connection(cfg, 'Target', 'all', 'Export', false, 'Visible', 'off');
             testCase.verifyTrue(isvalid(h_sim));
-            testCase.verifyTrue(isvalid(h_phys));
+            testCase.verifyTrue(isvalid(h_fem));
+            testCase.verifyTrue(isvalid(h_proc));
             testCase.verifyTrue(isvalid(h_spec));
-            testCase.FigList = [testCase.FigList, h_sim, h_phys, h_spec];
+            testCase.FigList = [testCase.FigList, h_sim, h_fem, h_proc, h_spec];
         end
         
         function testFigureExports(testCase)
@@ -71,15 +81,17 @@ classdef TestLFMTConnectionVisualizer < matlab.unittest.TestCase
             root_dir = fileparts(fileparts(mfilename('fullpath')));
             fig_dir = fullfile(root_dir, 'results', 'figures');
             
-            [h_sim, h_phys, h_spec] = plot_simulation_connection([], 'Target', 'all', 'Export', true, 'Visible', 'off');
-            testCase.FigList = [testCase.FigList, h_sim, h_phys, h_spec];
+            [h_sim, h_fem, h_proc, h_spec] = plot_simulation_connection([], 'Target', 'all', 'Export', true, 'Visible', 'off');
+            testCase.FigList = [testCase.FigList, h_sim, h_fem, h_proc, h_spec];
             
             sim_png = fullfile(fig_dir, 'simulation_connection.png');
-            phys_png = fullfile(fig_dir, 'physical_connection.png');
+            fem_png = fullfile(fig_dir, 'virtual_fem_connection.png');
+            proc_png = fullfile(fig_dir, 'processing_connection.png');
             spec_png = fullfile(fig_dir, 'specimen_connection.png');
             
             testCase.verifyTrue(exist(sim_png, 'file') > 0, 'simulation_connection.png must exist');
-            testCase.verifyTrue(exist(phys_png, 'file') > 0, 'physical_connection.png must exist');
+            testCase.verifyTrue(exist(fem_png, 'file') > 0, 'virtual_fem_connection.png must exist');
+            testCase.verifyTrue(exist(proc_png, 'file') > 0, 'processing_connection.png must exist');
             testCase.verifyTrue(exist(spec_png, 'file') > 0, 'specimen_connection.png must exist');
         end
         
@@ -90,15 +102,19 @@ classdef TestLFMTConnectionVisualizer < matlab.unittest.TestCase
             
             load_system('LFMT_System_Connection');
             
-            % Verify all 7 major subsystems exist
+            % Verify all 11 major virtual simulation subsystems exist
             expected_subsystems = { ...
-                'LFMT_System_Connection/1_Specimen_and_Excitation_Config', ...
-                'LFMT_System_Connection/2_LFMT_Chirp_Generator', ...
-                'LFMT_System_Connection/3_3D_Hex8_FEM_Thermal_Solver', ...
-                'LFMT_System_Connection/4_Virtual_IR_Camera_and_Noise', ...
-                'LFMT_System_Connection/5_Blind_Signal_Processing_Suite', ...
-                'LFMT_System_Connection/6_Automatic_Defect_Segmentation', ...
-                'LFMT_System_Connection/7_Quantitative_Metrics_and_Scopes' ...
+                'LFMT_System_Connection/01_User_Parameters', ...
+                'LFMT_System_Connection/02_LFMT_Excitation', ...
+                'LFMT_System_Connection/03_3D_FEM_Thermal_Model', ...
+                'LFMT_System_Connection/04_Surface_Temperature', ...
+                'LFMT_System_Connection/05_Virtual_IR_Camera', ...
+                'LFMT_System_Connection/06_Noise_And_Preprocessing', ...
+                'LFMT_System_Connection/07_Thermographic_Processing', ...
+                'LFMT_System_Connection/08_Blind_Segmentation', ...
+                'LFMT_System_Connection/09_Defect_Characterization', ...
+                'LFMT_System_Connection/10_Evaluation_Metrics', ...
+                'LFMT_System_Connection/11_GUI_And_Export' ...
             };
             
             for k = 1:length(expected_subsystems)

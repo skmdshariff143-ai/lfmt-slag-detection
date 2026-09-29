@@ -47,7 +47,7 @@
 ### ⏱ Minute 5: Healthy Control Verification & Connection Architecture
 - **Action in LFMTLiveLab:**
   1. Click **"🟢 Healthy Control"**: Show that with 0 defects embedded, all detectors report **False Positive: NO (100% Specificity)**.
-  2. Click **"🔄 Sim Flow"** and **"🔬 View Physical Rig"**: Display the publication connection diagrams.
-  3. Click **"⚙️ Open Simulink"**: Show the native 7-subsystem `LFMT_System_Connection.slx` model.
+  2. Click **"🔍 View Sim Flow"** and **"📊 View 5 Detectors"**: Display the publication connection diagrams.
+  3. Click **"⚙️ Open Simulink"**: Show the native 11-subsystem `LFMT_System_Connection.slx` model.
   4. Click **"📦 Export Package"**: Show the 20-artifact bundle generated for report archiving.
 - **Closing Conclusion:** LFMT combined with Matched Filtering and PCT achieves reliable, non-destructive, subsurface slag detection in mild steel without ground-truth leakage.

@@ -674,7 +674,7 @@ classdef LFMTLiveLab < handle
                 'FontWeight', 'bold', 'FontSize', 9, 'BackgroundColor', [0.15, 0.45, 0.65], ...
                 'FontColor', 'w', 'ButtonPushedFcn', @(src, evt) app.onViewSimulationConnection());
             
-            app.ViewPhysConnButton = uibutton(btnGrid, 'Text', '🔬 View Physical Rig', ...
+            app.ViewPhysConnButton = uibutton(btnGrid, 'Text', '📊 View 5 Detectors', ...
                 'FontWeight', 'bold', 'FontSize', 9, 'BackgroundColor', [0.45, 0.35, 0.65], ...
                 'FontColor', 'w', 'ButtonPushedFcn', @(src, evt) app.onViewPhysicalConnection());
             
@@ -697,7 +697,7 @@ classdef LFMTLiveLab < handle
             femGrid.RowSpacing = 6; femGrid.ColumnSpacing = 6;
             
             % 3-D Plate Volume Axes (Top Left)
-            p3Panel = uipanel(femGrid, 'Title', '🧊 3-D PHYSICAL GEOMETRY (Mild Steel Plate + Slag Inclusion)', ...
+            p3Panel = uipanel(femGrid, 'Title', '🧊 3-D VIRTUAL SPECIMEN GEOMETRY (Mild Steel Plate + Slag Inclusion)', ...
                 'FontSize', 10, 'FontWeight', 'bold', 'ForegroundColor', [0.9, 0.95, 1.0], ...
                 'BackgroundColor', [0.12, 0.13, 0.16]);
             p3Panel.Layout.Row = 1; p3Panel.Layout.Column = 1;
@@ -733,7 +733,7 @@ classdef LFMTLiveLab < handle
             grid(app.AxesCrossSection, 'on');
             
             % Discretization & Material Table (Bottom Right)
-            dtPanel = uipanel(femGrid, 'Title', '📊 PHYSICAL CONSTANTS & NUMERICAL DISCRETIZATION SUMMARY', ...
+            dtPanel = uipanel(femGrid, 'Title', '📊 MATERIAL PROPERTIES & NUMERICAL DISCRETIZATION SUMMARY', ...
                 'FontSize', 10, 'FontWeight', 'bold', 'ForegroundColor', [0.9, 0.95, 1.0], ...
                 'BackgroundColor', [0.14, 0.16, 0.21]);
             dtPanel.Layout.Row = 2; dtPanel.Layout.Column = 2;
@@ -2776,8 +2776,8 @@ classdef LFMTLiveLab < handle
                 end
                 return;
             end
-            plot_simulation_connection(cfg, 'Target', 'physical', 'Visible', 'on');
-            app.logMessage('Opened Proposed Physical Experimental Rig Connection Diagram.');
+            plot_simulation_connection(cfg, 'Target', 'processing', 'Visible', 'on');
+            app.logMessage('Opened 5 Blind Signal Processing Suite & Segmentation Connection Diagram.');
         end
         
         function onOpenSimulinkModel(app)

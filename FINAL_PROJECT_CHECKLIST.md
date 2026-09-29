@@ -25,8 +25,8 @@
 | **Time-Step Stability** | Implicit Backward Euler stable across $\Delta t = 0.08, 0.04, 0.02\text{ s}$ | `timestep_convergence.csv` | **[PASS]** |
 | **Parameter Sensitivity** | Thermal response analyzed for $\pm 10\%$ $q_0, k_{\text{slag}}, C_{p,\text{slag}}$ and $\pm 20\%$ $h_{\text{conv}}$ | `sensitivity_summary.csv` | **[PASS]** |
 | **Interactive GUI** | Live thermography dashboard with 6 views, playback controls, point inspector, and audit tables | `LFMTLiveLab.m`, `TestLFMTLiveLab.m` | **[PASS]** |
-| **Connection Diagrams** | Publication block diagrams for simulation flow, physical rig, and 3-D specimen | `simulation_connection.png`, `physical_connection.png`, `specimen_connection.png` | **[PASS]** |
-| **Simulink Model** | Native 7-subsystem architectural model with explicit disclaimer annotation | `LFMT_System_Connection.slx`, `TestLFMTConnectionVisualizer.m` | **[PASS]** |
+| **Connection Diagrams** | Publication block diagrams for simulation flow, 3-D FEM numerical architecture, 5 detectors, and 3-D specimen | `simulation_connection.png`, `virtual_fem_connection.png`, `processing_connection.png`, `specimen_connection.png` | **[PASS]** |
+| **Simulink Model** | Native 11-subsystem virtual simulation model with explicit simulation-only disclaimer annotation | `LFMT_System_Connection.slx`, `TestLFMTConnectionVisualizer.m` | **[PASS]** |
 | **Final Demo Mode** | Automated 14-step viva demonstration runner with 20-artifact export | `run_final_demo.m` | **[PASS]** |
 | **Automated Tests** | Full 44-test MATLAB test suite passing (100% GREEN) | `run_tests.m` (44/44 PASS) | **[PASS]** |
 | **Reproducibility** | Provenance manifest generated with timestamp, OS, MATLAB version, solver parameters | `19_manifest.json` | **[PASS]** |

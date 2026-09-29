@@ -22,9 +22,9 @@
    - Raw Contrast, Matched Filter (Pulse Compression), SVD-PCT, SPCT (L1-Sparse PCA), and RPT (Gaussian JL).
    - Proven zero ground-truth leakage (`docs/anti_leakage_audit.md`).
 5. **Publication-Grade Visualizations:**
-   - 300-DPI simulation flow, physical rig reference, specimen cross-section, and chirp waveform diagrams.
+   - 300-DPI simulation flow, 3-D FEM numerical architecture, 5 detectors suite, and specimen cross-section diagrams.
 6. **Native Simulink Architectural Model (`LFMT_System_Connection.slx`):**
-   - 7 interconnected subsystems modeling the complete computational flow with explicit reference disclaimer.
+   - 11 interconnected subsystems modeling the complete computational flow with explicit 100% virtual simulation disclaimer.
 7. **Comprehensive Test Suite:**
    - 44 unit and integration tests passing with 100% success rate (`run_tests.m`).
 

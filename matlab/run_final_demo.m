@@ -13,7 +13,7 @@ function demo_results = run_final_demo(varargin)
 %   9. Perform blind defect segmentation and candidate characterization
 %  10. Evaluate quantitative metrics (IoU, Dice, CNR, Localization, Sizing)
 %  11. Generate deterministic scientific result explanation
-%  12. Render simulation and physical experimental connection diagrams
+%  12. Render virtual simulation and 3-D FEM numerical connection diagrams
 %  13. Export full publication-grade demonstration bundle (19+ files)
 %  14. Generate provenance reproducibility manifest
 %
@@ -284,14 +284,14 @@ if p.Results.Export
     exportgraphics(h_comp, fullfile(demo_dir, '13_method_comparison.png'), 'Resolution', 300);
     close(h_comp);
     
-    % 14_simulation_connection.png & 15_physical_connection.png
+    % 14_simulation_connection.png & 15_virtual_fem_connection.png
     h_sim = plot_simulation_connection(cfg, 'Target', 'simulation', 'Visible', 'off');
     exportgraphics(h_sim, fullfile(demo_dir, '14_simulation_connection.png'), 'Resolution', 300);
     close(h_sim);
     
-    h_phys = plot_simulation_connection(cfg, 'Target', 'physical', 'Visible', 'off');
-    exportgraphics(h_phys, fullfile(demo_dir, '15_physical_connection.png'), 'Resolution', 300);
-    close(h_phys);
+    h_fem = plot_simulation_connection(cfg, 'Target', 'virtual_fem', 'Visible', 'off');
+    exportgraphics(h_fem, fullfile(demo_dir, '15_virtual_fem_connection.png'), 'Resolution', 300);
+    close(h_fem);
     
     % 16_metrics.csv
     writetable(summary_table, fullfile(demo_dir, '16_metrics.csv'));

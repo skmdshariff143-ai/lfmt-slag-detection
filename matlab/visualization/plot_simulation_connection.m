@@ -2,24 +2,29 @@ function varargout = plot_simulation_connection(cfg, varargin)
 % PLOT_SIMULATION_CONNECTION Generates publication-quality circuit/block-style
 % connection diagrams for Linear Frequency-Modulated Infrared Thermography (LFMT).
 %
-% Visualizes the complete scientific simulation connection, physical experimental
-% rig layout, and 3-D specimen cross-section heat transfer mechanics.
+% 100% VIRTUAL SIMULATION ARCHITECTURE (No physical hardware).
+% Visualizes:
+%   1. End-to-end computational simulation pipeline (simulation_connection.png)
+%   2. 3-D Hex8 FEM numerical formulation architecture (virtual_fem_connection.png)
+%   3. 5 Blind Signal Processing & Segmentation suite (processing_connection.png)
+%   4. 3-D Specimen Cross-Section Heat Transfer schematic (specimen_connection.png)
 %
 % Syntax:
 %   plot_simulation_connection()
 %   plot_simulation_connection(cfg)
 %   plot_simulation_connection(cfg, 'Target', 'all')
-%   [h_sim, h_phys, h_spec] = plot_simulation_connection(...)
+%   [h_sim, h_fem, h_proc, h_spec] = plot_simulation_connection(...)
 %
 % Parameters:
 %   cfg       - Optional struct or JSON path with simulation parameters.
-%   'Target'  - 'all' (default), 'simulation', 'physical', or 'specimen'
+%   'Target'  - 'all' (default), 'simulation', 'virtual_fem', 'processing', 'specimen'
+%               (Note: 'physical' is gracefully redirected to 'virtual_fem')
 %   'Export'  - true (default: saves 300-DPI PNG figures to results/figures)
 %   'Visible' - 'on' (default) or 'off'
 %
 % Project:
 %   Linear Frequency-Modulated Infrared Thermography for Subsurface Slag
-%   Inclusion Detection in Mild Steel
+%   Inclusion Detection in Mild Steel (Virtual Computational Framework)
 
 if nargin < 1 || isempty(cfg)
     cfg = default_config();
@@ -39,12 +44,15 @@ end
 
 % Parse optional parameters
 p = inputParser;
-addParameter(p, 'Target', 'all', @(x) any(validatestring(x, {'all', 'simulation', 'physical', 'specimen'})));
+addParameter(p, 'Target', 'all', @(x) any(validatestring(x, {'all', 'simulation', 'virtual_fem', 'processing', 'specimen', 'physical'})));
 addParameter(p, 'Export', true, @islogical);
 addParameter(p, 'Visible', 'on', @(x) ischar(x) || isstring(x));
 parse(p, varargin{:});
 
 target_mode = lower(p.Results.Target);
+if strcmp(target_mode, 'physical')
+    target_mode = 'virtual_fem';
+end
 do_export = p.Results.Export;
 vis_mode = char(p.Results.Visible);
 
@@ -55,10 +63,11 @@ if ~exist(fig_dir, 'dir')
 end
 
 h_sim = [];
-h_phys = [];
+h_fem = [];
+h_proc = [];
 h_spec = [];
 
-%% 1. Simulation Connection Pipeline Diagram
+%% 1. End-to-End Simulation Connection Pipeline Diagram
 if strcmp(target_mode, 'all') || strcmp(target_mode, 'simulation')
     h_sim = renderSimulationPipelineFigure(cfg, vis_mode);
     if do_export
@@ -69,18 +78,29 @@ if strcmp(target_mode, 'all') || strcmp(target_mode, 'simulation')
     end
 end
 
-%% 2. Proposed Physical Experimental Connection Diagram
-if strcmp(target_mode, 'all') || strcmp(target_mode, 'physical')
-    h_phys = renderPhysicalConnectionFigure(cfg, vis_mode);
+%% 2. 3-D Hex8 FEM Numerical Heat Transfer Architecture
+if strcmp(target_mode, 'all') || strcmp(target_mode, 'virtual_fem')
+    h_fem = renderVirtualFEMFigure(cfg, vis_mode);
     if do_export
-        export_path = fullfile(fig_dir, 'physical_connection.png');
-        exportgraphics(h_phys, export_path, 'Resolution', 300);
-        savefig(h_phys, fullfile(fig_dir, 'physical_connection.fig'));
-        fprintf('Saved physical connection diagram: %s\n', export_path);
+        export_path = fullfile(fig_dir, 'virtual_fem_connection.png');
+        exportgraphics(h_fem, export_path, 'Resolution', 300);
+        savefig(h_fem, fullfile(fig_dir, 'virtual_fem_connection.fig'));
+        fprintf('Saved virtual FEM connection diagram: %s\n', export_path);
     end
 end
 
-%% 3. 3-D Specimen Heat Transfer Connection Schematic
+%% 3. 5 Blind Signal Processing & Segmentation Suite Diagram
+if strcmp(target_mode, 'all') || strcmp(target_mode, 'processing')
+    h_proc = renderProcessingSuiteFigure(cfg, vis_mode);
+    if do_export
+        export_path = fullfile(fig_dir, 'processing_connection.png');
+        exportgraphics(h_proc, export_path, 'Resolution', 300);
+        savefig(h_proc, fullfile(fig_dir, 'processing_connection.fig'));
+        fprintf('Saved processing connection diagram: %s\n', export_path);
+    end
+end
+
+%% 4. 3-D Specimen Heat Transfer Connection Schematic
 if strcmp(target_mode, 'all') || strcmp(target_mode, 'specimen')
     h_spec = renderSpecimenSchematicFigure(cfg, vis_mode);
     if do_export
@@ -91,26 +111,29 @@ if strcmp(target_mode, 'all') || strcmp(target_mode, 'specimen')
     end
 end
 
-if strcmp(target_mode, 'physical')
-    if nargout > 0, varargout{1} = h_phys; end
+if strcmp(target_mode, 'virtual_fem')
+    if nargout > 0, varargout{1} = h_fem; end
+elseif strcmp(target_mode, 'processing')
+    if nargout > 0, varargout{1} = h_proc; end
 elseif strcmp(target_mode, 'specimen')
     if nargout > 0, varargout{1} = h_spec; end
 elseif strcmp(target_mode, 'simulation')
     if nargout > 0, varargout{1} = h_sim; end
 else % 'all'
     if nargout == 1
-        varargout{1} = [h_sim, h_phys, h_spec];
+        varargout{1} = [h_sim, h_fem, h_proc, h_spec];
     else
         if nargout > 0, varargout{1} = h_sim; end
-        if nargout > 1, varargout{2} = h_phys; end
-        if nargout > 2, varargout{3} = h_spec; end
+        if nargout > 1, varargout{2} = h_fem; end
+        if nargout > 2, varargout{3} = h_proc; end
+        if nargout > 3, varargout{4} = h_spec; end
     end
 end
 
 end
 
 %% =========================================================================
-%% SUB-ROUTINE 1: Render Simulation Computational Pipeline
+%% SUB-ROUTINE 1: Render Complete Simulation Computational Pipeline
 %% =========================================================================
 function fig = renderSimulationPipelineFigure(cfg, vis_mode)
     fig = figure('Name', 'LFMT Complete Simulation Connection Architecture', ...
@@ -133,115 +156,109 @@ function fig = renderSimulationPipelineFigure(cfg, vis_mode)
     col_accent_purp= [0.75, 0.45, 0.95];
     col_arrow      = [0.45, 0.65, 0.85];
     
-    % 1. Header Banner
-    drawRoundedBox(ax, 2, 92, 96, 6.5, [0.10, 0.12, 0.17], [0.3, 0.45, 0.65], 1.5);
-    text(ax, 50, 96.2, 'LINEAR FREQUENCY-MODULATED INFRARED THERMOGRAPHY (LFMT) - SIMULATION CONNECTION ARCHITECTURE', ...
-        'Color', col_accent_cyan, 'FontSize', 12, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 50, 93.4, 'Complete End-to-End Scientific Pipeline: Excitation -> 3-D Hex8 FEM -> Decoupled IR Camera -> 5 Blind Detectors -> Automated Segmentation -> Verification Audit', ...
-        'Color', [0.75, 0.82, 0.90], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    
-    % --- COLUMN 1: Forward Simulation Pipeline (x in [3, 47]) ---
-    
-    % Safe field helpers
     if isfield(cfg.excitation, 'observation_time_s')
         tobs = cfg.excitation.observation_time_s;
     elseif isfield(cfg.simulation, 'total_time_s')
         tobs = cfg.simulation.total_time_s;
     else
-        tobs = cfg.excitation.duration_s;
+        tobs = 10.0;
     end
     
-    if isfield(cfg.camera, 'frame_rate_hz')
-        fps = cfg.camera.frame_rate_hz;
-    elseif isfield(cfg.camera, 'sampling_rate_hz')
-        fps = cfg.camera.sampling_rate_hz;
-    else
-        fps = 25.0;
-    end
+    % 1. Header Banner (100% Virtual Framework)
+    drawRoundedBox(ax, 2, 92, 96, 6.5, [0.10, 0.12, 0.17], [0.3, 0.45, 0.65], 1.5);
+    text(ax, 50, 96.2, 'LINEAR FREQUENCY-MODULATED INFRARED THERMOGRAPHY (LFMT) - VIRTUAL SIMULATION ARCHITECTURE', ...
+        'Color', col_accent_cyan, 'FontSize', 12, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 50, 93.4, '100% Computational Simulation: Parameters -> Chirp -> 3-D Hex8 FEM -> Virtual IR Camera -> 5 Blind Detectors -> Segmentation -> Audit', ...
+        'Color', [0.75, 0.82, 0.90], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
     
-    if isfield(cfg.simulation, 'dt_s')
-        dt_val = cfg.simulation.dt_s;
-    else
-        dt_val = 0.04;
-    end
+    % --- COLUMN 1: Forward Numerical Simulation Pipeline (x in [3, 47]) ---
     
-    if isfield(cfg.simulation, 'solver_type')
-        solver_type_str = upper(cfg.simulation.solver_type);
-    else
-        solver_type_str = 'FEM';
-    end
-
-    % Stage 1: User Input Parameters
+    % Stage 1: User & Material Inputs
     if cfg.plate.has_defect
-        def_str = sprintf('Slag Cyl: D=%.1f mm, z=%.2f mm, h=%.2f mm, Loc=(%.1f, %.1f) mm', ...
-            cfg.plate.defect.diameter_mm, cfg.plate.defect.depth_mm, cfg.plate.defect.thickness_mm, ...
-            cfg.plate.defect.center_x_mm, cfg.plate.defect.center_y_mm);
+        d_str = sprintf('Slag Defect: D = %.1f mm, Depth z = %.2f mm, Loc = (%.1f, %.1f) mm', ...
+            cfg.plate.defect.diameter_mm, cfg.plate.defect.depth_mm, cfg.plate.defect.center_x_mm, cfg.plate.defect.center_y_mm);
     else
-        def_str = 'Healthy Control Plate (No Subsurface Inclusion)';
+        d_str = 'Reference Healthy Plate (Zero Defect)';
     end
-    snr_str = sprintf('SNR = %s, Seed = %d', string(cfg.camera.noise_snr_db), cfg.camera.noise_seed);
-    if isempty(cfg.camera.noise_snr_db) || isinf(cfg.camera.noise_snr_db), snr_str = 'Clean (Inf dB, sigma=0 K)'; end
     
-    drawStageBlock(ax, 3, 76, 44, 13.5, 1, 'USER INPUT PARAMETERS', col_accent_cyan, col_bg_card, col_border, ...
-        {sprintf('Plate Size: %.1f x %.1f x %.2f mm (Mild Steel)', cfg.plate.length_mm, cfg.plate.width_mm, cfg.plate.thickness_mm); ...
-         sprintf('Defect Config: %s', def_str); ...
-         sprintf('Camera Setup: %d x %d px @ %.1f Hz | %s', cfg.camera.cam_nx, cfg.camera.cam_ny, fps, snr_str); ...
-         sprintf('Solver Config: Type=%s, dt=%.3f s, Texc=%.1f s, Tobs=%.1f s', solver_type_str, dt_val, cfg.excitation.duration_s, tobs)}, ...
-        'Output: Structured Config Vector ->');
+    drawStageBlock(ax, 3, 76, 44, 14.5, 1, 'USER PARAMETERS & THERMOPHYSICAL PROPERTIES', col_accent_cyan, col_bg_card, col_border, ...
+        {sprintf('Geometry: Mild Steel Plate %.1f x %.1f x %.2f mm', cfg.plate.length_mm, cfg.plate.width_mm, cfg.plate.thickness_mm); ...
+         d_str; ...
+         'Steel Substrate: k = 45.0 W/m-K, rho = 7850 kg/m^3, Cp = 460 J/kg-K (alpha = 1.246e-5 m^2/s)'; ...
+         'Slag Inclusion: k = 1.5 W/m-K, rho = 2800 kg/m^3, Cp = 800 J/kg-K (alpha = 6.696e-7 m^2/s)'; ...
+         'Thermal Impedance Mismatch: Reflection Coefficient R = +0.766 (Strong Thermal Barrier)'}, ...
+        'Output: Mesh Specifications & Material Property Tensor');
     
-    drawLabeledArrow(ax, 25, 76, 25, 66, 'Geometry & Thermal Properties', col_arrow);
+    drawLabeledArrow(ax, 25, 76, 25, 68, 'Mesh & Physical Parameters', col_arrow);
     
-    % Stage 2: LFMT Excitation Generator
-    drawStageBlock(ax, 3, 53.5, 44, 12.5, 2, 'LFMT CHIRP GENERATOR', col_accent_gold, col_bg_card, col_border, ...
-        {sprintf('Sweep Band: f0 = %.3f Hz -> f1 = %.3f Hz (Sweep Rate = %.4f Hz/s)', cfg.excitation.f0_hz, cfg.excitation.f1_hz, (cfg.excitation.f1_hz - cfg.excitation.f0_hz)/cfg.excitation.duration_s); ...
-         sprintf('Flux Amplitude: q0 = %.0f W/m^2 | Duration Texc = %.1f s', cfg.excitation.q0_w_m2, cfg.excitation.duration_s); ...
-         'Waveform Equation: q(t) = q0 [1 + sin(2*pi*(f0*t + ((f1-f0)/(2*Texc))*t^2))]  (t <= Texc)'; ...
-         'Post-Excitation Phase: q(t) = 0.0 W/m^2  (t > Texc, Thermal Cooling Window)'}, ...
-        'Output: Modulated Flux Waveform q(t) [W/m^2]');
+    % Stage 2: LFMT Optical Excitation Chirp
+    drawStageBlock(ax, 3, 53.5, 44, 14.5, 2, 'LFMT OPTICAL EXCITATION SYNTHESIS', col_accent_gold, col_bg_card, col_border, ...
+        {sprintf('Modulation Bandwidth: f0 = %.3f Hz -> f1 = %.3f Hz (Sweep Delta f = %.3f Hz)', cfg.excitation.f0_hz, cfg.excitation.f1_hz, cfg.excitation.f1_hz - cfg.excitation.f0_hz); ...
+         sprintf('Duration & Energy: Texc = %.1f s, Tobs = %.1f s, Peak Flux q0 = %.0f W/m^2', cfg.excitation.duration_s, tobs, cfg.excitation.q0_w_m2); ...
+         'Chirp Law: phi(t) = 2*pi*(f0*t + 0.5*(f1-f0)/Texc * t^2) - pi/2'; ...
+         'Heat Flux: q(t) = q0 * 0.5 * (1 + sin(phi(t))) for t in [0, Texc], 0 otherwise'; ...
+         'Chirp Reference Signal: s_ref(t) = sin(phi(t)) for Matched Filter correlation'}, ...
+        'Output: Temporal Heat Flux Vector q(t) [W/m^2] & Reference Waveform s_ref(t)');
     
-    drawLabeledArrow(ax, 25, 53.5, 25, 44.5, 'Excitation Heat Flux q(t) [W/m^2]', col_arrow);
+    drawLabeledArrow(ax, 25, 53.5, 25, 45.5, 'Heat Flux Boundary Condition q(t)', col_arrow);
     
-    % Stage 3: Heat Conduction & 3-D Hex8 FEM Solver
-    drawStageBlock(ax, 3, 22.5, 44, 22, 3, '3-D HEXAHEDRAL FEM TRANSIENT SOLVER', col_accent_grn, col_bg_card, col_border, ...
-        {'Continuum PDE: rho(x) * Cp(x) * dT/dt = div( k(x) * grad(T) )'; ...
-         'Substrate: Mild Steel (k = 45 W/m-K, rho = 7850 kg/m^3, Cp = 460 J/kg-K)'; ...
-         'Inclusion: Slag (k = 1.20 W/m-K, rho = 2800 kg/m^3, Cp = 850 J/kg-K, Effusivity Contrast = 7.54x)'; ...
-         'Boundary Conditions: -k*(dT/dn)|z=0 = q(t) - h*(T - Tamb),  -k*(dT/dn)|other = -h*(T - Tamb)'; ...
-         'Discrete System: M*(dT/dt) + (K + Mconv)*T = F(t) + Famb'; ...
-         'Implicit Integration: ((1/dt)*M + K + Mconv)*T^(n+1) = (1/dt)*M*T^(n) + F^(n+1) + Famb'; ...
-         'Pre-factorized Cholesky: dA = decomposition(A, ''chol'', ''lower'')'}, ...
-        'Output: 3-D Temperature Tensor T(x,y,z,t) [K]');
+    % Stage 3: 3-D Hex8 Transient FEM Heat Solver
+    drawStageBlock(ax, 3, 31, 44, 14.5, 3, '3-D HEX8 FEM TRANSIENT THERMAL ENGINE', col_accent_red, col_bg_card, col_border, ...
+        {'PDE: rho * Cp * dT/dt = div(k * grad(T)) with Convective & Radiative Losses'; ...
+         'Spatial Discretization: 8-node Hexahedral (Hex8) Elements with 2x2x2 Gauss Quadrature'; ...
+         'Global Matrix Assembly: [M]*T_dot + [K]*T + [H]*T = F(t) (Implicit Euler Time-Stepping)'; ...
+         'Boundary BCs: Top q_top = q(t) - h(T-Tamb), Bottom/Sides Insulated (Adiabatic)'; ...
+         'Physical Sanity: Strict Energy Conservation & Zero-Flux Stability Audited'}, ...
+        'Output: 3-D Internal Node Temperature Field T(x, y, z, t)');
     
-    drawLabeledArrow(ax, 25, 22.5, 25, 14.5, 'Surface Field Extraction T(x,y,0,t)', col_arrow);
+    drawLabeledArrow(ax, 25, 31, 25, 23, 'Surface Node Temperature Field T(x, y, z=0, t)', col_arrow);
     
-    % Stage 4: Virtual IR Camera & Noise Injection
-    n_cam_frames = round(tobs * fps) + 1;
-    drawStageBlock(ax, 3, 3, 44, 11.5, 4, 'VIRTUAL IR CAMERA & NOISE INJECTION', col_accent_purp, col_bg_card, col_border, ...
-        {sprintf('Spatial Interpolation: Decoupled camera sensor (%d x %d pixels) via griddedInterpolant', cfg.camera.cam_nx, cfg.camera.cam_ny); ...
-         sprintf('Temporal Sampling: Frame Rate fs = %.1f Hz (dt_cam = %.3f s, %d Frames)', fps, 1.0/fps, n_cam_frames); ...
-         'Noise Injection: T_noisy(x,y,t) = T(x,y,t) + N(0, sigma^2),  sigma = RMS(T - T_bar) / 10^(SNR/20)'; ...
-         'Ground Truth Mask Isolation: GT defect mask strictly isolated for evaluation only (zero leakage)'}, ...
-        'Output: Thermogram Video Cube [Nt x Ny x Nx]');
+    % Stage 4: Virtual IR Decoupled Camera Sensor
+    if isfield(cfg.camera, 'noise_snr_db') && ~isempty(cfg.camera.noise_snr_db)
+        snr_str = sprintf('Sensor Noise Model: Gaussian AWGN with NETD SNR = %.1f dB', cfg.camera.noise_snr_db);
+    elseif isfield(cfg.camera, 'snr_db') && ~isempty(cfg.camera.snr_db)
+        snr_str = sprintf('Sensor Noise Model: Gaussian AWGN with NETD SNR = %.1f dB', cfg.camera.snr_db);
+    else
+        snr_str = 'Sensor Noise Model: Clean Thermograms (Inf dB) or Configured NETD AWGN';
+    end
     
-    % Transition connector from Stage 4 (left) to Stage 5 (right)
-    drawHorizontalConnector(ax, 47, 8.5, 53, 80, 'Thermogram Cube [Nt x Ny x Nx]', col_accent_cyan);
+    fps_val = 25.0;
+    if isfield(cfg.camera, 'frame_rate_hz')
+        fps_val = cfg.camera.frame_rate_hz;
+    elseif isfield(cfg.camera, 'sampling_rate_hz')
+        fps_val = cfg.camera.sampling_rate_hz;
+    end
     
-    % --- COLUMN 2: Blind Signal Processing & Evaluation Pipeline (x in [53, 97]) ---
+    drawStageBlock(ax, 3, 3, 44, 20, 4, 'VIRTUAL DECOUPLED IR CAMERA SENSOR MODEL', col_accent_purp, col_bg_card, col_border, ...
+        {sprintf('Spatial Grid: %d x %d px (dx = %.2f mm, dy = %.2f mm)', cfg.camera.cam_nx, cfg.camera.cam_ny, cfg.plate.length_mm/cfg.camera.cam_nx, cfg.plate.width_mm/cfg.camera.cam_ny); ...
+         sprintf('Temporal Sampling: Frame Rate = %.1f fps (dt_cam = %.3f s, Nt = %d frames)', fps_val, 1/fps_val, round(tobs * fps_val)+1); ...
+         'Radiometric Decoupling: Decoupled camera sensor model preserves pure thermal evolution'; ...
+         snr_str; ...
+         'Noise Synthesis: T_noisy(x,y,t) = T_clean(x,y,t) + N(0, sigma_netd^2)'}, ...
+        'Output: Synthetic Noisy Thermal Video Sequence T(x,y,t) [K]');
     
-    % Stage 5: 5 Blind Signal Processing Methods
-    drawStageBlock(ax, 53, 56.5, 44, 27, 5, 'BLIND SIGNAL PROCESSING SUITE (5 METHODS)', col_accent_gold, col_bg_card, col_border, ...
-        {'Branch 1: RAW CONTRAST - Delta T_raw(x,y) = max_t T(x,y,t) - T(x,y,0)'; ...
-         'Branch 2: MATCHED FILTER - R_xs(tau) = integral T_tilde(x,y,t) * s_ref(t+tau) dt (Pulse Compression SNR Boost)'; ...
-         'Branch 3: PRINCIPAL COMPONENT THERMOGRAPHY (SVD-PCT) - A = U * Sigma * V^T, Eigen-mode EOF-2 Extraction'; ...
-         'Branch 4: SPARSE PCT (SPCT) - min ||A - U*V^T||_F^2 + lambda*||V||_1 (L1 Regularized Defect Sparsity)'; ...
-         'Branch 5: RANDOM PROJECTION (RPT) - Y = (1/sqrt(k)) * R * A, R_ij ~ N(0,1) (Johnson-Lindenstrauss)'; ...
-         'Blindness Guarantee: Methods process blind raw thermograms with ZERO knowledge of defect position/size.'}, ...
-        'Output: 5 Normalized 2-D Feature Maps S_m(x,y) in [0, 1]');
+    % Cross-Pipeline Arrow (Bottom left -> Top right)
+    drawLabeledArrow(ax, 47, 13, 53, 76, 'Synthetic Thermal Video Cube T(x,y,t)', col_accent_purp);
+    
+    % --- COLUMN 2: 5 Blind Signal Processing & Detection (x in [53, 97]) ---
+    
+    % Stage 5: 5 Blind Signal Processing Suite
+    drawStageBlock(ax, 53, 56.5, 44, 34, 5, '5 BLIND ADVANCED THERMOGRAPHIC DETECTORS', col_accent_gold, col_bg_card, col_border, ...
+        {'Preprocessing: Frame-zero subtraction T_norm(x,y,t) = T(x,y,t) - T(x,y,0)'; ...
+         '-----------------------------------------------------------------------------------------'; ...
+         'Method 1 [Raw Contrast]: S_raw(x,y) = max_t |T_norm(x,y,t)|  (Peak Thermal Contrast)'; ...
+         'Method 2 [Matched Filter]: S_mf(x,y) = int_0^T T_norm(x,y,t) * s_ref(t) dt  (Pulse Compression)'; ...
+         'Method 3 [SVD-PCT]: A = U*S*V'' -> S_pct(x,y) = EOF-2 (Principal Component Thermography)'; ...
+         'Method 4 [Sparse PCT]: min ||A - U*V''||_F^2 + lambda*||V||_1 (SPCT Saliency Enhancement)'; ...
+         'Method 5 [Random Projection]: S_rpt(x,y) = Phi * A (Johnson-Lindenstrauss Dimensionality Reduction)'; ...
+         '-----------------------------------------------------------------------------------------'; ...
+         'Score Normalization: S_norm(x,y) = (S - min(S)) / (max(S) - min(S)) in [0, 1]'}, ...
+        'Output: 5 Calibrated Feature Maps S_raw, S_mf, S_pct, S_spct, S_rpt');
     
     drawLabeledArrow(ax, 75, 56.5, 75, 48.5, 'Normalized Feature Score Maps S_m(x,y)', col_arrow);
     
     % Stage 6: Automatic Defect Segmentation
-    drawStageBlock(ax, 53, 34, 44, 14.5, 6, 'AUTOMATIC DEFECT SEGMENTATION', col_accent_cyan, col_bg_card, col_border, ...
+    drawStageBlock(ax, 53, 34, 44, 14.5, 6, 'AUTOMATIC BLIND DEFECT SEGMENTATION', col_accent_cyan, col_bg_card, col_border, ...
         {'Adaptive Thresholding: Otsu automatic global threshold tau_m minimizing intra-class variance'; ...
          'Binarization: B_raw(x,y) = S_m(x,y) > tau_m'; ...
          'Morphological Post-processing: Morphological Opening (disk r=2 px) + Closing (disk r=3 px)'; ...
@@ -263,10 +280,10 @@ function fig = renderSimulationPipelineFigure(cfg, vis_mode)
 end
 
 %% =========================================================================
-%% SUB-ROUTINE 2: Render Proposed Physical Experimental Connection
+%% SUB-ROUTINE 2: Render 3-D Hex8 FEM Numerical Architecture
 %% =========================================================================
-function fig = renderPhysicalConnectionFigure(cfg, vis_mode)
-    fig = figure('Name', 'LFMT Proposed Physical Experimental Architecture', ...
+function fig = renderVirtualFEMFigure(cfg, vis_mode)
+    fig = figure('Name', 'LFMT 3-D Hex8 FEM Numerical Architecture', ...
         'NumberTitle', 'off', 'Color', [0.07, 0.08, 0.11], ...
         'Position', [80, 60, 1300, 840], 'Visible', vis_mode);
     
@@ -285,107 +302,66 @@ function fig = renderPhysicalConnectionFigure(cfg, vis_mode)
     col_accent_purp= [0.75, 0.45, 0.95];
     col_arrow      = [0.45, 0.65, 0.85];
     
-    % Safe field helpers
-    if isfield(cfg.camera, 'frame_rate_hz')
-        fps = cfg.camera.frame_rate_hz;
-    elseif isfield(cfg.camera, 'sampling_rate_hz')
-        fps = cfg.camera.sampling_rate_hz;
-    else
-        fps = 25.0;
-    end
-    
     % 1. Header Banner
     drawRoundedBox(ax, 3, 91, 94, 7, [0.10, 0.12, 0.17], [0.3, 0.45, 0.65], 1.5);
-    text(ax, 50, 95.5, 'PROPOSED PHYSICAL EXPERIMENTAL CONNECTION (HARDWARE REFERENCE ARCHITECTURE)', ...
+    text(ax, 50, 95.5, '3-D HEX8 FEM TRANSIENT HEAT DIFFUSION NUMERICAL ARCHITECTURE', ...
         'Color', col_accent_cyan, 'FontSize', 12, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 50, 92.5, 'Simulation-to-Experiment Correspondence for Linear Frequency-Modulated Infrared Thermography NDT&E', ...
+    text(ax, 50, 92.5, 'Validated Finite Element Formulation for Subsurface Slag Inclusion Thermography in Mild Steel Plates', ...
         'Color', [0.75, 0.82, 0.90], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
     
-    % 2. Computer / MATLAB Workstation (Top Left)
-    drawRoundedBox(ax, 5, 68, 26, 18, col_bg_card, col_accent_cyan, 1.5);
-    text(ax, 18, 83.5, 'MATLAB / PC WORKSTATION', 'Color', col_accent_cyan, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 7, 79, '- LFMT Chirp Synthesis Engine', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 7, 76, sprintf('- f0 = %.2f Hz -> f1 = %.2f Hz', cfg.excitation.f0_hz, cfg.excitation.f1_hz), 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 7, 73, '- Synchronized DAC Output (0-5V)', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 7, 70, '- Radiometric Frame Acquisition', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
+    % Left Panel: Governing PDE & Weak Form Discretization
+    drawRoundedBox(ax, 5, 50, 43, 38, col_bg_card, col_accent_cyan, 1.5);
+    text(ax, 26.5, 85, 'GOVERNING PDE & VARIATIONAL FORMULATION', 'Color', col_accent_cyan, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 7, 80, '1. Heat Diffusion Equation:', 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 7, 76, '   rho * Cp * (dT/dt) = div( k * grad(T) )', 'Color', [0.95, 0.95, 0.95], 'FontSize', 9, 'FontName', 'Consolas', 'Interpreter', 'none');
+    text(ax, 7, 71, '2. Boundary Conditions:', 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 7, 67, '   Top (z = 0): -k*(dT/dz) = q(t) - h*(T - Tamb)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.5, 'FontName', 'Consolas', 'Interpreter', 'none');
+    text(ax, 7, 63, '   Bottom & Edges: Insulated Adiabatic BC (grad(T)*n = 0)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.5, 'Interpreter', 'none');
+    text(ax, 7, 58, '3. Heterogeneous Material Assignment:', 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 7, 54, '   Mild Steel: k = 45 W/m-K | rho = 7850 kg/m^3 | Cp = 460 J/kg-K', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.0, 'Interpreter', 'none');
+    text(ax, 7, 51, '   Slag Defect: k = 1.5 W/m-K | rho = 2800 kg/m^3 | Cp = 800 J/kg-K', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.0, 'Interpreter', 'none');
     
-    % Arrow 1: PC -> Power Amplifier
-    drawLabeledArrow(ax, 31, 77, 41, 77, 'Analog Modulation Signal s(t)', col_arrow);
+    % Right Panel: Hex8 Discretization & Time-Stepping Solver
+    drawRoundedBox(ax, 52, 50, 43, 38, col_bg_card, col_accent_grn, 1.5);
+    text(ax, 73.5, 85, 'HEX8 DISCRETIZATION & IMPLICIT EULER SOLVER', 'Color', col_accent_grn, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 54, 80, '1. Hex8 Isoparametric Element Matrices:', 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 54, 76, '   K_e = int B'' * k * B dOmega  (Conductivity Matrix)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.5, 'FontName', 'Consolas', 'Interpreter', 'none');
+    text(ax, 54, 72, '   M_e = int N'' * rho * Cp * N dOmega  (Capacitance Matrix)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.5, 'FontName', 'Consolas', 'Interpreter', 'none');
+    text(ax, 54, 67, '2. Numerical Quadrature: 2x2x2 Gauss-Legendre Points', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
+    text(ax, 54, 62, '3. Unconditionally Stable Implicit Time Stepping:', 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 54, 58, '   (M/dt + K + H) * T(n+1) = (M/dt) * T(n) + F(n+1)', 'Color', [0.95, 0.95, 0.95], 'FontSize', 9, 'FontName', 'Consolas', 'Interpreter', 'none');
+    text(ax, 54, 53, '4. Verification: Spatial mesh independence & temporal convergence audited', 'Color', [0.75, 0.85, 0.75], 'FontSize', 8.0, 'Interpreter', 'none');
     
-    % 3. Power Amplifier / Controller
-    drawRoundedBox(ax, 41, 68, 22, 18, col_bg_card, col_accent_gold, 1.5);
-    text(ax, 52, 83.5, 'POWER CONTROLLER', 'Color', col_accent_gold, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 43, 79, '- Linear Power Amplifier', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 43, 76, '- Current / Voltage Regulation', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 43, 73, '- Solid-State Relay / Dimmer', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 43, 70, sprintf('- Rated Power: ~%.0f W', cfg.excitation.q0_w_m2 * 0.1 * 0.07 * 2), 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
+    % Arrow Down from Matrices to Thermal Field Output
+    drawLabeledArrow(ax, 50, 50, 50, 42, 'Global Matrix Solution Vector T_xyz(t)', col_arrow);
     
-    % Arrow 2: Power Amp -> Halogen Source
-    drawLabeledArrow(ax, 63, 77, 73, 77, 'Modulated AC Current I(t)', col_arrow);
-    
-    % 4. Optical Excitation Heat Source
-    drawRoundedBox(ax, 73, 68, 22, 18, col_bg_card, col_accent_red, 1.5);
-    text(ax, 84, 83.5, 'OPTICAL HEAT SOURCE', 'Color', col_accent_red, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 75, 79, '- Twin Halogen Lamp Array (2 kW)', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 75, 76, '- Parabolic Reflectors', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 75, 73, '- Uniform Spatial Flux Profile', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 75, 70, sprintf('- Peak Flux: q0 = %.0f W/m^2', cfg.excitation.q0_w_m2), 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    
-    % Arrow 3: Heat Source -> Steel Specimen
-    drawLabeledArrow(ax, 84, 68, 84, 52, 'Heat Flux q(t) [W/m^2]', col_accent_red);
-    
-    % 5. Specimen Block (Center)
-    drawRoundedBox(ax, 20, 36, 68, 16, [0.14, 0.17, 0.23], [0.35, 0.55, 0.80], 2.0);
-    text(ax, 54, 49, 'MILD STEEL SPECIMEN WITH SUB-SURFACE SLAG INCLUSION', 'Color', [0.95, 0.95, 1.0], 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 23, 44, sprintf('- Dimensions: %.1f x %.1f x %.2f mm (Lx x Ly x Lz)', cfg.plate.length_mm, cfg.plate.width_mm, cfg.plate.thickness_mm), 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
+    % Bottom Specimen Geometry & Thermal Reflection Summary
+    drawRoundedBox(ax, 5, 8, 90, 32, [0.14, 0.17, 0.23], [0.35, 0.55, 0.80], 2.0);
+    text(ax, 50, 36.5, '3-D SPECIMEN DISCRETIZATION & THERMAL WAVE MECHANICS', 'Color', [0.95, 0.95, 1.0], 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 8, 31.5, sprintf('- Plate Dimensions: Lx = %.1f mm, Ly = %.1f mm, Lz = %.2f mm', cfg.plate.length_mm, cfg.plate.width_mm, cfg.plate.thickness_mm), 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.5, 'Interpreter', 'none');
     if cfg.plate.has_defect
-        text(ax, 23, 41, sprintf('- Defect: Slag Inclusion D = %.1f mm, Depth z = %.2f mm, Thickness h = %.2f mm', ...
+        text(ax, 8, 27.5, sprintf('- Slag Defect Geometry: Diameter D = %.1f mm, Depth z = %.2f mm, Thickness h = %.2f mm', ...
             cfg.plate.defect.diameter_mm, cfg.plate.defect.depth_mm, cfg.plate.defect.thickness_mm), 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
     else
-        text(ax, 23, 41, '- Specimen: Healthy Homogeneous Mild Steel Reference Plate', 'Color', col_accent_grn, 'FontSize', 8.5, 'Interpreter', 'none');
+        text(ax, 8, 27.5, '- Baseline Homogeneous Mild Steel Plate (No Defect Inclusion)', 'Color', col_accent_grn, 'FontSize', 8.5, 'Interpreter', 'none');
     end
-    text(ax, 23, 38, '- Thermal Contrast: Steel (e ~ 12,740 J/m^2-K-s^0.5) vs Slag (e ~ 1,689 J/m^2-K-s^0.5) -> Reflection R ~ +0.766', 'Color', [0.75, 0.8, 0.88], 'FontSize', 8.0, 'Interpreter', 'none');
+    text(ax, 8, 23.5, '- Thermal Effusivity Contrast: e_steel ~ 12,740 J/(m^2-K-s^0.5) vs e_slag ~ 1,689 J/(m^2-K-s^0.5)', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
+    text(ax, 8, 19.5, '- Theoretical Thermal Wave Reflection: R = (e_steel - e_slag)/(e_steel + e_slag) = +0.766', 'Color', col_accent_cyan, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 8, 15.5, '- Diffusion Length: mu(f) = sqrt(alpha / (pi * f)) | LFMT sweep covers subsurface depth range 0.1 to 2.0 mm', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
+    text(ax, 8, 11.5, '- Surface Temperature Extraction: Top surface nodes (z = 0) mapped to Decoupled Virtual IR Sensor grid', 'Color', [0.75, 0.85, 0.95], 'FontSize', 8.5, 'Interpreter', 'none');
     
-    % Small visual defect marker inside plate block
-    if cfg.plate.has_defect
-        drawRoundedBox(ax, 70, 38, 12, 5, [0.3, 0.1, 0.1], [1.0, 0.3, 0.3], 1.2);
-        text(ax, 76, 40.5, 'SLAG DEFECT', 'Color', [1.0, 0.8, 0.8], 'FontSize', 7.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    end
-    
-    % Arrow 4: Specimen -> IR Camera
-    drawLabeledArrow(ax, 38, 36, 38, 24, 'Thermal Infrared Emission [3-5 um]', col_accent_gold);
-    
-    % 6. Infrared Camera Block
-    drawRoundedBox(ax, 25, 8, 26, 16, col_bg_card, col_accent_purp, 1.5);
-    text(ax, 38, 21.5, 'INFRARED CAMERA', 'Color', col_accent_purp, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 27, 17.5, '- Radiometric Thermal Camera', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 27, 14.5, sprintf('- Spatial Resolution: %d x %d px', cfg.camera.cam_nx, cfg.camera.cam_ny), 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 27, 11.5, sprintf('- Sampling Rate: fs = %.1f Hz', fps), 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    
-    % Arrow 5: IR Camera -> Processing Engine
-    drawLabeledArrow(ax, 51, 16, 61, 16, 'Digital Video Stream [GigE]', col_arrow);
-    
-    % 7. MATLAB Signal Processing & Defect Detection (Bottom Right)
-    drawRoundedBox(ax, 61, 8, 33, 16, col_bg_card, col_accent_grn, 1.5);
-    text(ax, 77.5, 21.5, 'NDT&E PROCESSING ENGINE', 'Color', col_accent_grn, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 63, 17.5, '- 5 Blind Detectors: Raw, MF, PCT, SPCT, RPT', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 63, 14.5, '- Automatic Otsu + Morphological Segmentation', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    text(ax, 63, 11.5, '- Defect Sizing (D), Centroid (x,y), CNR & IoU', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    
-    % Bottom Prominent Note
-    text(ax, 50, 3.2, 'NOTE: The current project repository is 100% computational and verified via 3-D Hex8 FEM numerical simulation.', ...
-        'Color', [0.95, 0.75, 0.35], 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 50, 1.2, 'This diagram describes the proposed physical NDT&E inspection rig design for future hardware validation.', ...
-        'Color', [0.70, 0.75, 0.85], 'FontSize', 8.0, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    % Footer Note
+    text(ax, 50, 3.0, '100% COMPUTATIONAL SIMULATION FRAMEWORK (MATLAB Hex8 3-D Finite Element Method)', ...
+        'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
 end
 
 %% =========================================================================
-%% SUB-ROUTINE 3: Render 3-D Specimen Cross-Section Connection Schematic
+%% SUB-ROUTINE 3: Render 5 Blind Signal Processing Suite Diagram
 %% =========================================================================
-function fig = renderSpecimenSchematicFigure(cfg, vis_mode)
-    fig = figure('Name', 'LFMT 3-D Specimen Heat Transfer Connection Schematic', ...
+function fig = renderProcessingSuiteFigure(cfg, vis_mode)
+    fig = figure('Name', 'LFMT 5 Blind Signal Processing Suite Architecture', ...
         'NumberTitle', 'off', 'Color', [0.07, 0.08, 0.11], ...
-        'Position', [100, 80, 1200, 780], 'Visible', vis_mode);
+        'Position', [70, 50, 1320, 850], 'Visible', vis_mode);
     
     ax = axes(fig, 'Position', [0, 0, 1, 1], 'Color', [0.07, 0.08, 0.11]);
     hold(ax, 'on');
@@ -393,166 +369,205 @@ function fig = renderSpecimenSchematicFigure(cfg, vis_mode)
     ylim(ax, [0, 100]);
     axis(ax, 'off');
     
+    col_bg_card    = [0.12, 0.14, 0.19];
+    col_border     = [0.25, 0.35, 0.50];
+    col_accent_cyan= [0.15, 0.75, 0.95];
+    col_accent_gold= [0.95, 0.80, 0.25];
+    col_accent_grn = [0.25, 0.85, 0.45];
+    col_accent_red = [0.95, 0.35, 0.35];
+    col_accent_purp= [0.75, 0.45, 0.95];
+    col_arrow      = [0.45, 0.65, 0.85];
+    
+    % Header
+    drawRoundedBox(ax, 3, 91, 94, 7, [0.10, 0.12, 0.17], [0.3, 0.45, 0.65], 1.5);
+    text(ax, 50, 95.5, '5 BLIND SIGNAL PROCESSING ALGORITHMS & SEGMENTATION ARCHITECTURE', ...
+        'Color', col_accent_cyan, 'FontSize', 12, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 50, 92.5, 'Parallel Feature Extraction Suite: Raw Contrast, Matched Filter, SVD-PCT, SPCT, and RPT', ...
+        'Color', [0.75, 0.82, 0.90], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    
+    % Top Input Box: Synthetic Thermogram Cube
+    drawRoundedBox(ax, 20, 77, 60, 11, col_bg_card, col_accent_purp, 1.5);
+    text(ax, 50, 84, 'PREPROCESSED THERMOGRAM CUBE T_norm(x, y, t)', 'Color', col_accent_purp, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 50, 80, 'Baseline frame subtraction T_norm = T(x,y,t) - T(x,y,0) | Reference chirp s_ref(t) = sin(phi(t))', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.5, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    
+    % 5 Branches (5 Columns)
+    methods = {
+        '1. RAW CONTRAST', col_accent_cyan, {'Peak Contrast Extraction', 'S_raw(x,y) = max_t |T_norm|', 'Fast Baseline (O(1))', 'Sensitive to Noise'};
+        '2. MATCHED FILTER', col_accent_gold, {'Pulse Compression', 'S_mf = int T_norm * s_ref dt', 'Optimal Linear SNR (O(Nt))', 'High Contrast Boost'};
+        '3. SVD-PCT', col_accent_grn, {'Principal Component', 'A = U * S * V''', 'S_pct(x,y) = EOF-2', 'Unsupervised Separation'};
+        '4. SPARSE PCT', col_accent_red, {'L1 Sparsity Regularization', 'min ||A - UV''||^2 + lambda*||V||_1', 'Enhanced Defect Saliency', 'Robust to Artifacts'};
+        '5. RPT', col_accent_purp, {'Random Projection', 'Phi ~ N(0, 1/d)', 'S_rpt = Phi * A (JL Lemma)', 'Ultra-Fast SVD Speedup'}
+    };
+    
+    x_starts = [4, 23, 42, 61, 80];
+    w_box = 16.5;
+    
+    for m = 1:5
+        xs = x_starts(m);
+        m_name = methods{m, 1};
+        m_col = methods{m, 2};
+        m_lines = methods{m, 3};
+        
+        drawLabeledArrow(ax, 50, 77, xs + w_box/2, 62, '', col_arrow);
+        drawRoundedBox(ax, xs, 32, w_box, 30, col_bg_card, m_col, 1.5);
+        text(ax, xs + w_box/2, 58, m_name, 'Color', m_col, 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+        
+        for l = 1:length(m_lines)
+            text(ax, xs + 1, 52 - (l-1)*5.5, ['- ', m_lines{l}], 'Color', [0.8, 0.85, 0.9], 'FontSize', 7.5, 'Interpreter', 'none');
+        end
+        
+        drawLabeledArrow(ax, xs + w_box/2, 32, xs + w_box/2, 23, '', col_arrow);
+    end
+    
+    % Bottom Combined Segmentation & Metric Evaluation Block
+    drawRoundedBox(ax, 4, 7, 92, 16, [0.10, 0.12, 0.17], col_accent_cyan, 1.5);
+    text(ax, 50, 19.5, 'BLIND OTSU SEGMENTATION & BENCHMARK QUANTITATIVE EVALUATION', 'Color', col_accent_cyan, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 6, 15, '1. Adaptive Otsu Thresholding tau_m -> Binary Mask B_m(x,y) = S_norm(x,y) > tau_m (Minimizing intra-class variance)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.0, 'Interpreter', 'none');
+    text(ax, 6, 11.5, '2. Morphological Post-Processing: Disk Opening (r=2 px) + Closing (r=3 px) + 8-Connected Component Saliency Filter', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.0, 'Interpreter', 'none');
+    text(ax, 6, 8.0, '3. Metrics: CNR = |mu_def - mu_sound|/sigma_sound | IoU = |B_m & G_gt|/|B_m | G_gt| | eps_loc = ||(x_hat,y_hat) - (x_gt,y_gt)||', 'Color', col_accent_gold, 'FontSize', 8.0, 'Interpreter', 'none');
+end
+
+%% =========================================================================
+%% SUB-ROUTINE 4: Render Specimen Heat Transfer Cross-Section Schematic
+%% =========================================================================
+function fig = renderSpecimenSchematicFigure(cfg, vis_mode)
+    fig = figure('Name', 'LFMT 3-D Specimen Heat Transfer Schematic', ...
+        'NumberTitle', 'off', 'Color', [0.07, 0.08, 0.11], ...
+        'Position', [90, 70, 1280, 800], 'Visible', vis_mode);
+    
+    ax = axes(fig, 'Position', [0, 0, 1, 1], 'Color', [0.07, 0.08, 0.11]);
+    hold(ax, 'on');
+    xlim(ax, [0, 100]);
+    ylim(ax, [0, 100]);
+    axis(ax, 'off');
+    
+    col_bg_card    = [0.12, 0.14, 0.19];
+    col_border     = [0.25, 0.35, 0.50];
     col_accent_cyan= [0.15, 0.75, 0.95];
     col_accent_gold= [0.95, 0.80, 0.25];
     col_accent_grn = [0.25, 0.85, 0.45];
     col_accent_red = [0.95, 0.35, 0.35];
     
     % Header
-    drawRoundedBox(ax, 4, 91, 92, 7, [0.10, 0.12, 0.17], [0.3, 0.45, 0.65], 1.5);
-    text(ax, 50, 95.5, '3-D SPECIMEN CROSS-SECTION & HEAT TRANSFER MECHANICS SCHEMATIC', ...
+    drawRoundedBox(ax, 3, 91, 94, 7, [0.10, 0.12, 0.17], [0.3, 0.45, 0.65], 1.5);
+    text(ax, 50, 95.5, '3-D SPECIMEN CROSS-SECTION & THERMAL WAVE DIFFUSION MECHANICS', ...
         'Color', col_accent_cyan, 'FontSize', 12, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 50, 92.5, 'Mild Steel Plate with Embedded Slag Inclusion Under Modulated Thermal-Wave Excitation (z-axis depth view)', ...
+    text(ax, 50, 92.5, 'Mild Steel Plate with Subsurface Slag Inclusion: Wave Reflections & Contrast Generation', ...
         'Color', [0.75, 0.82, 0.90], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
     
-    % Top: IR Camera Icon & Heat Flux Arrows
-    % Camera Box
-    drawRoundedBox(ax, 40, 76, 20, 10, [0.15, 0.18, 0.26], [0.5, 0.4, 0.9], 1.5);
-    text(ax, 50, 82.5, 'VIRTUAL IR CAMERA', 'Color', [0.8, 0.7, 1.0], 'FontSize', 9.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 50, 78.5, sprintf('Resolution: %d x %d px', cfg.camera.cam_nx, cfg.camera.cam_ny), 'Color', [0.75, 0.8, 0.9], 'FontSize', 8, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    
-    % IR Ray Observation Arrows
-    drawLabeledArrow(ax, 46, 60, 46, 75, '', [0.95, 0.85, 0.3]);
-    drawLabeledArrow(ax, 50, 60, 50, 75, 'Thermal Emission eps * sigma * T^4', [0.95, 0.85, 0.3]);
-    drawLabeledArrow(ax, 54, 60, 54, 75, '', [0.95, 0.85, 0.3]);
-    
-    % Excitation Flux Arrows (Red, pointing down to front surface)
-    for x_arr = [18, 26, 34, 66, 74, 82]
-        drawLabeledArrow(ax, x_arr, 72, x_arr, 60, '', col_accent_red);
+    % Top Surface Heat Flux Arrow Array
+    for x_arr = 20:10:80
+        drawLabeledArrow(ax, x_arr, 85, x_arr, 71, '', col_accent_red);
     end
-    text(ax, 26, 74, 'Incident Flux q(t)', 'Color', col_accent_red, 'FontSize', 9, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    text(ax, 74, 74, 'Incident Flux q(t)', 'Color', col_accent_red, 'FontSize', 9, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 50, 88, 'Uniform LFMT Modulated Heat Flux q(t) [W/m^2]', 'Color', col_accent_red, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
     
-    % Main Mild Steel Plate Cross Section (x in [10, 90], y in [24, 60])
-    rectangle(ax, 'Position', [10, 24, 80, 36], 'Curvature', [0.02, 0.04], ...
-        'FaceColor', [0.18, 0.22, 0.30], 'EdgeColor', [0.40, 0.60, 0.85], 'LineWidth', 2.0);
+    % Steel Plate Block Cross-Section (y in [30, 70], x in [15, 85])
+    rectangle(ax, 'Position', [15, 30, 70, 40], 'FaceColor', [0.16, 0.20, 0.28], 'EdgeColor', [0.35, 0.55, 0.85], 'LineWidth', 2.0);
+    text(ax, 20, 66, 'TOP SURFACE z = 0 mm (Virtual Radiometric Thermal Camera Field T(x,y,t))', 'Color', col_accent_cyan, 'FontSize', 9, 'FontWeight', 'bold', 'Interpreter', 'none');
+    text(ax, 20, 34, 'BOTTOM SURFACE z = Lz = 1.50 mm (Adiabatic / Insulated Boundary)', 'Color', [0.7, 0.75, 0.85], 'FontSize', 8.5, 'Interpreter', 'none');
     
-    % Front Surface (z = 0) Label
-    text(ax, 12, 62, 'FRONT SURFACE (z = 0): Irradiated by q(t), Convection -h*(T - Tamb)', ...
-        'Color', [0.3, 0.85, 1.0], 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
-    
-    % Back Surface (z = Lz) Label
-    text(ax, 12, 21.5, sprintf('BACK SURFACE (z = Lz = %.2f mm): Convection -h*(T - Tamb)', cfg.plate.thickness_mm), ...
-        'Color', [0.7, 0.75, 0.85], 'FontSize', 8.5, 'Interpreter', 'none');
-    
-    % Substrate Material Text
-    text(ax, 15, 34, sprintf('MILD STEEL SUBSTRATE\nk = 45.0 W/m-K\nrho = 7850 kg/m^3\nCp = 460 J/kg-K\ne ~ 12,740 J/m^2-K-s^0.5'), ...
-        'Color', [0.65, 0.75, 0.88], 'FontSize', 8.5, 'Interpreter', 'none');
-    
-    % Slag Defect Cylinder Patch (Centered at x = 50, depth = z)
+    % Slag Inclusion Region
     if cfg.plate.has_defect
-        d = cfg.plate.defect;
-        % Defect box
-        rectangle(ax, 'Position', [40, 38, 20, 16], 'Curvature', [0.08, 0.08], ...
-            'FaceColor', [0.45, 0.15, 0.15], 'EdgeColor', [1.0, 0.3, 0.3], 'LineWidth', 2.0);
-        text(ax, 50, 48, 'SLAG INCLUSION', 'Color', [1.0, 0.9, 0.9], 'FontSize', 9.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-        text(ax, 50, 44, sprintf('D = %.1f mm | Depth z = %.2f mm', d.diameter_mm, d.depth_mm), 'Color', [1.0, 0.85, 0.85], 'FontSize', 8.5, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-        text(ax, 50, 40.5, 'k=1.20 W/m-K, rho=2800, Cp=850', 'Color', [0.95, 0.75, 0.75], 'FontSize', 8.0, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+        rectangle(ax, 'Position', [42, 45, 16, 12], 'FaceColor', [0.45, 0.15, 0.15], 'EdgeColor', col_accent_red, 'LineWidth', 2.0);
+        text(ax, 50, 52, sprintf('SLAG INCLUSION\nD = %.1f mm\nz = %.2f mm', cfg.plate.defect.diameter_mm, cfg.plate.defect.depth_mm), ...
+            'Color', [1.0, 0.9, 0.9], 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
         
-        % Dimension Arrows for Defect Depth & Diameter
-        line(ax, [62, 62], [60, 54], 'Color', col_accent_gold, 'LineWidth', 1.5);
-        text(ax, 64, 57, sprintf('Depth z = %.2f mm', d.depth_mm), 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'Interpreter', 'none');
-        
-        line(ax, [40, 60], [35, 35], 'Color', col_accent_gold, 'LineWidth', 1.5);
-        text(ax, 50, 32.5, sprintf('Diameter D = %.1f mm', d.diameter_mm), 'Color', col_accent_gold, 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-        
-        % Thermal Wave Reflection Callout
-        drawLabeledArrow(ax, 50, 57, 50, 59.5, 'Thermal Wave Reflection (R ~ +0.766)', col_accent_gold);
-        text(ax, 50, 64.5, 'Delta T_defect(x,y,t) Peak Thermal Contrast Accumulation', 'Color', [1.0, 0.85, 0.3], 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    else
-        text(ax, 50, 42, 'HOMOGENEOUS HEALTHY SPECIMEN (NO INCLUSION)', 'Color', col_accent_grn, 'FontSize', 10, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+        % Thermal Wave Reflection Arrows
+        drawLabeledArrow(ax, 50, 68, 50, 58, '', col_accent_gold);
+        drawLabeledArrow(ax, 50, 58, 50, 68, '', col_accent_gold);
+        text(ax, 52, 63, 'Thermal Wave Reflection (R = +0.766)', 'Color', col_accent_gold, 'FontSize', 8.0, 'FontWeight', 'bold', 'Interpreter', 'none');
     end
     
-    % Plate Length Lx Dimension
-    line(ax, [10, 90], [14, 14], 'Color', [0.5, 0.6, 0.75], 'LineWidth', 1.2);
-    text(ax, 50, 11.5, sprintf('Plate Length Lx = %.1f mm (Width Ly = %.1f mm)', cfg.plate.length_mm, cfg.plate.width_mm), ...
-        'Color', [0.7, 0.8, 0.9], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    % Side Dimensions
+    text(ax, 11, 50, 'Lz = 1.5 mm', 'Color', [0.8, 0.85, 0.9], 'FontSize', 8.5, 'HorizontalAlignment', 'center', 'Rotation', 90, 'Interpreter', 'none');
+    text(ax, 50, 26, 'Plate Length Lx = 100 mm  |  Width Ly = 70 mm', 'Color', [0.8, 0.85, 0.9], 'FontSize', 9, 'HorizontalAlignment', 'center', 'Interpreter', 'none');
     
-    % Plate Thickness Lz Dimension
-    line(ax, [93, 93], [24, 60], 'Color', [0.5, 0.6, 0.75], 'LineWidth', 1.2);
-    text(ax, 94.5, 42, sprintf('Lz = %.2f mm', cfg.plate.thickness_mm), 'Color', [0.7, 0.8, 0.9], 'FontSize', 8.5, 'Interpreter', 'none');
-    
-    % Bottom Disclaimer Note
-    text(ax, 50, 4, 'SCHEMATIC - NOT TO SCALE (EXAGGERATED DEFECT DEPTH & THICKNESS FOR SCIENTIFIC CLARITY)', ...
-        'Color', [0.95, 0.75, 0.35], 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    % Bottom Explanation Panel
+    drawRoundedBox(ax, 5, 5, 90, 18, col_bg_card, col_border, 1.2);
+    text(ax, 50, 19.5, 'THERMAL DIFFUSION & IMPEDANCE CONTRAST MECHANICS', 'Color', col_accent_gold, 'FontSize', 9.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
+    text(ax, 7, 15, '- High thermal effusivity substrate (Steel e1 ~ 12,740 J/m^2-K-s^0.5) vs Low effusivity defect (Slag e2 ~ 1,689 J/m^2-K-s^0.5)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.0, 'Interpreter', 'none');
+    text(ax, 7, 11.5, '- Slag inclusion acts as a thermal barrier, reflecting heat back towards the top surface and creating a delayed hot-spot Delta T(t)', 'Color', [0.85, 0.9, 0.95], 'FontSize', 8.0, 'Interpreter', 'none');
+    text(ax, 7, 8.0, '- The 5 Blind Detectors isolate this modulated thermal contrast without requiring prior defect depth or size knowledge', 'Color', col_accent_grn, 'FontSize', 8.0, 'Interpreter', 'none');
 end
 
 %% =========================================================================
-%% UTILITY DRAWING HELPERS
+%% HELPER DRAWING FUNCTIONS
 %% =========================================================================
-function drawStageBlock(ax, x, y, w, h, stage_num, stage_title, col_hdr, col_bg, col_border, text_lines, out_label)
-    % Background Card
-    drawRoundedBox(ax, x, y, w, h, col_bg, col_border, 1.2);
-    
-    % Header Banner
-    drawRoundedBox(ax, x, y + h - 3.8, w, 3.8, [0.15, 0.18, 0.25], col_border, 1.0);
-    
-    % Stage Badge
-    badge_w = 4.2;
-    drawRoundedBox(ax, x + 0.8, y + h - 3.4, badge_w, 3.0, col_hdr, col_hdr, 1.0);
-    text(ax, x + 0.8 + badge_w/2, y + h - 1.9, sprintf('S%d', stage_num), ...
-        'Color', 'k', 'FontSize', 8.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-    
-    % Stage Title
-    text(ax, x + 5.8, y + h - 1.9, stage_title, 'Color', col_hdr, 'FontSize', 9, 'FontWeight', 'bold', 'Interpreter', 'none');
-    
-    % Body Text Lines
-    n_lines = length(text_lines);
-    spacing = (h - 6.8) / max(1, n_lines);
-    for k = 1:n_lines
-        y_pos = y + h - 4.8 - (k - 0.5) * spacing;
-        text(ax, x + 1.5, y_pos, text_lines{k}, 'Color', [0.82, 0.88, 0.94], 'FontSize', 7.5, 'Interpreter', 'none');
-    end
-    
-    % Output Label at bottom
-    if nargin >= 12 && ~isempty(out_label)
-        text(ax, x + w - 1.2, y + 1.2, out_label, 'Color', col_hdr, 'FontSize', 7.0, ...
-            'FontWeight', 'bold', 'HorizontalAlignment', 'right', 'Interpreter', 'none');
-    end
+function drawRoundedBox(ax, x, y, w, h, bg_col, edge_col, lw)
+    rectangle(ax, 'Position', [x, y, w, h], 'Curvature', [0.08, 0.08], ...
+        'FaceColor', bg_col, 'EdgeColor', edge_col, 'LineWidth', lw);
 end
 
-function drawRoundedBox(ax, x, y, w, h, face_col, edge_col, line_w)
-    rectangle(ax, 'Position', [x, y, w, h], 'Curvature', [0.06, 0.08], ...
-        'FaceColor', face_col, 'EdgeColor', edge_col, 'LineWidth', line_w);
+function drawStageBlock(ax, x, y, w, h, stage_num, title_str, title_col, bg_col, edge_col, body_lines, footer_str)
+    drawRoundedBox(ax, x, y, w, h, bg_col, edge_col, 1.5);
+    
+    % Stage Number Badge
+    rectangle(ax, 'Position', [x+0.8, y+h-4.5, 3.6, 3.6], 'Curvature', [1, 1], ...
+        'FaceColor', title_col, 'EdgeColor', 'none');
+    text(ax, x+2.6, y+h-2.7, num2str(stage_num), 'Color', [0.07, 0.08, 0.11], ...
+        'FontSize', 9, 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
+    
+    % Title
+    text(ax, x+5.5, y+h-2.7, title_str, 'Color', title_col, ...
+        'FontSize', 9.5, 'FontWeight', 'bold', 'Interpreter', 'none');
+    
+    % Separator line
+    plot(ax, [x+1, x+w-1], [y+h-5.2, y+h-5.2], 'Color', [edge_col, 0.5], 'LineWidth', 1.0);
+    
+    % Body lines
+    n_lines = length(body_lines);
+    avail_h = h - 8.5;
+    line_spacing = avail_h / max(n_lines, 1);
+    
+    for i = 1:n_lines
+        y_pos = y + h - 6.5 - (i-0.5)*line_spacing;
+        text(ax, x+1.5, y_pos, ['- ', body_lines{i}], 'Color', [0.85, 0.90, 0.95], ...
+            'FontSize', 7.5, 'Interpreter', 'none');
+    end
+    
+    % Footer Tag
+    if nargin >= 12 && ~isempty(footer_str)
+        text(ax, x+1.5, y+1.8, footer_str, 'Color', [0.45, 0.75, 0.95], ...
+            'FontSize', 7.0, 'FontAngle', 'italic', 'Interpreter', 'none');
+    end
 end
 
 function drawLabeledArrow(ax, x1, y1, x2, y2, label_str, col)
-    % Draw line with arrowhead
-    line(ax, [x1, x2], [y1, y2], 'Color', col, 'LineWidth', 1.8);
+    if nargin < 7 || isempty(col), col = [0.45, 0.65, 0.85]; end
     
-    % Arrowhead
-    if x1 == x2 % Vertical
-        if y2 < y1 % Downward
-            patch(ax, [x2-0.8, x2+0.8, x2], [y2+1.2, y2+1.2, y2], col, 'EdgeColor', col);
-            if ~isempty(label_str)
-                text(ax, x2 + 1.0, (y1 + y2)/2, label_str, 'Color', col, 'FontSize', 7.5, 'FontWeight', 'bold', 'Interpreter', 'none');
-            end
-        else % Upward
-            patch(ax, [x2-0.8, x2+0.8, x2], [y2-1.2, y2-1.2, y2], col, 'EdgeColor', col);
-            if ~isempty(label_str)
-                text(ax, x2 + 1.0, (y1 + y2)/2, label_str, 'Color', col, 'FontSize', 7.5, 'FontWeight', 'bold', 'Interpreter', 'none');
-            end
-        end
-    elseif y1 == y2 % Horizontal
-        if x2 > x1 % Rightward
-            patch(ax, [x2-1.0, x2-1.0, x2], [y2-0.7, y2+0.7, y2], col, 'EdgeColor', col);
-            if ~isempty(label_str)
-                text(ax, (x1 + x2)/2, y2 + 1.2, label_str, 'Color', col, 'FontSize', 7.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-            end
-        else % Leftward
-            patch(ax, [x2+1.0, x2+1.0, x2], [y2-0.7, y2+0.7, y2], col, 'EdgeColor', col);
-            if ~isempty(label_str)
-                text(ax, (x1 + x2)/2, y2 + 1.2, label_str, 'Color', col, 'FontSize', 7.5, 'FontWeight', 'bold', 'HorizontalAlignment', 'center', 'Interpreter', 'none');
-            end
-        end
+    % Draw main arrow line
+    annotation_arrow(ax, x1, y1, x2, y2, col);
+    
+    % Label at midpoint
+    if nargin >= 6 && ~isempty(label_str)
+        mx = (x1 + x2) / 2;
+        my = (y1 + y2) / 2;
+        text(ax, mx + 1.2, my, label_str, 'Color', col, ...
+            'FontSize', 7.2, 'FontAngle', 'italic', 'Interpreter', 'none');
     end
 end
 
-function drawHorizontalConnector(ax, x1, y1, x2, y2, label_str, col)
-    % Polyline connector with rightward turn
-    xm = (x1 + x2) / 2;
-    line(ax, [x1, xm, xm, x2], [y1, y1, y2, y2], 'Color', col, 'LineWidth', 1.8, 'LineStyle', '--');
-    patch(ax, [x2-1.0, x2-1.0, x2], [y2-0.7, y2+0.7, y2], col, 'EdgeColor', col);
-    text(ax, xm, (y1 + y2)/2, label_str, 'Color', col, 'FontSize', 7.5, 'FontWeight', 'bold', ...
-        'HorizontalAlignment', 'center', 'BackgroundColor', [0.08, 0.09, 0.13], 'Interpreter', 'none');
+function annotation_arrow(ax, x1, y1, x2, y2, col)
+    dx = x2 - x1;
+    dy = y2 - y1;
+    L = sqrt(dx^2 + dy^2);
+    if L < 1e-6, return; end
+    
+    u = [dx, dy] / L;
+    v = [-u(2), u(1)];
+    
+    head_len = min(2.0, L * 0.35);
+    head_wid = min(1.2, head_len * 0.6);
+    
+    % Line
+    plot(ax, [x1, x2 - u(1)*head_len*0.8], [y1, y2 - u(2)*head_len*0.8], ...
+        'Color', col, 'LineWidth', 1.6);
+    
+    % Head triangle
+    p_tip = [x2, y2];
+    p_left = p_tip - u * head_len + v * head_wid;
+    p_right = p_tip - u * head_len - v * head_wid;
+    
+    fill(ax, [p_tip(1), p_left(1), p_right(1)], [p_tip(2), p_left(2), p_right(2)], ...
+        col, 'EdgeColor', col, 'LineWidth', 1.0);
 end

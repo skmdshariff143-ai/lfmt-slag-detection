@@ -53,7 +53,7 @@ res = run_tests();
    - Explain the $43\times$ thermal conductivity contrast ($k_{\text{steel}} = 51.9\text{ W/mK}$ vs $k_{\text{slag}} = 1.20\text{ W/mK}$).
 2. **Simulation Connection Architecture (Tab 2: SIMULATION CONNECTION):**
    - Click **`🔍 View Sim Flow`** to open the publication pipeline diagram.
-   - Click **`🔬 View Physical Rig`** to inspect the proposed experimental setup.
+   - Click **`📊 View 5 Detectors`** to inspect the 5 blind signal processing suite & segmentation diagram.
    - Click **`⚙️ Open Simulink`** to explore `LFMT_System_Connection.slx`.
 3. **Live Inspection & Execution (Tab 1: LIVE INSPECTION):**
    - Select **Demo 2: Standard**, click **`▶ RUN INSPECTION`**.

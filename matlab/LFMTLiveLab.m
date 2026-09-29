@@ -161,10 +161,11 @@ classdef LFMTLiveLab < handle
         CurrentResults struct
         IsRunning logical = false
         IsPlaying logical = false
-        PlayTimer timer
+        PlayTimer
         CurrentFrameIdx double = 1
         TotalFrames double = 1
         PlaybackSpeed double = 1.0
+        FrameAccumulator double = 0.0
         SelectedPixel double = [32, 32] % [row, col]
         
         GlobalTMin double = 293.15
@@ -172,9 +173,18 @@ classdef LFMTLiveLab < handle
         WaveformCursorHandle
         StudioFluxCursorHandle
         StudioEnvCursorHandle
-        PopoutFigure matlab.ui.Figure
-        PopoutAxes matlab.ui.control.UIAxes
-        PopoutTimer timer
+        
+        % Standalone Large Popout Player components
+        PopoutFigure
+        PopoutAxes
+        PopoutSlider
+        PopoutPlayButton
+        PopoutInfoLabel
+        PopoutStatsLabel
+        PopoutSpeedDrop
+        PopoutLockScaleCheck
+        PopoutLoopCheck
+        PopoutTimer
     end
 
     methods
@@ -190,20 +200,12 @@ classdef LFMTLiveLab < handle
         end
         
         function delete(app)
-            % Destructor: Clean up all timers and popouts
-            if ~isempty(app.PlayTimer) && isvalid(app.PlayTimer)
-                stop(app.PlayTimer);
-                delete(app.PlayTimer);
-            end
-            if ~isempty(app.PopoutTimer) && isvalid(app.PopoutTimer)
-                stop(app.PopoutTimer);
-                delete(app.PopoutTimer);
-            end
-            if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
-                delete(app.PopoutFigure);
-            end
+            % Destructor: Clean up all timers, popouts, and figures
+            app.cleanUpTimersAndPopout();
             if ~isempty(app.UIFigure) && isvalid(app.UIFigure)
+                app.UIFigure.CloseRequestFcn = '';
                 delete(app.UIFigure);
+                app.UIFigure = [];
             end
         end
     end
@@ -284,7 +286,7 @@ classdef LFMTLiveLab < handle
             app.buildAuditTab();
             
             % Playback Timer (~25 fps)
-            app.PlayTimer = timer('ExecutionMode', 'fixedRate', 'Period', 0.04, ...
+            app.PlayTimer = timer('ExecutionMode', 'fixedSpacing', 'BusyMode', 'drop', 'Period', 0.04, ...
                 'TimerFcn', @(src, evt) app.onTimerTick());
         end
         
@@ -462,7 +464,8 @@ classdef LFMTLiveLab < handle
             app.NextButton = uibutton(playGrid, 'Text', '⏭', 'ButtonPushedFcn', @(src, evt) app.stepFrame(1));
             
             app.FrameSlider = uislider(playGrid, 'Limits', [1, 251], 'Value', 1, ...
-                'ValueChangedFcn', @(src, evt) app.onSliderChanged());
+                'ValueChangedFcn', @(src, evt) app.onSliderChanged(evt), ...
+                'ValueChangingFcn', @(src, evt) app.onSliderChanging(evt));
             
             app.SpeedDrop = uidropdown(playGrid, 'Items', {'0.25x', '0.5x', '1.0x', '2.0x', '4.0x'}, 'Value', '1.0x', ...
                 'ValueChangedFcn', @(src, evt) app.onSpeedChanged());
@@ -799,7 +802,8 @@ classdef LFMTLiveLab < handle
             uibutton(stPlayGrid, 'Text', '⏭', 'ButtonPushedFcn', @(src, evt) app.stepFrame(1));
             
             app.StudioFrameSlider = uislider(stPlayGrid, 'Limits', [1, 251], 'Value', 1, ...
-                'ValueChangedFcn', @(src, evt) app.onStudioSliderChanged());
+                'ValueChangedFcn', @(src, evt) app.onStudioSliderChanged(evt), ...
+                'ValueChangingFcn', @(src, evt) app.onStudioSliderChanging(evt));
             
             app.StudioSpeedDrop = uidropdown(stPlayGrid, 'Items', {'0.25x', '0.5x', '1.0x', '2.0x', '4.0x'}, 'Value', '1.0x', ...
                 'ValueChangedFcn', @(src, evt) app.onStudioSpeedChanged());
@@ -1067,6 +1071,13 @@ classdef LFMTLiveLab < handle
             app.setSpeedFromText(val);
         end
         
+        function onPopoutSpeedChanged(app)
+            if ~isempty(app.PopoutSpeedDrop) && isvalid(app.PopoutSpeedDrop)
+                val = app.PopoutSpeedDrop.Value;
+                app.setSpeedFromText(val);
+            end
+        end
+        
         function setSpeedFromText(app, val)
             switch val
                 case '0.25x', app.PlaybackSpeed = 0.25;
@@ -1074,45 +1085,137 @@ classdef LFMTLiveLab < handle
                 case '1.0x',  app.PlaybackSpeed = 1.0;
                 case '2.0x',  app.PlaybackSpeed = 2.0;
                 case '4.0x',  app.PlaybackSpeed = 4.0;
+                otherwise,    app.PlaybackSpeed = 1.0;
             end
-            app.SpeedDrop.Value = val;
-            app.StudioSpeedDrop.Value = val;
+            app.FrameAccumulator = 0.0;
+            if isvalid(app.SpeedDrop), app.SpeedDrop.Value = val; end
+            if isvalid(app.StudioSpeedDrop), app.StudioSpeedDrop.Value = val; end
+            if ~isempty(app.PopoutSpeedDrop) && isvalid(app.PopoutSpeedDrop), app.PopoutSpeedDrop.Value = val; end
         end
         
-        function onSliderChanged(app)
+        function onSliderChanged(app, evt)
             if ~isempty(app.CurrentResults) && isfield(app.CurrentResults, 'noisy_thermograms')
-                app.CurrentFrameIdx = round(app.FrameSlider.Value);
-                app.StudioFrameSlider.Value = app.CurrentFrameIdx;
-                app.updateThermogramFrame();
+                val = app.FrameSlider.Value;
+                if nargin > 1
+                    try val = evt.Value; catch; end
+                end
+                app.syncFrameIndex(round(val));
             end
         end
         
-        function onStudioSliderChanged(app)
+        function onSliderChanging(app, evt)
             if ~isempty(app.CurrentResults) && isfield(app.CurrentResults, 'noisy_thermograms')
-                app.CurrentFrameIdx = round(app.StudioFrameSlider.Value);
-                app.FrameSlider.Value = app.CurrentFrameIdx;
-                app.updateThermogramFrame();
+                if nargin > 1
+                    try app.syncFrameIndex(round(evt.Value)); catch; end
+                end
             end
+        end
+        
+        function onStudioSliderChanged(app, evt)
+            if ~isempty(app.CurrentResults) && isfield(app.CurrentResults, 'noisy_thermograms')
+                val = app.StudioFrameSlider.Value;
+                if nargin > 1
+                    try val = evt.Value; catch; end
+                end
+                app.syncFrameIndex(round(val));
+            end
+        end
+        
+        function onStudioSliderChanging(app, evt)
+            if ~isempty(app.CurrentResults) && isfield(app.CurrentResults, 'noisy_thermograms')
+                if nargin > 1
+                    try app.syncFrameIndex(round(evt.Value)); catch; end
+                end
+            end
+        end
+        
+        function onPopoutSliderChanged(app, evt)
+            if ~isempty(app.CurrentResults) && isfield(app.CurrentResults, 'noisy_thermograms')
+                if ~isempty(app.PopoutSlider) && isvalid(app.PopoutSlider)
+                    val = app.PopoutSlider.Value;
+                    if nargin > 1
+                        try val = evt.Value; catch; end
+                    end
+                    app.syncFrameIndex(round(val));
+                end
+            end
+        end
+        
+        function onPopoutSliderChanging(app, evt)
+            if ~isempty(app.CurrentResults) && isfield(app.CurrentResults, 'noisy_thermograms')
+                if nargin > 1
+                    try app.syncFrameIndex(round(evt.Value)); catch; end
+                end
+            end
+        end
+        
+        function syncFrameIndex(app, idx)
+            idx = max(1, min(app.TotalFrames, idx));
+            app.CurrentFrameIdx = idx;
+            if isvalid(app.FrameSlider) && app.FrameSlider.Value ~= idx
+                app.FrameSlider.Value = idx;
+            end
+            if isvalid(app.StudioFrameSlider) && app.StudioFrameSlider.Value ~= idx
+                app.StudioFrameSlider.Value = idx;
+            end
+            if ~isempty(app.PopoutSlider) && isvalid(app.PopoutSlider) && app.PopoutSlider.Value ~= idx
+                app.PopoutSlider.Value = idx;
+            end
+            app.updateThermogramFrame();
         end
         
         function togglePlayback(app)
             if isempty(app.CurrentResults) || ~isfield(app.CurrentResults, 'noisy_thermograms')
                 return;
             end
+            
             if app.IsPlaying
-                stop(app.PlayTimer);
+                % Pause Playback
                 app.IsPlaying = false;
-                app.PlayButton.Text = '▶ Play';
-                app.PlayButton.BackgroundColor = [0.2, 0.45, 0.7];
-                app.StudioPlayButton.Text = '▶ Play';
-                app.StudioPlayButton.BackgroundColor = [0.2, 0.45, 0.7];
+                if ~isempty(app.PlayTimer) && isvalid(app.PlayTimer) && strcmp(app.PlayTimer.Running, 'on')
+                    stop(app.PlayTimer);
+                end
+                app.updatePlayButtonVisuals(false);
             else
+                % Start Playback
+                if app.CurrentFrameIdx >= app.TotalFrames
+                    app.syncFrameIndex(1);
+                end
                 app.IsPlaying = true;
-                app.PlayButton.Text = '⏸ Pause';
-                app.PlayButton.BackgroundColor = [0.7, 0.45, 0.2];
-                app.StudioPlayButton.Text = '⏸ Pause';
-                app.StudioPlayButton.BackgroundColor = [0.7, 0.45, 0.2];
-                start(app.PlayTimer);
+                app.FrameAccumulator = 0.0;
+                app.updatePlayButtonVisuals(true);
+                
+                % Ensure timer exists and is valid
+                if isempty(app.PlayTimer) || ~isvalid(app.PlayTimer)
+                    app.PlayTimer = timer('ExecutionMode', 'fixedSpacing', 'BusyMode', 'drop', 'Period', 0.04, ...
+                        'TimerFcn', @(src, evt) app.onTimerTick());
+                end
+                if strcmp(app.PlayTimer.Running, 'off')
+                    start(app.PlayTimer);
+                end
+            end
+        end
+        
+        function updatePlayButtonVisuals(app, is_playing)
+            if is_playing
+                btn_text = '⏸ Pause';
+                btn_color = [0.7, 0.45, 0.2];
+            else
+                btn_text = '▶ Play';
+                btn_color = [0.2, 0.45, 0.7];
+            end
+            
+            if isvalid(app.PlayButton)
+                app.PlayButton.Text = btn_text;
+                app.PlayButton.BackgroundColor = btn_color;
+            end
+            if isvalid(app.StudioPlayButton)
+                app.StudioPlayButton.Text = btn_text;
+                app.StudioPlayButton.BackgroundColor = btn_color;
+            end
+            if ~isempty(app.PopoutPlayButton) && isvalid(app.PopoutPlayButton)
+                app.PopoutPlayButton.Text = btn_text;
+                app.PopoutPlayButton.BackgroundColor = btn_color;
             end
         end
         
@@ -1123,31 +1226,43 @@ classdef LFMTLiveLab < handle
             new_idx = app.CurrentFrameIdx + delta;
             if new_idx < 1, new_idx = app.TotalFrames; end
             if new_idx > app.TotalFrames, new_idx = 1; end
-            app.CurrentFrameIdx = new_idx;
-            app.FrameSlider.Value = new_idx;
-            app.StudioFrameSlider.Value = new_idx;
-            app.updateThermogramFrame();
+            app.syncFrameIndex(new_idx);
         end
         
         function onTimerTick(app)
-            if ~app.IsPlaying || isempty(app.CurrentResults)
+            if ~app.IsPlaying || isempty(app.CurrentResults) || ~isfield(app.CurrentResults, 'noisy_thermograms')
                 return;
             end
-            step = max(1, round(app.PlaybackSpeed));
+            
+            if app.PlaybackSpeed < 1.0
+                app.FrameAccumulator = app.FrameAccumulator + app.PlaybackSpeed;
+                if app.FrameAccumulator < 1.0
+                    return;
+                end
+                step = floor(app.FrameAccumulator);
+                app.FrameAccumulator = app.FrameAccumulator - step;
+            else
+                step = round(app.PlaybackSpeed);
+            end
+            
             new_idx = app.CurrentFrameIdx + step;
+            
             if new_idx > app.TotalFrames
-                if app.LoopVideoCheck.Value
+                is_loop = true;
+                if isvalid(app.LoopVideoCheck)
+                    is_loop = app.LoopVideoCheck.Value;
+                end
+                if is_loop
                     new_idx = 1;
                 else
                     new_idx = app.TotalFrames;
+                    app.syncFrameIndex(new_idx);
                     app.togglePlayback();
                     return;
                 end
             end
-            app.CurrentFrameIdx = new_idx;
-            app.FrameSlider.Value = new_idx;
-            app.StudioFrameSlider.Value = new_idx;
-            app.updateThermogramFrame();
+            
+            app.syncFrameIndex(new_idx);
         end
         
         function onThermogramClicked(app, evt)
@@ -1170,20 +1285,59 @@ classdef LFMTLiveLab < handle
         end
         
         function onCloseRequest(app)
+            app.cleanUpTimersAndPopout();
+            if ~isempty(app.UIFigure) && isvalid(app.UIFigure)
+                app.UIFigure.CloseRequestFcn = '';
+                delete(app.UIFigure);
+                app.UIFigure = [];
+            end
+        end
+        
+        function cleanUpTimersAndPopout(app)
+            app.IsPlaying = false;
             if ~isempty(app.PlayTimer) && isvalid(app.PlayTimer)
-                stop(app.PlayTimer);
+                if strcmp(app.PlayTimer.Running, 'on')
+                    stop(app.PlayTimer);
+                end
                 delete(app.PlayTimer);
+                app.PlayTimer = [];
             end
             if ~isempty(app.PopoutTimer) && isvalid(app.PopoutTimer)
-                stop(app.PopoutTimer);
+                if strcmp(app.PopoutTimer.Running, 'on')
+                    stop(app.PopoutTimer);
+                end
                 delete(app.PopoutTimer);
+                app.PopoutTimer = [];
             end
             if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
+                app.PopoutFigure.CloseRequestFcn = '';
                 delete(app.PopoutFigure);
+                app.PopoutFigure = [];
             end
-            if ~isempty(app.UIFigure) && isvalid(app.UIFigure)
-                delete(app.UIFigure);
+            app.PopoutAxes = [];
+            app.PopoutSlider = [];
+            app.PopoutPlayButton = [];
+            app.PopoutInfoLabel = [];
+            app.PopoutStatsLabel = [];
+            app.PopoutSpeedDrop = [];
+            app.PopoutLockScaleCheck = [];
+            app.PopoutLoopCheck = [];
+        end
+        
+        function onPopoutClosed(app)
+            if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
+                app.PopoutFigure.CloseRequestFcn = '';
+                delete(app.PopoutFigure);
+                app.PopoutFigure = [];
             end
+            app.PopoutAxes = [];
+            app.PopoutSlider = [];
+            app.PopoutPlayButton = [];
+            app.PopoutInfoLabel = [];
+            app.PopoutStatsLabel = [];
+            app.PopoutSpeedDrop = [];
+            app.PopoutLockScaleCheck = [];
+            app.PopoutLoopCheck = [];
         end
         
         %% Input Validation & Config Builder
@@ -1448,11 +1602,18 @@ classdef LFMTLiveLab < handle
                 % Pre-calculate global temperature bounds for locked scale mode
                 app.GlobalTMin = min(T_noisy(:));
                 app.GlobalTMax = max(T_noisy(:));
+                if app.GlobalTMax <= app.GlobalTMin
+                    app.GlobalTMax = app.GlobalTMin + 1e-3;
+                end
                 
                 % Update UI Displays
                 app.TotalFrames = size(T_noisy, 1);
-                app.FrameSlider.Limits = [1, app.TotalFrames];
-                app.StudioFrameSlider.Limits = [1, app.TotalFrames];
+                app.FrameSlider.Limits = [1, max(2, app.TotalFrames)];
+                app.StudioFrameSlider.Limits = [1, max(2, app.TotalFrames)];
+                if ~isempty(app.PopoutSlider) && isvalid(app.PopoutSlider)
+                    app.PopoutSlider.Limits = [1, max(2, app.TotalFrames)];
+                    app.PopoutSlider.Value = 1;
+                end
                 app.CurrentFrameIdx = 1;
                 app.FrameSlider.Value = 1;
                 app.StudioFrameSlider.Value = 1;
@@ -1529,43 +1690,63 @@ classdef LFMTLiveLab < handle
             end
             
             % Update Main Thermogram Axes
-            cla(app.ThermogramAxes);
-            imagesc(app.ThermogramAxes, x_mm, y_mm, frame_T);
-            axis(app.ThermogramAxes, 'image');
-            colorbar(app.ThermogramAxes);
-            colormap(app.ThermogramAxes, 'turbo');
+            h_im = findobj(app.ThermogramAxes, 'Type', 'Image');
+            if ~isempty(h_im) && isvalid(h_im(1))
+                h_im(1).CData = frame_T;
+            else
+                cla(app.ThermogramAxes);
+                imagesc(app.ThermogramAxes, x_mm, y_mm, frame_T);
+                axis(app.ThermogramAxes, 'image');
+                colorbar(app.ThermogramAxes);
+                colormap(app.ThermogramAxes, 'turbo');
+                app.ThermogramAxes.ButtonDownFcn = @(src, evt) app.onThermogramClicked(evt);
+            end
             
-            if app.LockColorScaleCheck.Value
+            if app.LockColorScaleCheck.Value && (app.GlobalTMax > app.GlobalTMin)
                 clim(app.ThermogramAxes, [app.GlobalTMin, app.GlobalTMax]);
+            else
+                tmin_f = min(frame_T(:)); tmax_f = max(frame_T(:));
+                if tmax_f <= tmin_f, tmax_f = tmin_f + 1e-3; end
+                clim(app.ThermogramAxes, [tmin_f, tmax_f]);
             end
             
             title(app.ThermogramAxes, sprintf('Surface Thermogram T(x,y)  |  t = %.2f s (Frame %d/%d)', t_curr, idx, app.TotalFrames), 'Color', [0.95, 0.95, 0.95], 'FontSize', 10);
             xlabel(app.ThermogramAxes, 'Plate Length X [mm]');
             ylabel(app.ThermogramAxes, 'Plate Width Y [mm]');
-            hold(app.ThermogramAxes, 'on');
             
+            % Update/draw overlays
+            delete(findobj(app.ThermogramAxes, 'Tag', 'LiveOverlay'));
+            hold(app.ThermogramAxes, 'on');
             if app.GTOverlayCheck.Value && sim_res.geometry.has_defect
                 d = sim_res.geometry.defect;
                 theta = linspace(0, 2*pi, 80);
                 gt_x = d.center_x_mm + (d.diameter_mm / 2.0) * cos(theta);
                 gt_y = d.center_y_mm + (d.diameter_mm / 2.0) * sin(theta);
-                plot(app.ThermogramAxes, gt_x, gt_y, 'w--', 'LineWidth', 1.8);
+                plot(app.ThermogramAxes, gt_x, gt_y, 'w--', 'LineWidth', 1.8, 'Tag', 'LiveOverlay');
             end
-            
             sel_x = sim_res.camera_x_mm(app.SelectedPixel(2));
             sel_y = sim_res.camera_y_mm(app.SelectedPixel(1));
-            plot(app.ThermogramAxes, sel_x, sel_y, 'mp', 'MarkerSize', 10, 'LineWidth', 2.0);
+            plot(app.ThermogramAxes, sel_x, sel_y, 'mp', 'MarkerSize', 10, 'LineWidth', 2.0, 'Tag', 'LiveOverlay');
             hold(app.ThermogramAxes, 'off');
             
             % Update Studio Axes if Studio tab exists
             if isvalid(app.StudioAxes)
-                cla(app.StudioAxes);
-                imagesc(app.StudioAxes, x_mm, y_mm, frame_T);
-                axis(app.StudioAxes, 'image');
-                colorbar(app.StudioAxes);
-                colormap(app.StudioAxes, 'turbo');
-                if app.LockColorScaleCheck.Value
+                h_stim = findobj(app.StudioAxes, 'Type', 'Image');
+                if ~isempty(h_stim) && isvalid(h_stim(1))
+                    h_stim(1).CData = frame_T;
+                else
+                    cla(app.StudioAxes);
+                    imagesc(app.StudioAxes, x_mm, y_mm, frame_T);
+                    axis(app.StudioAxes, 'image');
+                    colorbar(app.StudioAxes);
+                    colormap(app.StudioAxes, 'turbo');
+                end
+                if app.LockColorScaleCheck.Value && (app.GlobalTMax > app.GlobalTMin)
                     clim(app.StudioAxes, [app.GlobalTMin, app.GlobalTMax]);
+                else
+                    tmin_f = min(frame_T(:)); tmax_f = max(frame_T(:));
+                    if tmax_f <= tmin_f, tmax_f = tmin_f + 1e-3; end
+                    clim(app.StudioAxes, [tmin_f, tmax_f]);
                 end
                 title(app.StudioAxes, sprintf('Studio View: T(x,y) at t = %.2f s | q(t) = %.0f W/m² | f(t) = %.3f Hz', t_curr, q_curr, f_inst), 'Color', [0.95, 0.95, 0.95]);
                 xlabel(app.StudioAxes, 'Length X [mm]'); ylabel(app.StudioAxes, 'Width Y [mm]');
@@ -1573,13 +1754,22 @@ classdef LFMTLiveLab < handle
             
             % Update Popout Figure if active
             if ~isempty(app.PopoutAxes) && isvalid(app.PopoutAxes)
-                cla(app.PopoutAxes);
-                imagesc(app.PopoutAxes, x_mm, y_mm, frame_T);
-                axis(app.PopoutAxes, 'image');
-                colorbar(app.PopoutAxes);
-                colormap(app.PopoutAxes, 'turbo');
-                if app.LockColorScaleCheck.Value
+                h_popim = findobj(app.PopoutAxes, 'Type', 'Image');
+                if ~isempty(h_popim) && isvalid(h_popim(1))
+                    h_popim(1).CData = frame_T;
+                else
+                    cla(app.PopoutAxes);
+                    imagesc(app.PopoutAxes, x_mm, y_mm, frame_T);
+                    axis(app.PopoutAxes, 'image');
+                    colorbar(app.PopoutAxes);
+                    colormap(app.PopoutAxes, 'turbo');
+                end
+                if app.LockColorScaleCheck.Value && (app.GlobalTMax > app.GlobalTMin)
                     clim(app.PopoutAxes, [app.GlobalTMin, app.GlobalTMax]);
+                else
+                    tmin_f = min(frame_T(:)); tmax_f = max(frame_T(:));
+                    if tmax_f <= tmin_f, tmax_f = tmin_f + 1e-3; end
+                    clim(app.PopoutAxes, [tmin_f, tmax_f]);
                 end
                 title(app.PopoutAxes, sprintf('LFMT Thermal Frame %d / %d  |  t = %.2f s  |  q(t) = %.0f W/m²', idx, app.TotalFrames, t_curr, q_curr));
                 xlabel(app.PopoutAxes, 'Length X [mm]'); ylabel(app.PopoutAxes, 'Width Y [mm]');
@@ -1588,7 +1778,15 @@ classdef LFMTLiveLab < handle
             t_min = min(frame_T(:)); t_max = max(frame_T(:)); t_mean = mean(frame_T(:));
             app.FrameInfoLabel.Text = sprintf('Frame: %d / %d  |  Time: %.2f s  |  Inst. Freq: %.3f Hz', idx, app.TotalFrames, t_curr, f_inst);
             app.ThermalStatsLabel.Text = sprintf('Min: %.2f K  |  Max: %.2f K  |  Mean: %.2f K', t_min, t_max, t_mean);
-            app.StudioStatsLabel.Text = sprintf('Frame: %d/%d (%.2f s) | q: %.0f W/m² | T: %.2f..%.2f K', idx, app.TotalFrames, t_curr, q_curr, t_min, t_max);
+            if isvalid(app.StudioStatsLabel)
+                app.StudioStatsLabel.Text = sprintf('Frame: %d/%d (%.2f s) | q: %.0f W/m² | T: %.2f..%.2f K', idx, app.TotalFrames, t_curr, q_curr, t_min, t_max);
+            end
+            if ~isempty(app.PopoutInfoLabel) && isvalid(app.PopoutInfoLabel)
+                app.PopoutInfoLabel.Text = sprintf('Frame: %d / %d  |  Time: %.2f s  |  Inst. Freq: %.3f Hz', idx, app.TotalFrames, t_curr, f_inst);
+            end
+            if ~isempty(app.PopoutStatsLabel) && isvalid(app.PopoutStatsLabel)
+                app.PopoutStatsLabel.Text = sprintf('Min: %.2f K  |  Max: %.2f K  |  Mean: %.2f K', t_min, t_max, t_mean);
+            end
             
             % Move cursors
             if ~isempty(app.WaveformCursorHandle) && isvalid(app.WaveformCursorHandle)
@@ -2189,45 +2387,95 @@ classdef LFMTLiveLab < handle
         function openLargeThermalView(app)
             if isempty(app.CurrentResults) || ~isfield(app.CurrentResults, 'noisy_thermograms')
                 if isvalid(app.UIFigure)
-                    uialert(app.UIFigure, 'No thermal video available. Run inspection first.', 'Thermal View', 'Icon', 'info');
+                    uialert(app.UIFigure, 'No thermal video sequence available. Run inspection first.', 'Thermal Video Popout', 'Icon', 'info');
                 end
                 return;
             end
             
             if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
-                figure(app.PopoutFigure);
+                app.PopoutFigure.Visible = 'on';
+                try
+                    focus(app.PopoutFigure);
+                catch
+                end
                 return;
             end
             
-            app.PopoutFigure = uifigure('Name', 'LFMT Standalone Large Thermal Video Player', ...
-                'Position', [100, 100, 800, 650], 'Color', [0.10, 0.12, 0.16]);
+            app.PopoutFigure = uifigure('Name', '🖥 LFMT Standalone Large Thermal Video Player', ...
+                'Position', [80, 80, 920, 720], 'Color', [0.10, 0.12, 0.16], ...
+                'CloseRequestFcn', @(src, evt) app.onPopoutClosed());
             
-            pGrid = uigridlayout(app.PopoutFigure, [2, 1]);
-            pGrid.RowHeight = {'1x', 45};
+            pGrid = uigridlayout(app.PopoutFigure, [3, 1]);
+            pGrid.RowHeight = {36, '1x', 52};
             pGrid.Padding = [8, 8, 8, 8];
+            pGrid.RowSpacing = 4;
             
+            % Top Header / Info Bar
+            topBar = uipanel(pGrid, 'BackgroundColor', [0.14, 0.16, 0.22], 'BorderType', 'none');
+            topBar.Layout.Row = 1;
+            tGrid = uigridlayout(topBar, [1, 2]);
+            tGrid.ColumnWidth = {'1x', '1x'};
+            tGrid.Padding = [8, 2, 8, 2];
+            
+            app.PopoutInfoLabel = uilabel(tGrid, 'Text', 'Frame: 1 / 1  |  Time: 0.00 s  |  Inst. Freq: 0.050 Hz', ...
+                'FontColor', [0.95, 0.85, 0.4], 'FontWeight', 'bold', 'FontSize', 11);
+            app.PopoutStatsLabel = uilabel(tGrid, 'Text', 'Min: 293.15 K  |  Max: 293.15 K  |  Mean: 293.15 K', ...
+                'FontColor', [0.7, 0.9, 1.0], 'HorizontalAlignment', 'right', 'FontSize', 11);
+            
+            % Center Large UIAxes
             app.PopoutAxes = uiaxes(pGrid);
+            app.PopoutAxes.Layout.Row = 2;
             app.PopoutAxes.Color = [0.08, 0.09, 0.12];
             app.PopoutAxes.XColor = [0.8, 0.8, 0.85]; app.PopoutAxes.YColor = [0.8, 0.8, 0.85];
             colormap(app.PopoutAxes, 'turbo');
             
-            ctrlPanel = uipanel(pGrid, 'BackgroundColor', [0.16, 0.18, 0.22], 'BorderType', 'none');
-            ctrlPanel.Layout.Row = 2;
-            cGrid = uigridlayout(ctrlPanel, [1, 5]);
-            cGrid.ColumnWidth = {40, 70, 40, '1x', 80};
-            cGrid.Padding = [4, 2, 4, 2];
+            % Bottom Control Bar
+            ctrlPanel = uipanel(pGrid, 'BackgroundColor', [0.16, 0.18, 0.24], 'BorderType', 'none');
+            ctrlPanel.Layout.Row = 3;
+            cGrid = uigridlayout(ctrlPanel, [1, 7]);
+            cGrid.ColumnWidth = {36, 75, 36, '1x', 60, 85, 60};
+            cGrid.Padding = [4, 4, 4, 4];
+            cGrid.ColumnSpacing = 5;
             
             uibutton(cGrid, 'Text', '⏮', 'ButtonPushedFcn', @(src, evt) app.stepFrame(-1));
-            uibutton(cGrid, 'Text', '▶/⏸', 'FontWeight', 'bold', 'ButtonPushedFcn', @(src, evt) app.togglePlayback());
+            
+            if app.IsPlaying
+                btn_text = '⏸ Pause'; btn_color = [0.7, 0.45, 0.2];
+            else
+                btn_text = '▶ Play'; btn_color = [0.2, 0.45, 0.7];
+            end
+            app.PopoutPlayButton = uibutton(cGrid, 'Text', btn_text, 'FontWeight', 'bold', ...
+                'BackgroundColor', btn_color, 'FontColor', 'w', 'ButtonPushedFcn', @(src, evt) app.togglePlayback());
+            
             uibutton(cGrid, 'Text', '⏭', 'ButtonPushedFcn', @(src, evt) app.stepFrame(1));
             
-            uislider(cGrid, 'Limits', [1, app.TotalFrames], 'Value', app.CurrentFrameIdx, ...
-                'ValueChangedFcn', @(src, evt) app.onSliderChanged());
+            app.PopoutSlider = uislider(cGrid, 'Limits', [1, max(2, app.TotalFrames)], 'Value', app.CurrentFrameIdx, ...
+                'ValueChangedFcn', @(src, evt) app.onPopoutSliderChanged(evt), ...
+                'ValueChangingFcn', @(src, evt) app.onPopoutSliderChanging(evt));
             
-            uicheckbox(cGrid, 'Text', 'Lock Scale', 'FontColor', [0.85, 0.9, 1.0], 'Value', app.LockColorScaleCheck.Value, ...
-                'ValueChangedFcn', @(src, evt) app.updateThermogramFrame());
+            app.PopoutSpeedDrop = uidropdown(cGrid, 'Items', {'0.25x', '0.5x', '1.0x', '2.0x', '4.0x'}, ...
+                'Value', app.SpeedDrop.Value, 'ValueChangedFcn', @(src, evt) app.onPopoutSpeedChanged());
+            
+            app.PopoutLockScaleCheck = uicheckbox(cGrid, 'Text', 'Lock Scale', 'FontColor', [0.85, 0.9, 1.0], ...
+                'Value', app.LockColorScaleCheck.Value, 'ValueChangedFcn', @(src, evt) app.onPopoutLockScaleChanged());
+            
+            app.PopoutLoopCheck = uicheckbox(cGrid, 'Text', 'Loop', 'FontColor', [0.85, 0.9, 1.0], ...
+                'Value', app.LoopVideoCheck.Value, 'ValueChangedFcn', @(src, evt) app.onPopoutLoopChanged());
             
             app.updateThermogramFrame();
+        end
+        
+        function onPopoutLockScaleChanged(app)
+            if ~isempty(app.PopoutLockScaleCheck) && isvalid(app.PopoutLockScaleCheck)
+                app.LockColorScaleCheck.Value = app.PopoutLockScaleCheck.Value;
+                app.updateThermogramFrame();
+            end
+        end
+        
+        function onPopoutLoopChanged(app)
+            if ~isempty(app.PopoutLoopCheck) && isvalid(app.PopoutLoopCheck)
+                app.LoopVideoCheck.Value = app.PopoutLoopCheck.Value;
+            end
         end
         
         function exportMP4Video(app, filename, showAlert)
@@ -2269,7 +2517,9 @@ classdef LFMTLiveLab < handle
                 h_im = imagesc(h_ax, sim_res.camera_x_mm, sim_res.camera_y_mm, squeeze(T_data(1, :, :)));
                 axis(h_ax, 'image');
                 colorbar(h_ax, 'Color', 'w');
-                caxis(h_ax, [app.GlobalTMin, app.GlobalTMax]);
+                g_min = app.GlobalTMin; g_max = app.GlobalTMax;
+                if g_max <= g_min, g_max = g_min + 1e-3; end
+                clim(h_ax, [g_min, g_max]);
                 xlabel(h_ax, 'X [mm]', 'Color', 'w'); ylabel(h_ax, 'Y [mm]', 'Color', 'w');
                 set(h_ax, 'XColor', 'w', 'YColor', 'w');
                 h_title = title(h_ax, '', 'Color', 'w');

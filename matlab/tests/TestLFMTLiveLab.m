@@ -118,7 +118,7 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
         end
         
         function testVideoPlaybackAndLockScale(testCase)
-            % Test video playback controls and locked color scale
+            % Test video playback controls, speed, scrubbing, and locked color scale
             app = testCase.App;
             app.ModeDrop.Value = 'Quick Demo';
             app.runInspection();
@@ -126,9 +126,23 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             % Step frame forward and backward
             app.stepFrame(5);
             testCase.verifyEqual(app.CurrentFrameIdx, 6);
+            testCase.verifyEqual(app.FrameSlider.Value, 6);
+            testCase.verifyEqual(app.StudioFrameSlider.Value, 6);
             
             app.stepFrame(-2);
             testCase.verifyEqual(app.CurrentFrameIdx, 4);
+            
+            % Test Speed Dropdown Selection
+            app.SpeedDrop.Value = '2.0x';
+            app.onSpeedChanged();
+            testCase.verifyEqual(app.PlaybackSpeed, 2.0);
+            testCase.verifyEqual(app.StudioSpeedDrop.Value, '2.0x');
+            
+            % Test Slider Scrubbing
+            evt = struct('Value', 20);
+            app.onSliderChanging(evt);
+            testCase.verifyEqual(app.CurrentFrameIdx, 20);
+            testCase.verifyEqual(app.StudioFrameSlider.Value, 20);
             
             % Toggle Lock Color Scale
             app.LockColorScaleCheck.Value = true;
@@ -138,8 +152,19 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             % Toggle playback start/stop
             app.togglePlayback();
             testCase.verifyTrue(app.IsPlaying);
+            testCase.verifyTrue(contains(app.PlayButton.Text, 'Pause'));
+            testCase.verifyTrue(contains(app.StudioPlayButton.Text, 'Pause'));
+            
+            % Tick frame
+            f_before = app.CurrentFrameIdx;
+            app.onTimerTick();
+            testCase.verifyGreaterThan(app.CurrentFrameIdx, f_before);
+            
+            % Pause playback
             app.togglePlayback();
             testCase.verifyFalse(app.IsPlaying);
+            testCase.verifyTrue(contains(app.PlayButton.Text, 'Play'));
+            testCase.verifyTrue(contains(app.StudioPlayButton.Text, 'Play'));
         end
         
         function testLargePopoutAndMP4Export(testCase)
@@ -150,7 +175,22 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             
             % Open Large Popout View
             app.openLargeThermalView();
-            testCase.verifyTrue(isvalid(app.PopoutFigure));
+            testCase.verifyTrue(~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure));
+            testCase.verifyTrue(~isempty(app.PopoutAxes) && isvalid(app.PopoutAxes));
+            testCase.verifyTrue(~isempty(app.PopoutSlider) && isvalid(app.PopoutSlider));
+            
+            % Step while popout is active
+            app.stepFrame(3);
+            testCase.verifyEqual(app.CurrentFrameIdx, 4);
+            testCase.verifyEqual(app.PopoutSlider.Value, 4);
+            
+            % Close Popout
+            app.onPopoutClosed();
+            testCase.verifyTrue(isempty(app.PopoutFigure));
+            
+            % Reopen Popout cleanly
+            app.openLargeThermalView();
+            testCase.verifyTrue(~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure));
             
             % Export MP4 Video to temporary test path
             root_dir = fileparts(fileparts(mfilename('fullpath')));
@@ -162,9 +202,7 @@ classdef TestLFMTLiveLab < matlab.unittest.TestCase
             if exist(temp_mp4, 'file')
                 delete(temp_mp4);
             end
-            if ~isempty(app.PopoutFigure) && isvalid(app.PopoutFigure)
-                delete(app.PopoutFigure);
-            end
+            app.onPopoutClosed();
         end
         
         function testSaveAndExportRoutines(testCase)
